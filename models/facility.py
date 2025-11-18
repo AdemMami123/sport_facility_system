@@ -7,12 +7,14 @@ from odoo.exceptions import ValidationError
 class SportsFacility(models.Model):
     _name = 'sports.facility'
     _description = 'Sports Facility'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
     name = fields.Char(
         string='Facility Name',
         required=True,
         index=True,
+        tracking=True,
         help='Name of the sports facility'
     )
     
@@ -22,6 +24,7 @@ class SportsFacility(models.Model):
         ('pool', 'Pool'),
         ('field', 'Field'),
     ], string='Facility Type', required=True, default='court',
+       tracking=True,
        help='Type of sports facility')
     
     description = fields.Text(
@@ -38,6 +41,7 @@ class SportsFacility(models.Model):
     hourly_rate = fields.Float(
         string='Hourly Rate',
         digits='Product Price',
+        tracking=True,
         help='Cost per hour for booking this facility'
     )
     
@@ -46,6 +50,7 @@ class SportsFacility(models.Model):
         ('maintenance', 'Under Maintenance'),
         ('booked', 'Booked'),
     ], string='Status', default='available', required=True,
+       tracking=True,
        help='Current status of the facility')
     
     image = fields.Binary(

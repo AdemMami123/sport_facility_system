@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Booking Form Template -->
+        <template id="booking_form_template" name="Facility Booking Form">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure">
+                    <div class="container mt-4 mb-5">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+                                <!-- Page Header -->
+                                <div class="text-center mb-4">
+                                    <h1 class="mb-3">Book <t t-esc="facility.name"/></h1>
+                                    <p class="lead text-muted">Complete the form below to reserve your time slot</p>
+                                </div>
+
+                                <!-- Facility Info Section -->
+                                <div class="card shadow-sm mb-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h4 class="mb-0">
+                                            <i class="fa fa-building-o mr-2"/>Facility Details
+                                        </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center mb-3 mb-md-0">
+                                                <t t-if="facility.image">
+                                                    <img t-att-src="image_data_uri(facility.image)" 
+                                                         class="img-fluid rounded" 
+                                                         alt="Facility Image"
+                                                         style="max-height: 200px; object-fit: cover;"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="bg-light rounded p-5">
+                                                        <i class="fa fa-building fa-5x text-muted"/>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <dl class="row mb-0">
+                                                    <dt class="col-sm-4">Facility Type:</dt>
+                                                    <dd class="col-sm-8">
+                                                        <span class="badge badge-info badge-pill">
+                                                            <t t-esc="dict(facility._fields['facility_type'].selection).get(facility.facility_type)"/>
+                                                        </span>
+                                                    </dd>
+
+                                                    <dt class="col-sm-4">Capacity:</dt>
+                                                    <dd class="col-sm-8">
+                                                        <i class="fa fa-users mr-1"/>
+                                                        <t t-esc="facility.capacity"/> persons
+                                                    </dd>
+
+                                                    <dt class="col-sm-4">Location:</dt>
+                                                    <dd class="col-sm-8">
+                                                        <i class="fa fa-map-marker mr-1"/>
+                                                        <t t-esc="facility.location or 'Not specified'"/>
+                                                    </dd>
+
+                                                    <dt class="col-sm-4">Hourly Rate:</dt>
+                                                    <dd class="col-sm-8">
+                                                        <strong class="text-success">
+                                                            <i class="fa fa-money mr-1"/>
+                                                            <t t-esc="facility.hourly_rate"/> 
+                                                            <t t-esc="facility.currency_id.symbol or '$'"/> / hour
+                                                        </strong>
+                                                    </dd>
+
+                                                    <dt class="col-sm-4">Operating Hours:</dt>
+                                                    <dd class="col-sm-8">
+                                                        <i class="fa fa-clock-o mr-1"/>
+                                                        <t t-esc="'{:02d}:{:02d}'.format(int(facility.operating_hours_start), int((facility.operating_hours_start % 1) * 60))"/> - 
+                                                        <t t-esc="'{:02d}:{:02d}'.format(int(facility.operating_hours_end), int((facility.operating_hours_end % 1) * 60))"/>
+                                                    </dd>
+
+                                                    <t t-if="facility.description">
+                                                        <dt class="col-sm-4">Description:</dt>
+                                                        <dd class="col-sm-8">
+                                                            <t t-raw="facility.description"/>
+                                                        </dd>
+                                                    </t>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Booking Form -->
+                                <div class="card shadow-sm mb-4">
+                                    <div class="card-header bg-success text-white">
+                                        <h4 class="mb-0">
+                                            <i class="fa fa-calendar-check-o mr-2"/>Booking Information
+                                        </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="booking_form" action="/sports/confirm_booking" method="POST">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="facility_id" t-att-value="facility.id"/>
+
+                                            <!-- Customer Information -->
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="customer_name" class="form-label">
+                                                        <strong>Full Name</strong> <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text" 
+                                                           class="form-control" 
+                                                           id="customer_name" 
+                                                           name="customer_name" 
+                                                           placeholder="Enter your full name"
+                                                           t-att-value="partner.name if partner else ''"
+                                                           required="required"/>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="customer_email" class="form-label">
+                                                        <strong>Email Address</strong> <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="email" 
+                                                           class="form-control" 
+                                                           id="customer_email" 
+                                                           name="customer_email" 
+                                                           placeholder="your.email@example.com"
+                                                           t-att-value="partner.email if partner else ''"
+                                                           required="required"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="customer_phone" class="form-label">
+                                                        <strong>Phone Number</strong> <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="tel" 
+                                                           class="form-control" 
+                                                           id="customer_phone" 
+                                                           name="customer_phone" 
+                                                           placeholder="+1 (555) 123-4567"
+                                                           t-att-value="partner.phone if partner else ''"
+                                                           required="required"/>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="booking_date" class="form-label">
+                                                        <strong>Booking Date</strong> <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="date" 
+                                                           class="form-control datepicker" 
+                                                           id="booking_date" 
+                                                           name="booking_date"
+                                                           required="required"/>
+                                                </div>
+                                            </div>
+
+                                            <!-- Time Slot Selection -->
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="time_slot" class="form-label">
+                                                        <strong>Time Slot</strong> <span class="text-danger">*</span>
+                                                    </label>
+                                                    <select class="form-control" 
+                                                            id="time_slot" 
+                                                            name="time_slot"
+                                                            required="required"
+                                                            disabled="disabled">
+                                                        <option value="">Select a date first to view available time slots</option>
+                                                    </select>
+                                                    <small class="form-text text-muted">
+                                                        <i class="fa fa-info-circle"/>
+                                                        Time slots will be loaded after selecting a date
+                                                    </small>
+                                                </div>
+                                            </div>
+
+                                            <!-- Equipment Selection -->
+                                            <t t-if="equipment">
+                                                <div class="row">
+                                                    <div class="col-md-12 mb-3">
+                                                        <label class="form-label">
+                                                            <strong>Additional Equipment</strong> 
+                                                            <span class="text-muted">(Optional)</span>
+                                                        </label>
+                                                        <div class="row">
+                                                            <t t-foreach="equipment" t-as="equip">
+                                                                <div class="col-md-6 col-lg-4 mb-3">
+                                                                    <div class="card h-100 equipment-card">
+                                                                        <div class="card-body p-3">
+                                                                            <div class="custom-control custom-checkbox">
+                                                                                <input type="checkbox" 
+                                                                                       class="custom-control-input equipment-checkbox" 
+                                                                                       t-att-id="'equipment_%s' % equip.id"
+                                                                                       name="equipment_ids"
+                                                                                       t-att-value="equip.id"
+                                                                                       t-att-data-rate="equip.rental_rate"/>
+                                                                                <label class="custom-control-label" 
+                                                                                       t-att-for="'equipment_%s' % equip.id">
+                                                                                    <div class="d-flex align-items-center">
+                                                                                        <t t-if="equip.image">
+                                                                                            <img t-att-src="image_data_uri(equip.image)" 
+                                                                                                 class="rounded mr-2" 
+                                                                                                 alt="Equipment"
+                                                                                                 style="width: 40px; height: 40px; object-fit: cover;"/>
+                                                                                        </t>
+                                                                                        <t t-else="">
+                                                                                            <div class="bg-light rounded mr-2 d-flex align-items-center justify-content-center" 
+                                                                                                 style="width: 40px; height: 40px;">
+                                                                                                <i class="fa fa-cube text-muted"/>
+                                                                                            </div>
+                                                                                        </t>
+                                                                                        <div>
+                                                                                            <div><strong t-esc="equip.name"/></div>
+                                                                                            <small class="text-success">
+                                                                                                +<t t-esc="equip.rental_rate"/> 
+                                                                                                <t t-esc="equip.currency_id.symbol or '$'"/>/hr
+                                                                                            </small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </label>
+                                                                            </div>
+                                                                            <small class="text-muted d-block mt-2">
+                                                                                <i class="fa fa-check-circle text-success"/>
+                                                                                <t t-esc="equip.quantity_available"/> available
+                                                                            </small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+
+                                            <!-- Notes -->
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="notes" class="form-label">
+                                                        <strong>Special Requests / Notes</strong>
+                                                    </label>
+                                                    <textarea class="form-control" 
+                                                              id="notes" 
+                                                              name="notes" 
+                                                              rows="3"
+                                                              placeholder="Any special requirements or notes..."></textarea>
+                                                </div>
+                                            </div>
+
+                                            <!-- Total Cost Display -->
+                                            <div class="alert alert-info mb-4" role="alert">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-6">
+                                                        <h5 class="mb-0">
+                                                            <i class="fa fa-calculator mr-2"/>Estimated Total Cost:
+                                                        </h5>
+                                                    </div>
+                                                    <div class="col-md-6 text-md-right">
+                                                        <h3 class="mb-0 text-primary">
+                                                            <span id="total_cost">0.00</span> 
+                                                            <t t-esc="facility.currency_id.symbol or '$'"/>
+                                                        </h3>
+                                                        <small class="text-muted" id="cost_breakdown">
+                                                            Select date and time slot to calculate
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Hidden fields for datetime -->
+                                            <input type="hidden" id="start_datetime" name="start_datetime"/>
+                                            <input type="hidden" id="end_datetime" name="end_datetime"/>
+
+                                            <!-- Submit Button -->
+                                            <div class="text-center">
+                                                <button type="submit" 
+                                                        class="btn btn-success btn-lg" 
+                                                        id="submit_booking"
+                                                        disabled="disabled">
+                                                    <i class="fa fa-check-circle mr-2"/>
+                                                    Confirm Booking
+                                                </button>
+                                                <a href="/sports/facilities" class="btn btn-outline-secondary btn-lg ml-2">
+                                                    <i class="fa fa-arrow-left mr-2"/>
+                                                    Back to Facilities
+                                                </a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Info Card -->
+                                <div class="alert alert-warning" role="alert">
+                                    <h5 class="alert-heading">
+                                        <i class="fa fa-info-circle mr-2"/>Booking Information
+                                    </h5>
+                                    <ul class="mb-0">
+                                        <li>Your booking will be in <strong>Draft</strong> status until confirmed by staff</li>
+                                        <li>You will receive a confirmation email once your booking is processed</li>
+                                        <li>Please arrive 10 minutes before your scheduled time</li>
+                                        <li>Cancellation policy applies - see terms and conditions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JavaScript for dynamic functionality -->
+                <script type="text/javascript">
+                    odoo.define('sport_facility_system.booking_form', function (require) {
+                        'use strict';
+
+                        var ajax = require('web.ajax');
+                        var core = require('web.core');
+                        var _t = core._t;
+
+                        $(document).ready(function() {
+                            var facilityId = $('input[name="facility_id"]').val();
+                            var hourlyRate = parseFloat('<t t-esc="facility.hourly_rate"/>');
+                            var currencySymbol = '<t t-esc="facility.currency_id.symbol or \'$\'"/>';
+
+                            // Date picker change event
+                            $('#booking_date').on('change', function() {
+                                var selectedDate = $(this).val();
+                                if (selectedDate) {
+                                    loadAvailableSlots(selectedDate);
+                                }
+                            });
+
+                            // Time slot change event
+                            $('#time_slot').on('change', function() {
+                                calculateTotalCost();
+                                updateSubmitButton();
+                            });
+
+                            // Equipment checkbox change event
+                            $('.equipment-checkbox').on('change', function() {
+                                calculateTotalCost();
+                            });
+
+                            // Load available time slots via AJAX
+                            function loadAvailableSlots(date) {
+                                $('#time_slot').prop('disabled', true).html('<option value="">Loading...</option>');
+                                
+                                ajax.jsonRpc('/sports/check_availability', 'call', {
+                                    facility_id: parseInt(facilityId),
+                                    date: date
+                                }).then(function(result) {
+                                    if (result.success &amp;&amp; result.available_slots.length > 0) {
+                                        var options = '<option value="">Select a time slot</option>';
+                                        result.available_slots.forEach(function(slot) {
+                                            options += '<option value="' + slot.start + '-' + slot.end + '" ' +
+                                                      'data-start="' + slot.start_hour + '" ' +
+                                                      'data-end="' + slot.end_hour + '">' +
+                                                      slot.start + ' - ' + slot.end + '</option>';
+                                        });
+                                        $('#time_slot').html(options).prop('disabled', false);
+                                    } else {
+                                        $('#time_slot').html('<option value="">No available slots for this date</option>');
+                                    }
+                                }).fail(function() {
+                                    $('#time_slot').html('<option value="">Error loading slots</option>');
+                                });
+                            }
+
+                            // Calculate total cost
+                            function calculateTotalCost() {
+                                var timeSlot = $('#time_slot option:selected');
+                                if (!timeSlot.val()) {
+                                    $('#total_cost').text('0.00');
+                                    $('#cost_breakdown').text('Select date and time slot to calculate');
+                                    return;
+                                }
+
+                                var startHour = parseFloat(timeSlot.data('start'));
+                                var endHour = parseFloat(timeSlot.data('end'));
+                                var duration = endHour - startHour;
+
+                                // Calculate facility cost
+                                var facilityCost = duration * hourlyRate;
+                                var equipmentCost = 0;
+
+                                // Calculate equipment cost
+                                $('.equipment-checkbox:checked').each(function() {
+                                    var rate = parseFloat($(this).data('rate')) || 0;
+                                    equipmentCost += rate * duration;
+                                });
+
+                                var totalCost = facilityCost + equipmentCost;
+                                $('#total_cost').text(totalCost.toFixed(2));
+                                
+                                var breakdown = 'Facility: ' + facilityCost.toFixed(2) + ' ' + currencySymbol;
+                                if (equipmentCost > 0) {
+                                    breakdown += ' + Equipment: ' + equipmentCost.toFixed(2) + ' ' + currencySymbol;
+                                }
+                                $('#cost_breakdown').text(breakdown);
+
+                                // Update hidden datetime fields
+                                updateDatetimeFields();
+                            }
+
+                            // Update hidden datetime fields
+                            function updateDatetimeFields() {
+                                var date = $('#booking_date').val();
+                                var timeSlot = $('#time_slot option:selected');
+                                
+                                if (date &amp;&amp; timeSlot.val()) {
+                                    var startHour = parseInt(timeSlot.data('start'));
+                                    var endHour = parseInt(timeSlot.data('end'));
+                                    
+                                    var startDatetime = date + ' ' + startHour.toString().padStart(2, '0') + ':00:00';
+                                    var endDatetime = date + ' ' + endHour.toString().padStart(2, '0') + ':00:00';
+                                    
+                                    $('#start_datetime').val(startDatetime);
+                                    $('#end_datetime').val(endDatetime);
+                                }
+                            }
+
+                            // Update submit button state
+                            function updateSubmitButton() {
+                                var isValid = $('#booking_date').val() &amp;&amp; 
+                                             $('#time_slot').val() &amp;&amp;
+                                             $('#customer_name').val() &amp;&amp;
+                                             $('#customer_email').val() &amp;&amp;
+                                             $('#customer_phone').val();
+                                
+                                $('#submit_booking').prop('disabled', !isValid);
+                            }
+
+                            // Form validation
+                            $('input[required]').on('change keyup', updateSubmitButton);
+
+                            // Set minimum date to today
+                            var today = new Date().toISOString().split('T')[0];
+                            $('#booking_date').attr('min', today);
+                        });
+                    });
+                </script>
+
+                <!-- Custom CSS -->
+                <style>
+                    .equipment-card {
+                        transition: all 0.3s ease;
+                        cursor: pointer;
+                    }
+                    .equipment-card:hover {
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                        transform: translateY(-2px);
+                    }
+                    .equipment-checkbox:checked + label {
+                        font-weight: bold;
+                    }
+                    #total_cost {
+                        font-weight: bold;
+                    }
+                    .datepicker {
+                        cursor: pointer;
+                    }
+                </style>
+            </t>
+        </template>
+
+        <!-- Booking Confirmation Template -->
+        <template id="booking_confirmation_template" name="Booking Confirmation">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure">
+                    <div class="container mt-5 mb-5">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+                                <!-- Success Message -->
+                                <div class="alert alert-success shadow-lg text-center mb-4" role="alert">
+                                    <div class="mb-3">
+                                        <i class="fa fa-check-circle fa-5x text-success"/>
+                                    </div>
+                                    <h2 class="alert-heading mb-3">
+                                        <strong>Booking Confirmed Successfully!</strong>
+                                    </h2>
+                                    <p class="lead mb-0">
+                                        Your booking has been created and is pending confirmation from our staff.
+                                    </p>
+                                </div>
+
+                                <!-- Booking Details Card -->
+                                <div class="card shadow-sm mb-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h4 class="mb-0">
+                                            <i class="fa fa-ticket mr-2"/>Booking Details
+                                        </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <!-- Left Column: Booking Info -->
+                                            <div class="col-md-8">
+                                                <dl class="row">
+                                                    <dt class="col-sm-5">
+                                                        <i class="fa fa-barcode mr-2"/>Booking Reference:
+                                                    </dt>
+                                                    <dd class="col-sm-7">
+                                                        <strong class="text-primary" style="font-size: 1.2em;">
+                                                            <t t-esc="booking.booking_reference"/>
+                                                        </strong>
+                                                    </dd>
+
+                                                    <dt class="col-sm-5">
+                                                        <i class="fa fa-building mr-2"/>Facility:
+                                                    </dt>
+                                                    <dd class="col-sm-7">
+                                                        <strong><t t-esc="booking.facility_id.name"/></strong>
+                                                        <br/>
+                                                        <small class="text-muted">
+                                                            <t t-esc="dict(booking.facility_id._fields['facility_type'].selection).get(booking.facility_id.facility_type)"/>
+                                                        </small>
+                                                    </dd>
+
+                                                    <dt class="col-sm-5">
+                                                        <i class="fa fa-user mr-2"/>Customer:
+                                                    </dt>
+                                                    <dd class="col-sm-7">
+                                                        <t t-esc="booking.customer_id.name"/>
+                                                    </dd>
+
+                                                    <dt class="col-sm-5">
+                                                        <i class="fa fa-calendar mr-2"/>Date:
+                                                    </dt>
+                                                    <dd class="col-sm-7">
+                                                        <t t-esc="booking.start_datetime.strftime('%A, %B %d, %Y')"/>
+                                                    </dd>
+
+                                                    <dt class="col-sm-5">
+                                                        <i class="fa fa-clock-o mr-2"/>Time:
+                                                    </dt>
+                                                    <dd class="col-sm-7">
+                                                        <t t-esc="booking.start_datetime.strftime('%I:%M %p')"/> - 
+                                                        <t t-esc="booking.end_datetime.strftime('%I:%M %p')"/>
+                                                        <br/>
+                                                        <small class="text-muted">
+                                                            Duration: <t t-esc="booking.duration"/> hours
+                                                        </small>
+                                                    </dd>
+
+                                                    <t t-if="booking.equipment_ids">
+                                                        <dt class="col-sm-5">
+                                                            <i class="fa fa-cube mr-2"/>Equipment:
+                                                        </dt>
+                                                        <dd class="col-sm-7">
+                                                            <t t-foreach="booking.equipment_ids" t-as="equipment">
+                                                                <span class="badge badge-info mr-1 mb-1">
+                                                                    <t t-esc="equipment.name"/>
+                                                                </span>
+                                                            </t>
+                                                        </dd>
+                                                    </t>
+
+                                                    <dt class="col-sm-5">
+                                                        <i class="fa fa-tag mr-2"/>Status:
+                                                    </dt>
+                                                    <dd class="col-sm-7">
+                                                        <span t-if="booking.status == 'draft'" 
+                                                              class="badge badge-warning badge-pill">
+                                                            Draft - Pending Confirmation
+                                                        </span>
+                                                        <span t-elif="booking.status == 'confirmed'" 
+                                                              class="badge badge-info badge-pill">
+                                                            Confirmed
+                                                        </span>
+                                                        <span t-elif="booking.status == 'completed'" 
+                                                              class="badge badge-success badge-pill">
+                                                            Completed
+                                                        </span>
+                                                        <span t-else="" 
+                                                              class="badge badge-danger badge-pill">
+                                                            Cancelled
+                                                        </span>
+                                                    </dd>
+
+                                                    <dt class="col-sm-5">
+                                                        <i class="fa fa-money mr-2"/>Total Cost:
+                                                    </dt>
+                                                    <dd class="col-sm-7">
+                                                        <h4 class="text-success mb-0">
+                                                            <strong>
+                                                                <t t-esc="booking.total_cost" 
+                                                                   t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
+                                                            </strong>
+                                                        </h4>
+                                                    </dd>
+                                                </dl>
+
+                                                <t t-if="booking.notes">
+                                                    <hr/>
+                                                    <div>
+                                                        <strong>
+                                                            <i class="fa fa-comment mr-2"/>Special Requests:
+                                                        </strong>
+                                                        <p class="text-muted mb-0 mt-2">
+                                                            <t t-esc="booking.notes"/>
+                                                        </p>
+                                                    </div>
+                                                </t>
+                                            </div>
+
+                                            <!-- Right Column: QR Code -->
+                                            <div class="col-md-4 text-center">
+                                                <div class="border rounded p-3 bg-light">
+                                                    <h6 class="mb-3">
+                                                        <i class="fa fa-qrcode mr-2"/>Check-in QR Code
+                                                    </h6>
+                                                    <img t-attf-src="/report/barcode/?type=QR&amp;value={{booking.booking_reference}}&amp;width=200&amp;height=200" 
+                                                         alt="Booking QR Code"
+                                                         class="img-fluid mb-2"
+                                                         style="max-width: 200px;"/>
+                                                    <p class="small text-muted mb-0">
+                                                        Show this code at check-in
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="text-center mb-4">
+                                    <a href="/sports/my/bookings" 
+                                       class="btn btn-primary btn-lg mr-2">
+                                        <i class="fa fa-list mr-2"/>
+                                        View My Bookings
+                                    </a>
+                                    <a href="/sports/facilities" 
+                                       class="btn btn-success btn-lg">
+                                        <i class="fa fa-calendar-plus-o mr-2"/>
+                                        Book Another
+                                    </a>
+                                </div>
+
+                                <!-- Information Alert -->
+                                <div class="alert alert-info" role="alert">
+                                    <h5 class="alert-heading">
+                                        <i class="fa fa-info-circle mr-2"/>What's Next?
+                                    </h5>
+                                    <ul class="mb-0">
+                                        <li>You will receive a confirmation email shortly</li>
+                                        <li>Our staff will review and confirm your booking within 24 hours</li>
+                                        <li>Please save your booking reference: <strong><t t-esc="booking.booking_reference"/></strong></li>
+                                        <li>Bring your QR code for quick check-in on the day of your booking</li>
+                                        <li>Please arrive 10 minutes before your scheduled time</li>
+                                    </ul>
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="card shadow-sm">
+                                    <div class="card-body text-center">
+                                        <h5 class="mb-3">
+                                            <i class="fa fa-phone mr-2"/>Need Help?
+                                        </h5>
+                                        <p class="mb-2">
+                                            If you have any questions about your booking, please contact us:
+                                        </p>
+                                        <p class="mb-0">
+                                            <i class="fa fa-envelope mr-2"/>
+                                            <a href="mailto:support@sportsfacility.com">support@sportsfacility.com</a>
+                                            <span class="mx-3">|</span>
+                                            <i class="fa fa-phone mr-2"/>
+                                            <a href="tel:+15551234567">+1 (555) 123-4567</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom CSS -->
+                <style>
+                    .alert-success {
+                        border-left: 5px solid #28a745;
+                    }
+                    .card {
+                        transition: transform 0.2s;
+                    }
+                    .card:hover {
+                        transform: translateY(-2px);
+                    }
+                    dt {
+                        font-weight: 600;
+                        color: #495057;
+                    }
+                    dd {
+                        margin-bottom: 1rem;
+                    }
+                </style>
+            </t>
+        </template>
+
+        <!-- Booking Error Template -->
+        <template id="booking_error_template" name="Booking Error">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure">
+                    <div class="container mt-5 mb-5">
+                        <div class="row">
+                            <div class="col-lg-6 offset-lg-3">
+                                <div class="alert alert-danger text-center shadow-lg" role="alert">
+                                    <div class="mb-3">
+                                        <i class="fa fa-exclamation-triangle fa-5x text-danger"/>
+                                    </div>
+                                    <h2 class="alert-heading mb-3">
+                                        <strong>Booking Error</strong>
+                                    </h2>
+                                    <p class="lead mb-4">
+                                        <t t-esc="error"/>
+                                    </p>
+                                    <hr/>
+                                    <div class="mt-4">
+                                        <a href="/sports/facilities" class="btn btn-primary btn-lg">
+                                            <i class="fa fa-arrow-left mr-2"/>
+                                            Back to Facilities
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

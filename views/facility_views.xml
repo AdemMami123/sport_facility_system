@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form View for Sports Facility -->
+        <record id="view_sports_facility_form" model="ir.ui.view">
+            <field name="name">sports.facility.form</field>
+            <field name="model">sports.facility</field>
+            <field name="arch" type="xml">
+                <form string="Sports Facility">
+                    <header>
+                        <field name="status" widget="statusbar" clickable="True" 
+                               options="{'clickable': '1'}"
+                               statusbar_visible="available,maintenance,booked"/>
+                    </header>
+                    <sheet>
+                        <!-- Smart Button for Bookings -->
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_bookings" type="object" 
+                                    class="oe_stat_button" icon="fa-calendar">
+                                <field name="booking_count" widget="statinfo" string="Bookings"/>
+                            </button>
+                        </div>
+                        
+                        <!-- Image Widget -->
+                        <field name="image" widget="image" class="oe_avatar" 
+                               options="{'preview_image': 'image', 'size': [90, 90]}"/>
+                        
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. Tennis Court A"/>
+                            </h1>
+                        </div>
+                        
+                        <!-- Notebook with Tabs -->
+                        <notebook>
+                            <!-- Tab 1: General Info -->
+                            <page string="General Info" name="general_info">
+                                <group>
+                                    <group name="basic_info">
+                                        <field name="name"/>
+                                        <field name="facility_type"/>
+                                        <field name="capacity"/>
+                                        <field name="location"/>
+                                        <field name="hourly_rate"/>
+                                    </group>
+                                    <group name="additional_info">
+                                        <field name="active"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <!-- Tab 2: Operating Hours -->
+                            <page string="Operating Hours" name="operating_hours">
+                                <group>
+                                    <group name="hours">
+                                        <field name="operating_hours_start" widget="float_time"/>
+                                        <field name="operating_hours_end" widget="float_time"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <!-- Tab 3: Description -->
+                            <page string="Description" name="description">
+                                <field name="description" widget="html" 
+                                       placeholder="Enter detailed description of the facility..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    
+                    <!-- Chatter -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Tree View for Sports Facility -->
+        <record id="view_sports_facility_tree" model="ir.ui.view">
+            <field name="name">sports.facility.tree</field>
+            <field name="model">sports.facility</field>
+            <field name="arch" type="xml">
+                <tree string="Sports Facilities"
+                      decoration-success="status=='available'"
+                      decoration-warning="status=='maintenance'"
+                      decoration-danger="status=='booked'">
+                    <field name="name"/>
+                    <field name="facility_type"/>
+                    <field name="capacity"/>
+                    <field name="hourly_rate" widget="monetary" optional="show"/>
+                    <field name="status" widget="badge"
+                           decoration-success="status=='available'"
+                           decoration-warning="status=='maintenance'"
+                           decoration-danger="status=='booked'"/>
+                    <field name="location" optional="hide"/>
+                    <field name="operating_hours_start" widget="float_time" optional="hide"/>
+                    <field name="operating_hours_end" widget="float_time" optional="hide"/>
+                    <field name="booking_count" optional="show"/>
+                    <field name="currency_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Kanban View for Sports Facility -->
+        <record id="view_sports_facility_kanban" model="ir.ui.view">
+            <field name="name">sports.facility.kanban</field>
+            <field name="model">sports.facility</field>
+            <field name="arch" type="xml">
+                <kanban string="Facilities" 
+                        quick_create="false" 
+                        default_group_by="facility_type"
+                        class="o_kanban_mobile">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="facility_type"/>
+                    <field name="capacity"/>
+                    <field name="hourly_rate"/>
+                    <field name="status"/>
+                    <field name="location"/>
+                    <field name="image"/>
+                    <field name="currency_id"/>
+                    <field name="booking_count"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('sports.facility', 'image', record.id.raw_value)" 
+                                         alt="Facility" 
+                                         class="o_image_64_contain"
+                                         style="max-height: 120px;"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <div class="o_kanban_record_top mb-2">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="o_kanban_record_body">
+                                        <div class="mb-2">
+                                            <span class="badge badge-pill badge-info">
+                                                <field name="facility_type"/>
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="row mb-1">
+                                            <div class="col-12">
+                                                <i class="fa fa-users" title="Capacity"/> 
+                                                <span class="ml-1">Capacity: <field name="capacity"/></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-1">
+                                            <div class="col-12">
+                                                <i class="fa fa-money" title="Hourly Rate"/> 
+                                                <span class="ml-1">
+                                                    <field name="hourly_rate" widget="monetary"/> / hour
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-1" t-if="record.location.raw_value">
+                                            <div class="col-12">
+                                                <i class="fa fa-map-marker" title="Location"/> 
+                                                <span class="ml-1"><field name="location"/></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="o_kanban_record_bottom mt-2">
+                                        <div class="oe_kanban_bottom_left">
+                                            <span t-if="record.status.raw_value == 'available'" 
+                                                  class="badge badge-success">
+                                                Available
+                                            </span>
+                                            <span t-elif="record.status.raw_value == 'maintenance'" 
+                                                  class="badge badge-warning">
+                                                Maintenance
+                                            </span>
+                                            <span t-else="" 
+                                                  class="badge badge-danger">
+                                                Booked
+                                            </span>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <span class="badge badge-pill badge-secondary" 
+                                                  title="Total Bookings">
+                                                <i class="fa fa-calendar"/> <field name="booking_count"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        
+        <!-- Search View for Sports Facility -->
+        <record id="view_sports_facility_search" model="ir.ui.view">
+            <field name="name">sports.facility.search</field>
+            <field name="model">sports.facility</field>
+            <field name="arch" type="xml">
+                <search string="Search Facilities">
+                    <field name="name" string="Facility Name"/>
+                    <field name="facility_type"/>
+                    <field name="location"/>
+                    <field name="status"/>
+                    <separator/>
+                    <filter string="Available" name="available" domain="[('status', '=', 'available')]"/>
+                    <filter string="Under Maintenance" name="maintenance" domain="[('status', '=', 'maintenance')]"/>
+                    <filter string="Booked" name="booked" domain="[('status', '=', 'booked')]"/>
+                    <separator/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Facility Type" name="group_facility_type" context="{'group_by': 'facility_type'}"/>
+                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Location" name="group_location" context="{'group_by': 'location'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Action for Sports Facility -->
+        <record id="action_sports_facility" model="ir.actions.act_window">
+            <field name="name">Facilities</field>
+            <field name="res_model">sports.facility</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'search_default_group_facility_type': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Sports Facility
+                </p>
+                <p>
+                    Click the create button to add a new facility to your system.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

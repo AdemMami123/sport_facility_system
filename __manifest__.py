@@ -25,6 +25,7 @@
         'website',
         'calendar',
         'sale_management',
+        'mail',
     ],
     'data': [
         # Security
@@ -33,9 +34,14 @@
         # Views
         'views/facility_views.xml',
         'views/booking_views.xml',
+        'views/equipment_views.xml',
+        
+        # Templates
+        'views/templates/booking_templates.xml',
+        'views/templates/assets.xml',
         
         # Menus
-        'views/menu_views.xml',
+        'views/menu.xml',
     ],
     'demo': [
         # Demo Data

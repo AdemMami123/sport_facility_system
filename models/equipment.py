@@ -7,12 +7,14 @@ from odoo.exceptions import ValidationError, UserError
 class SportsEquipment(models.Model):
     _name = 'sports.equipment'
     _description = 'Sports Equipment'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
     name = fields.Char(
         string='Equipment Name',
         required=True,
         index=True,
+        tracking=True,
         help='Name of the equipment'
     )
     
@@ -23,17 +25,20 @@ class SportsEquipment(models.Model):
         ('mat', 'Mat'),
         ('weights', 'Weights'),
     ], string='Equipment Type', required=True,
+       tracking=True,
        help='Type of sports equipment')
     
     quantity_available = fields.Integer(
         string='Quantity Available',
         default=0,
+        tracking=True,
         help='Current quantity available for rental'
     )
     
     rental_rate = fields.Float(
         string='Rental Rate (Per Hour)',
         digits='Product Price',
+        tracking=True,
         help='Hourly rental rate for this equipment'
     )
     
@@ -43,6 +48,7 @@ class SportsEquipment(models.Model):
         ('fair', 'Fair'),
         ('poor', 'Poor'),
     ], string='Condition', default='good', required=True,
+       tracking=True,
        help='Current condition of the equipment')
     
     facility_ids = fields.Many2many(

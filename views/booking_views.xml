@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form View for Sports Booking -->
+        <record id="view_sports_booking_form" model="ir.ui.view">
+            <field name="name">sports.booking.form</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <form string="Sports Booking">
+                    <header>
+                        <field name="status" widget="statusbar" 
+                               statusbar_visible="draft,confirmed,completed"/>
+                        
+                        <button name="action_confirm" 
+                                string="Confirm" 
+                                type="object" 
+                                states="draft" 
+                                class="oe_highlight"
+                                confirm="Confirm this booking?"/>
+                        
+                        <button name="action_complete" 
+                                string="Complete" 
+                                type="object" 
+                                states="confirmed" 
+                                class="oe_highlight"
+                                confirm="Mark this booking as completed?"/>
+                        
+                        <button name="action_cancel" 
+                                string="Cancel" 
+                                type="object" 
+                                states="draft,confirmed"
+                                confirm="Are you sure you want to cancel this booking?"/>
+                        
+                        <button name="action_reset_to_draft" 
+                                string="Reset to Draft" 
+                                type="object" 
+                                states="cancelled"
+                                groups="base.group_system"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="booking_reference" class="oe_edit_only"/>
+                            <h1>
+                                <field name="booking_reference" readonly="1"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group name="booking_info" string="Booking Information">
+                                <field name="customer_id" 
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="facility_id" 
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="start_datetime"/>
+                                <field name="end_datetime"/>
+                                <field name="duration" 
+                                       readonly="1" 
+                                       widget="float_time"/>
+                            </group>
+                            
+                            <group name="cost_info" string="Cost Information">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="company_id" invisible="1"/>
+                                <field name="total_cost" 
+                                       readonly="1" 
+                                       widget="monetary" 
+                                       options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group name="equipment_info" string="Equipment">
+                                <field name="equipment_ids" 
+                                       widget="many2many_tags" 
+                                       options="{'color_field': 'color', 'no_create': True}"
+                                       placeholder="Select equipment..."/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group name="notes_info" string="Notes" col="1">
+                                <field name="notes" 
+                                       widget="text" 
+                                       placeholder="Enter any special requests or additional notes..."
+                                       nolabel="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    
+                    <!-- Chatter -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Tree View for Sports Booking -->
+        <record id="view_sports_booking_tree" model="ir.ui.view">
+            <field name="name">sports.booking.tree</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <tree string="Sports Bookings" 
+                      decoration-success="status=='completed'" 
+                      decoration-info="status=='confirmed'" 
+                      decoration-muted="status=='cancelled'"
+                      decoration-bf="status=='draft'">
+                    <field name="booking_reference"/>
+                    <field name="customer_id"/>
+                    <field name="facility_id"/>
+                    <field name="start_datetime"/>
+                    <field name="duration" widget="float_time" optional="show"/>
+                    <field name="total_cost" widget="monetary" optional="show"/>
+                    <field name="status" widget="badge" 
+                           decoration-success="status=='completed'" 
+                           decoration-info="status=='confirmed'" 
+                           decoration-warning="status=='draft'"
+                           decoration-danger="status=='cancelled'"/>
+                    <field name="end_datetime" optional="hide"/>
+                    <field name="equipment_ids" widget="many2many_tags" optional="hide"/>
+                    <field name="currency_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Calendar View for Sports Booking -->
+        <record id="view_sports_booking_calendar" model="ir.ui.view">
+            <field name="name">sports.booking.calendar</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <calendar string="Bookings Calendar" 
+                          date_start="start_datetime" 
+                          date_stop="end_datetime" 
+                          color="facility_id" 
+                          mode="week"
+                          quick_create="true"
+                          all_day="false"
+                          form_view_id="%(view_sports_booking_form)d"
+                          event_open_popup="true"
+                          event_limit="5">
+                    <field name="customer_id"/>
+                    <field name="facility_id"/>
+                    <field name="total_cost" widget="monetary"/>
+                    <field name="status" filters="1" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                </calendar>
+            </field>
+        </record>
+        
+        <!-- Pivot View for Sports Booking -->
+        <record id="view_sports_booking_pivot" model="ir.ui.view">
+            <field name="name">sports.booking.pivot</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <pivot string="Booking Analysis" 
+                       display_quantity="true"
+                       sample="1">
+                    <field name="facility_id" type="row"/>
+                    <field name="status" type="col"/>
+                    <field name="total_cost" type="measure"/>
+                    <field name="duration" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+        
+        <!-- Graph View for Sports Booking -->
+        <record id="view_sports_booking_graph" model="ir.ui.view">
+            <field name="name">sports.booking.graph</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <graph string="Booking Statistics" 
+                       type="bar" 
+                       sample="1"
+                       mode="bar">
+                    <field name="facility_id"/>
+                    <field name="total_cost" type="measure"/>
+                </graph>
+            </field>
+        </record>
+        
+        <!-- Graph View - Revenue by Facility (Bar Chart) -->
+        <record id="view_sports_booking_graph_bar" model="ir.ui.view">
+            <field name="name">sports.booking.graph.bar</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <graph string="Revenue per Facility" 
+                       type="bar" 
+                       sample="1"
+                       mode="bar">
+                    <field name="facility_id"/>
+                    <field name="total_cost" type="measure"/>
+                    <field name="duration" type="measure"/>
+                </graph>
+            </field>
+        </record>
+        
+        <!-- Graph View - Bookings Trend (Line Chart) -->
+        <record id="view_sports_booking_graph_line" model="ir.ui.view">
+            <field name="name">sports.booking.graph.line</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <graph string="Bookings Trend Over Time" 
+                       type="line" 
+                       sample="1">
+                    <field name="start_datetime" interval="month"/>
+                    <field name="total_cost" type="measure"/>
+                    <field name="duration" type="measure"/>
+                </graph>
+            </field>
+        </record>
+        
+        <!-- Graph View - Booking Distribution (Pie Chart) -->
+        <record id="view_sports_booking_graph_pie" model="ir.ui.view">
+            <field name="name">sports.booking.graph.pie</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <graph string="Booking Distribution by Facility" 
+                       type="pie" 
+                       sample="1">
+                    <field name="facility_id"/>
+                    <field name="total_cost" type="measure"/>
+                </graph>
+            </field>
+        </record>
+        
+        <!-- Dashboard View -->
+        <record id="view_sports_booking_dashboard" model="ir.ui.view">
+            <field name="name">sports.booking.dashboard</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <board>
+                    <column>
+                        <!-- Today's Calendar View -->
+                        <action name="action_booking_calendar" 
+                                string="Today's Bookings" 
+                                context="{'search_default_today': 1}"
+                                view_mode="calendar"/>
+                        
+                        <!-- Top 5 Facilities Pivot Table -->
+                        <action name="action_booking_pivot" 
+                                string="Top 5 Facilities by Revenue" 
+                                context="{'pivot_measures': ['total_cost'], 'pivot_row_groupby': ['facility_id'], 'search_default_confirmed': 1}"
+                                view_mode="pivot"/>
+                    </column>
+                    <column>
+                        <!-- Revenue Graph Last 30 Days -->
+                        <action name="action_booking_trend" 
+                                string="Revenue Last 30 Days" 
+                                context="{'search_default_last_30_days': 1, 'graph_mode': 'line'}"
+                                view_mode="graph"/>
+                        
+                        <!-- Upcoming Bookings List -->
+                        <action name="action_sports_booking" 
+                                string="Next 7 Days" 
+                                context="{'search_default_next_7_days': 1}"
+                                view_mode="tree"/>
+                    </column>
+                </board>
+            </field>
+        </record>
+        
+        <!-- Search View for Sports Booking -->
+        <record id="view_sports_booking_search" model="ir.ui.view">
+            <field name="name">sports.booking.search</field>
+            <field name="model">sports.booking</field>
+            <field name="arch" type="xml">
+                <search string="Search Bookings">
+                    <!-- Search Fields -->
+                    <field name="booking_reference" string="Booking Reference"/>
+                    <field name="customer_id" string="Customer"/>
+                    <field name="facility_id" string="Facility"/>
+                    <field name="status"/>
+                    
+                    <!-- Search Panel -->
+                    <searchpanel>
+                        <field name="facility_id" string="Facility" icon="fa-building" enable_counters="1"/>
+                        <field name="status" string="Status" icon="fa-filter" enable_counters="1" select="multi"/>
+                    </searchpanel>
+                    
+                    <separator/>
+                    
+                    <!-- My Bookings Filter -->
+                    <filter string="My Bookings" name="my_bookings" 
+                            domain="[('create_uid', '=', uid)]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Date Filters -->
+                    <filter string="Today" name="today" 
+                            domain="[('start_datetime', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')),
+                                     ('start_datetime', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <filter string="This Week" name="this_week" 
+                            domain="[('start_datetime', '&gt;=', (context_today() - relativedelta(weeks=0, weekday=0)).strftime('%Y-%m-%d 00:00:00')),
+                                     ('start_datetime', '&lt;=', (context_today() + relativedelta(weeks=0, weekday=6)).strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <filter string="This Month" name="this_month" 
+                            domain="[('start_datetime', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d 00:00:00')),
+                                     ('start_datetime', '&lt;=', ((context_today() + relativedelta(day=31)).strftime('%Y-%m-%d 23:59:59')))]"/>
+                    <filter string="Last 30 Days" name="last_30_days" 
+                            domain="[('start_datetime', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d 00:00:00')),
+                                     ('start_datetime', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <filter string="Next 7 Days" name="next_7_days" 
+                            domain="[('start_datetime', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')),
+                                     ('start_datetime', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d 23:59:59'))]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Status Filters -->
+                    <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
+                    <filter string="Confirmed" name="confirmed" domain="[('status', '=', 'confirmed')]"/>
+                    <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                    <filter string="Cancelled" name="cancelled" domain="[('status', '=', 'cancelled')]"/>
+                    
+                    <separator/>
+                    
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    
+                    <!-- Group By -->
+                    <group expand="0" string="Group By">
+                        <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+                        <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Booking Date" name="group_booking_date" context="{'group_by': 'start_datetime:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Action for Sports Booking -->
+        <record id="action_sports_booking" model="ir.actions.act_window">
+            <field name="name">Bookings</field>
+            <field name="res_model">sports.booking</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="context">{'search_default_confirmed': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Sports Booking
+                </p>
+                <p>
+                    Click the create button to add a new booking to your system.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Action for Booking Pivot Analysis -->
+        <record id="action_booking_pivot" model="ir.actions.act_window">
+            <field name="name">Booking Analysis</field>
+            <field name="res_model">sports.booking</field>
+            <field name="view_mode">pivot,graph,tree</field>
+            <field name="view_id" ref="view_sports_booking_pivot"/>
+            <field name="context">{
+                'search_default_confirmed': 1,
+                'group_by_no_leaf': 1,
+                'group_by': []
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No booking data to analyze
+                </p>
+                <p>
+                    Create bookings to see analytics and statistics here.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Action for Revenue by Facility (Bar Chart) -->
+        <record id="action_booking_revenue_facility" model="ir.actions.act_window">
+            <field name="name">Revenue by Facility</field>
+            <field name="res_model">sports.booking</field>
+            <field name="view_mode">graph,pivot,tree</field>
+            <field name="view_id" ref="view_sports_booking_graph_bar"/>
+            <field name="context">{
+                'search_default_confirmed': 1,
+                'search_default_completed': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No revenue data available
+                </p>
+                <p>
+                    Confirmed and completed bookings will appear here.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Action for Bookings Trend (Line Chart) -->
+        <record id="action_booking_trend" model="ir.actions.act_window">
+            <field name="name">Bookings Trend</field>
+            <field name="res_model">sports.booking</field>
+            <field name="view_mode">graph,pivot,tree</field>
+            <field name="view_id" ref="view_sports_booking_graph_line"/>
+            <field name="context">{
+                'search_default_this_month': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No trend data available
+                </p>
+                <p>
+                    Bookings over time will be displayed here.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Action for Booking Distribution (Pie Chart) -->
+        <record id="action_booking_distribution" model="ir.actions.act_window">
+            <field name="name">Booking Distribution</field>
+            <field name="res_model">sports.booking</field>
+            <field name="view_mode">graph,pivot,tree</field>
+            <field name="view_id" ref="view_sports_booking_graph_pie"/>
+            <field name="context">{
+                'search_default_confirmed': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No distribution data available
+                </p>
+                <p>
+                    Booking distribution by facility will be shown here.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Action for Booking Dashboard -->
+        <record id="action_booking_dashboard" model="ir.actions.act_window">
+            <field name="name">Booking Dashboard</field>
+            <field name="res_model">sports.booking</field>
+            <field name="view_mode">board</field>
+            <field name="view_id" ref="view_sports_booking_dashboard"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Welcome to the Booking Dashboard
+                </p>
+                <p>
+                    Track today's bookings, revenue trends, and facility performance all in one place.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

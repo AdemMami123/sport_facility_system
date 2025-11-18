@@ -13,6 +13,7 @@ _logger = logging.getLogger(__name__)
 class SportsBooking(models.Model):
     _name = 'sports.booking'
     _description = 'Sports Facility Booking'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'start_datetime desc'
     _rec_name = 'booking_reference'
 
@@ -31,6 +32,7 @@ class SportsBooking(models.Model):
         string='Facility',
         required=True,
         ondelete='restrict',
+        tracking=True,
         help='The facility being booked'
     )
     
@@ -39,18 +41,21 @@ class SportsBooking(models.Model):
         string='Customer',
         required=True,
         ondelete='restrict',
+        tracking=True,
         help='Customer making the booking'
     )
     
     start_datetime = fields.Datetime(
         string='Start Date & Time',
         required=True,
+        tracking=True,
         help='Booking start date and time'
     )
     
     end_datetime = fields.Datetime(
         string='End Date & Time',
         required=True,
+        tracking=True,
         help='Booking end date and time'
     )
     
