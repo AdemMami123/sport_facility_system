@@ -540,8 +540,152 @@ class SportsBooking(models.Model):
                     'Failed to send booking cancellation email for booking %s: %s',
                     record.booking_reference, str(e)
                 )
+            
+            # Auto-assign from waitlist if facility slot becomes available
+            try:
+                record.auto_assign_from_waitlist()
+            except Exception as e:
+                # Log error but don't fail the cancellation
+                _logger.error(
+                    'Failed to auto-assign from waitlist for booking %s: %s',
+                    record.booking_reference, str(e)
+                )
         
         return True
+    
+    def auto_assign_from_waitlist(self):
+        """
+        Automatically notify customers on waitlist when a booking is cancelled.
+        Called from action_cancel() to offer the slot to waiting customers.
+        
+        Search criteria:
+        - Same facility as cancelled booking
+        - Preferred date within ±2 days of cancelled booking start date
+        - Status 'waiting'
+        - FIFO order (oldest request first)
+        """
+        self.ensure_one()
+        
+        # Only process for confirmed bookings that are being cancelled
+        if not self.facility_id or not self.start_datetime:
+            return
+        
+        # Get the booking date (not datetime) for comparison
+        booking_date = self.start_datetime.date()
+        
+        # Calculate date range: ±2 days
+        from datetime import timedelta as td
+        date_min = booking_date - td(days=2)
+        date_max = booking_date + td(days=2)
+        
+        # Search for waiting customers
+        Waitlist = self.env['sports.waitlist']
+        waiting_customers = Waitlist.search([
+            ('facility_id', '=', self.facility_id.id),
+            ('status', '=', 'waiting'),
+            '|',
+            ('preferred_date', '=', False),  # Include customers without specific date preference
+            '&',
+            ('preferred_date', '>=', date_min),
+            ('preferred_date', '<=', date_max),
+        ], order='create_date asc', limit=1)
+        
+        if not waiting_customers:
+            _logger.info(
+                'No waitlist customers found for facility %s on date %s (±2 days)',
+                self.facility_id.name, booking_date
+            )
+            return
+        
+        waitlist_entry = waiting_customers[0]
+        
+        # Build pre-filled booking URL parameters
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        booking_url = f"{base_url}/sports/booking/create"
+        
+        # Add URL parameters for pre-filling the booking form
+        url_params = [
+            f"facility_id={self.facility_id.id}",
+            f"customer_id={waitlist_entry.customer_id.id}",
+            f"date={booking_date.strftime('%Y-%m-%d')}",
+        ]
+        
+        # Add time parameters if available from cancelled booking
+        if self.start_datetime:
+            start_time = self.start_datetime.hour + (self.start_datetime.minute / 60.0)
+            url_params.append(f"start_time={start_time}")
+        
+        if self.end_datetime:
+            end_time = self.end_datetime.hour + (self.end_datetime.minute / 60.0)
+            url_params.append(f"end_time={end_time}")
+        
+        # Construct full URL
+        full_booking_url = f"{booking_url}?{'&'.join(url_params)}"
+        
+        # Update waitlist entry status
+        waitlist_entry.write({
+            'status': 'notified',
+            'notification_sent': True,
+        })
+        
+        # Send notification email with booking link
+        try:
+            # Try to use email template if it exists
+            template = self.env.ref('sport_facility_system.email_template_waitlist_notification', 
+                                   raise_if_not_found=False)
+            
+            if template:
+                # Add booking URL to template context
+                ctx = dict(self.env.context)
+                ctx.update({
+                    'booking_url': full_booking_url,
+                    'cancelled_booking': self,
+                    'booking_date': booking_date,
+                    'start_time': self.start_datetime.strftime('%H:%M') if self.start_datetime else '',
+                    'end_time': self.end_datetime.strftime('%H:%M') if self.end_datetime else '',
+                })
+                template.with_context(ctx).send_mail(waitlist_entry.id, force_send=True)
+            else:
+                # Fallback: send simple email if template doesn't exist
+                mail_values = {
+                    'subject': _('Facility Available - %s') % self.facility_id.name,
+                    'body_html': _(
+                        '<p>Dear %s,</p>'
+                        '<p>Good news! The facility <strong>%s</strong> is now available for booking on <strong>%s</strong>.</p>'
+                        '<p>This slot became available due to a cancellation. '
+                        'Please book as soon as possible as it is offered on a first-come, first-served basis.</p>'
+                        '<p><a href="%s" style="background-color: #28a745; color: white; padding: 10px 20px; '
+                        'text-decoration: none; border-radius: 5px; display: inline-block;">'
+                        'Book Now</a></p>'
+                        '<p>If you are no longer interested, please disregard this email.</p>'
+                        '<p>Best regards,<br/>Sports Booking Team</p>'
+                    ) % (
+                        waitlist_entry.customer_id.name,
+                        self.facility_id.name,
+                        booking_date.strftime('%B %d, %Y'),
+                        full_booking_url
+                    ),
+                    'email_to': waitlist_entry.customer_email,
+                    'email_from': self.env.user.email or 'noreply@example.com',
+                }
+                self.env['mail.mail'].create(mail_values).send()
+            
+            _logger.info(
+                'Waitlist notification sent to %s for facility %s on %s (booking URL: %s)',
+                waitlist_entry.customer_id.name,
+                self.facility_id.name,
+                booking_date,
+                full_booking_url
+            )
+            
+        except Exception as e:
+            # Log error but don't fail - waitlist entry status already updated
+            _logger.error(
+                'Failed to send waitlist notification email to %s: %s',
+                waitlist_entry.customer_id.name, str(e)
+            )
+        
+        return waitlist_entry
     
     def generate_recurring_bookings(self):
         """
