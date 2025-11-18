@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import http, _
+from odoo import http, fields, _
 from odoo.http import request
 from odoo.exceptions import ValidationError, UserError
 import json
@@ -342,3 +342,85 @@ class SportsBookingController(http.Controller):
         except Exception as e:
             _logger.error('Error loading user bookings: %s', str(e))
             return request.render('website.404')
+    
+    @http.route('/sports/checkin/<string:booking_reference>', type='http', auth='public', website=True)
+    def checkin_booking(self, booking_reference, **kwargs):
+        """
+        Check-in route for booking confirmation via QR code or link
+        Updates booking status to 'in_progress' and records check-in time
+        
+        :param booking_reference: Booking reference number
+        :return: Rendered check-in confirmation template
+        """
+        try:
+            # Search for booking by reference
+            booking = request.env['sports.booking'].sudo().search([
+                ('booking_reference', '=', booking_reference)
+            ], limit=1)
+            
+            # Validate booking exists
+            if not booking:
+                _logger.warning('Check-in failed: Booking %s not found', booking_reference)
+                return request.render('sport_facility_system.checkin_error_template', {
+                    'error_title': 'Booking Not Found',
+                    'error_message': f'No booking found with reference: {booking_reference}',
+                    'error_code': 'BOOKING_NOT_FOUND'
+                })
+            
+            # Validate booking status
+            if booking.status != 'confirmed':
+                _logger.warning(
+                    'Check-in failed: Booking %s has invalid status: %s',
+                    booking_reference, booking.status
+                )
+                
+                # Provide specific error messages based on status
+                error_messages = {
+                    'draft': 'This booking has not been confirmed yet. Please complete the booking process first.',
+                    'in_progress': 'You have already checked in for this booking.',
+                    'completed': 'This booking has already been completed.',
+                    'cancelled': 'This booking has been cancelled and cannot be checked in.',
+                }
+                
+                error_message = error_messages.get(
+                    booking.status,
+                    f'This booking cannot be checked in (current status: {booking.status})'
+                )
+                
+                return request.render('sport_facility_system.checkin_error_template', {
+                    'error_title': 'Invalid Booking Status',
+                    'error_message': error_message,
+                    'error_code': 'INVALID_STATUS',
+                    'booking': booking
+                })
+            
+            # Record check-in time and update status
+            checkin_time = fields.Datetime.now()
+            booking.sudo().write({
+                'status': 'in_progress',
+                'checkin_datetime': checkin_time
+            })
+            
+            _logger.info(
+                'Check-in successful: Booking %s checked in at %s',
+                booking_reference, checkin_time
+            )
+            
+            # Prepare values for success template
+            values = {
+                'booking': booking,
+                'checkin_time': checkin_time,
+                'customer_name': booking.customer_id.name,
+                'facility_name': booking.facility_id.name,
+                'page_name': 'Check-in Successful'
+            }
+            
+            return request.render('sport_facility_system.checkin_success_template', values)
+            
+        except Exception as e:
+            _logger.error('Error during check-in for %s: %s', booking_reference, str(e))
+            return request.render('sport_facility_system.checkin_error_template', {
+                'error_title': 'Check-in Error',
+                'error_message': 'An unexpected error occurred during check-in. Please contact staff for assistance.',
+                'error_code': 'SYSTEM_ERROR'
+            })

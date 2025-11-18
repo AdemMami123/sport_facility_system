@@ -79,11 +79,19 @@ class SportsBooking(models.Model):
     status = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
+        ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', required=True, tracking=True,
        groups='sport_facility_system.group_sports_manager',
        help='Current status of the booking')
+    
+    checkin_datetime = fields.Datetime(
+        string='Check-in Time',
+        readonly=True,
+        tracking=True,
+        help='Date and time when customer checked in'
+    )
     
     equipment_ids = fields.Many2many(
         'sports.equipment',

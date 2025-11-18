@@ -720,5 +720,200 @@
                 </div>
             </t>
         </template>
+        
+        <!-- Check-in Success Template -->
+        <template id="checkin_success_template" name="Check-in Success">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure">
+                    <div class="container mt-5 mb-5">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+                                <!-- Success Message -->
+                                <div class="alert alert-success shadow-lg text-center mb-4" role="alert">
+                                    <div class="mb-3">
+                                        <i class="fa fa-check-circle fa-5x text-success"/>
+                                    </div>
+                                    <h2 class="alert-heading mb-3">
+                                        <strong>Check-in Successful!</strong>
+                                    </h2>
+                                    <p class="lead mb-0">
+                                        Welcome, <strong><t t-esc="customer_name"/></strong>!
+                                    </p>
+                                </div>
+
+                                <!-- Check-in Details Card -->
+                                <div class="card shadow-sm mb-4">
+                                    <div class="card-header bg-success text-white">
+                                        <h4 class="mb-0">
+                                            <i class="fa fa-info-circle mr-2"/>Check-in Details
+                                        </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-5">
+                                                <i class="fa fa-barcode mr-2"/>Booking Reference:
+                                            </dt>
+                                            <dd class="col-sm-7">
+                                                <strong class="text-primary" style="font-size: 1.2em;">
+                                                    <t t-esc="booking.booking_reference"/>
+                                                </strong>
+                                            </dd>
+
+                                            <dt class="col-sm-5">
+                                                <i class="fa fa-building mr-2"/>Facility:
+                                            </dt>
+                                            <dd class="col-sm-7">
+                                                <strong><t t-esc="facility_name"/></strong>
+                                            </dd>
+
+                                            <dt class="col-sm-5">
+                                                <i class="fa fa-clock-o mr-2"/>Check-in Time:
+                                            </dt>
+                                            <dd class="col-sm-7">
+                                                <strong class="text-success">
+                                                    <t t-esc="checkin_time.strftime('%I:%M %p')"/>
+                                                </strong>
+                                                <br/>
+                                                <small class="text-muted">
+                                                    <t t-esc="checkin_time.strftime('%B %d, %Y')"/>
+                                                </small>
+                                            </dd>
+
+                                            <dt class="col-sm-5">
+                                                <i class="fa fa-calendar mr-2"/>Booking Time:
+                                            </dt>
+                                            <dd class="col-sm-7">
+                                                <t t-esc="booking.start_datetime.strftime('%I:%M %p')"/> - 
+                                                <t t-esc="booking.end_datetime.strftime('%I:%M %p')"/>
+                                            </dd>
+
+                                            <dt class="col-sm-5">
+                                                <i class="fa fa-hourglass-half mr-2"/>Duration:
+                                            </dt>
+                                            <dd class="col-sm-7">
+                                                <t t-esc="booking.duration"/> hours
+                                            </dd>
+
+                                            <t t-if="booking.equipment_ids">
+                                                <dt class="col-sm-5">
+                                                    <i class="fa fa-cube mr-2"/>Equipment:
+                                                </dt>
+                                                <dd class="col-sm-7">
+                                                    <t t-foreach="booking.equipment_ids" t-as="equipment">
+                                                        <span class="badge badge-info mr-1 mb-1">
+                                                            <t t-esc="equipment.name"/>
+                                                        </span>
+                                                    </t>
+                                                </dd>
+                                            </t>
+                                        </dl>
+                                    </div>
+                                </div>
+
+                                <!-- Important Information -->
+                                <div class="alert alert-info" role="alert">
+                                    <h5 class="alert-heading">
+                                        <i class="fa fa-info-circle mr-2"/>Important Information
+                                    </h5>
+                                    <ul class="mb-0">
+                                        <li>Your booking is now <strong>in progress</strong></li>
+                                        <li>Please collect any equipment from the front desk</li>
+                                        <li>Remember to check out when you're done</li>
+                                        <li>Follow all facility rules and safety guidelines</li>
+                                        <li>If you need assistance, contact staff immediately</li>
+                                    </ul>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="text-center">
+                                    <a href="/sports/facilities" class="btn btn-primary btn-lg">
+                                        <i class="fa fa-home mr-2"/>
+                                        Back to Home
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom CSS -->
+                <style>
+                    .alert-success {
+                        border-left: 5px solid #28a745;
+                    }
+                    dt {
+                        font-weight: 600;
+                        color: #495057;
+                    }
+                    dd {
+                        margin-bottom: 1rem;
+                    }
+                </style>
+            </t>
+        </template>
+
+        <!-- Check-in Error Template -->
+        <template id="checkin_error_template" name="Check-in Error">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure">
+                    <div class="container mt-5 mb-5">
+                        <div class="row">
+                            <div class="col-lg-6 offset-lg-3">
+                                <div class="alert alert-danger text-center shadow-lg" role="alert">
+                                    <div class="mb-3">
+                                        <i class="fa fa-times-circle fa-5x text-danger"/>
+                                    </div>
+                                    <h2 class="alert-heading mb-3">
+                                        <strong><t t-esc="error_title or 'Check-in Failed'"/></strong>
+                                    </h2>
+                                    <p class="lead mb-4">
+                                        <t t-esc="error_message or 'Unable to complete check-in'"/>
+                                    </p>
+                                    
+                                    <t t-if="booking">
+                                        <hr/>
+                                        <div class="text-left mt-4">
+                                            <h6>Booking Information:</h6>
+                                            <ul class="list-unstyled">
+                                                <li><strong>Reference:</strong> <t t-esc="booking.booking_reference"/></li>
+                                                <li><strong>Status:</strong> <t t-esc="booking.status.title()"/></li>
+                                                <li><strong>Facility:</strong> <t t-esc="booking.facility_id.name"/></li>
+                                            </ul>
+                                        </div>
+                                    </t>
+                                    
+                                    <hr/>
+                                    <div class="mt-4">
+                                        <a href="/sports/facilities" class="btn btn-primary btn-lg mr-2">
+                                            <i class="fa fa-home mr-2"/>
+                                            Back to Home
+                                        </a>
+                                        <a href="/sports/my/bookings" class="btn btn-outline-secondary btn-lg">
+                                            <i class="fa fa-list mr-2"/>
+                                            My Bookings
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Help Information -->
+                                <div class="card shadow-sm mt-4">
+                                    <div class="card-body text-center">
+                                        <h6 class="mb-3">
+                                            <i class="fa fa-question-circle mr-2"/>Need Help?
+                                        </h6>
+                                        <p class="mb-2">
+                                            Please contact the front desk or facility staff for assistance.
+                                        </p>
+                                        <p class="mb-0 text-muted">
+                                            <small>Error Code: <strong><t t-esc="error_code or 'UNKNOWN'"/></strong></small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
     </data>
 </odoo>
