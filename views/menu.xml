@@ -78,11 +78,17 @@
                   action="action_sports_equipment" 
                   sequence="3"/>
         
+        <menuitem id="menu_sports_waitlist" 
+                  name="Waitlist" 
+                  parent="menu_sports_root" 
+                  action="action_sports_waitlist" 
+                  sequence="4"/>
+        
         <menuitem id="menu_sports_calendar" 
                   name="Calendar" 
                   parent="menu_sports_root" 
                   action="action_sports_booking_calendar" 
-                  sequence="4"/>
+                  sequence="5"/>
         
         <menuitem id="menu_sports_analysis" 
                   name="Reports" 

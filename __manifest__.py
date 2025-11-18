@@ -44,6 +44,7 @@
         'views/facility_views.xml',
         'views/booking_views.xml',
         'views/equipment_views.xml',
+        'views/waitlist_views.xml',
         
         # Templates
         'views/templates/booking_templates.xml',

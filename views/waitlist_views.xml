@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Waitlist Tree View -->
+    <record id="view_sports_waitlist_tree" model="ir.ui.view">
+        <field name="name">sports.waitlist.tree</field>
+        <field name="model">sports.waitlist</field>
+        <field name="arch" type="xml">
+            <tree string="Waitlist" decoration-muted="status == 'expired'" 
+                  decoration-success="status == 'booked'" 
+                  decoration-info="status == 'notified'"
+                  decoration-warning="status == 'waiting'">
+                <field name="create_date" string="Request Date"/>
+                <field name="customer_id"/>
+                <field name="facility_id"/>
+                <field name="preferred_date"/>
+                <field name="preferred_time_start" widget="float_time"/>
+                <field name="preferred_time_end" widget="float_time"/>
+                <field name="status"/>
+                <field name="notification_sent"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Waitlist Form View -->
+    <record id="view_sports_waitlist_form" model="ir.ui.view">
+        <field name="name">sports.waitlist.form</field>
+        <field name="model">sports.waitlist</field>
+        <field name="arch" type="xml">
+            <form string="Waitlist Entry">
+                <header>
+                    <button name="action_notify_customer" string="Notify Customer" 
+                            type="object" states="waiting" 
+                            class="oe_highlight"
+                            confirm="Send availability notification to this customer?"/>
+                    <button name="action_mark_booked" string="Mark as Booked" 
+                            type="object" states="waiting,notified" 
+                            class="oe_highlight"/>
+                    <button name="action_mark_expired" string="Mark as Expired" 
+                            type="object" states="waiting,notified"/>
+                    <field name="status" widget="statusbar" 
+                           statusbar_visible="waiting,notified,booked"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="customer_id" placeholder="Customer Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="facility_info" string="Facility Information">
+                            <field name="facility_id"/>
+                            <field name="facility_name" invisible="1"/>
+                        </group>
+                        <group name="request_info" string="Request Information">
+                            <field name="create_date" readonly="1"/>
+                            <field name="notification_sent"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group name="preferred_timing" string="Preferred Timing">
+                            <field name="preferred_date"/>
+                            <label for="preferred_time_start" string="Preferred Time"/>
+                            <div class="o_row">
+                                <field name="preferred_time_start" widget="float_time" class="oe_inline"/>
+                                <span class="mx-2">to</span>
+                                <field name="preferred_time_end" widget="float_time" class="oe_inline"/>
+                            </div>
+                        </group>
+                        <group name="contact_info" string="Contact Information">
+                            <field name="customer_email"/>
+                            <field name="customer_phone"/>
+                        </group>
+                    </group>
+                    <group name="notes" string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Additional notes or special requirements..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Waitlist Search View -->
+    <record id="view_sports_waitlist_search" model="ir.ui.view">
+        <field name="name">sports.waitlist.search</field>
+        <field name="model">sports.waitlist</field>
+        <field name="arch" type="xml">
+            <search string="Search Waitlist">
+                <field name="customer_id"/>
+                <field name="facility_id"/>
+                <field name="preferred_date"/>
+                <filter string="Waiting" name="filter_waiting" 
+                        domain="[('status', '=', 'waiting')]"/>
+                <filter string="Notified" name="filter_notified" 
+                        domain="[('status', '=', 'notified')]"/>
+                <filter string="Booked" name="filter_booked" 
+                        domain="[('status', '=', 'booked')]"/>
+                <filter string="Expired" name="filter_expired" 
+                        domain="[('status', '=', 'expired')]"/>
+                <separator/>
+                <filter string="Notification Not Sent" name="filter_not_notified" 
+                        domain="[('notification_sent', '=', False)]"/>
+                <filter string="Notification Sent" name="filter_notified_sent" 
+                        domain="[('notification_sent', '=', True)]"/>
+                <separator/>
+                <filter string="Today's Preferred Date" name="filter_today" 
+                        domain="[('preferred_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="filter_this_week" 
+                        domain="[('preferred_date', '&gt;=', (context_today() - relativedelta(weeks=0, weekday=0)).strftime('%Y-%m-%d')),
+                                ('preferred_date', '&lt;=', (context_today() + relativedelta(weeks=0, weekday=6)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Facility" name="group_facility" 
+                            context="{'group_by': 'facility_id'}"/>
+                    <filter string="Status" name="group_status" 
+                            context="{'group_by': 'status'}"/>
+                    <filter string="Preferred Date" name="group_date" 
+                            context="{'group_by': 'preferred_date'}"/>
+                    <filter string="Customer" name="group_customer" 
+                            context="{'group_by': 'customer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Waitlist Calendar View -->
+    <record id="view_sports_waitlist_calendar" model="ir.ui.view">
+        <field name="name">sports.waitlist.calendar</field>
+        <field name="model">sports.waitlist</field>
+        <field name="arch" type="xml">
+            <calendar string="Waitlist Calendar" 
+                      date_start="preferred_date" 
+                      color="facility_id"
+                      mode="month"
+                      quick_add="False">
+                <field name="customer_id"/>
+                <field name="facility_id"/>
+                <field name="status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Waitlist Kanban View -->
+    <record id="view_sports_waitlist_kanban" model="ir.ui.view">
+        <field name="name">sports.waitlist.kanban</field>
+        <field name="model">sports.waitlist</field>
+        <field name="arch" type="xml">
+            <kanban string="Waitlist" default_group_by="status">
+                <field name="customer_id"/>
+                <field name="facility_id"/>
+                <field name="preferred_date"/>
+                <field name="preferred_time_start"/>
+                <field name="preferred_time_end"/>
+                <field name="status"/>
+                <field name="notification_sent"/>
+                <field name="customer_email"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="customer_id"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_top_right">
+                                    <span t-if="record.notification_sent.raw_value" 
+                                          class="badge badge-success">Notified</span>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <field name="facility_id"/>
+                                <div t-if="record.preferred_date.raw_value">
+                                    <i class="fa fa-calendar"/> 
+                                    <field name="preferred_date"/>
+                                </div>
+                                <div t-if="record.preferred_time_start.raw_value">
+                                    <i class="fa fa-clock-o"/> 
+                                    <field name="preferred_time_start" widget="float_time"/> - 
+                                    <field name="preferred_time_end" widget="float_time"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Waitlist Action -->
+    <record id="action_sports_waitlist" model="ir.actions.act_window">
+        <field name="name">Waitlist</field>
+        <field name="res_model">sports.waitlist</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="context">{'search_default_filter_waiting': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a customer to the waitlist
+            </p>
+            <p>
+                Track customers waiting for facility availability and notify them when slots open up.
+            </p>
+        </field>
+    </record>
+
+</odoo>

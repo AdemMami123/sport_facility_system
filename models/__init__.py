@@ -5,3 +5,4 @@ from . import booking
 from . import equipment
 from . import membership
 from . import time_slot
+from . import waitlist
