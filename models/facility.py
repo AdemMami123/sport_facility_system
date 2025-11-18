@@ -76,10 +76,24 @@ class SportsFacility(models.Model):
         default=True,
         help='Set to false to archive the facility'
     )
+    
+    booking_count = fields.Integer(
+        string='Number of Bookings',
+        compute='_compute_booking_count',
+        help='Total number of bookings for this facility'
+    )
 
     _sql_constraints = [
         ('name_unique', 'UNIQUE(name)', 'Facility name must be unique!'),
     ]
+
+    @api.depends('name')
+    def _compute_booking_count(self):
+        """Count all bookings related to this facility"""
+        for record in self:
+            record.booking_count = self.env['sports.booking'].search_count([
+                ('facility_id', '=', record.id)
+            ])
 
     @api.constrains('capacity')
     def _check_capacity(self):
@@ -102,3 +116,24 @@ class SportsFacility(models.Model):
                 raise ValidationError(_('Operating hours end must be between 0 and 24.'))
             if record.operating_hours_start >= record.operating_hours_end:
                 raise ValidationError(_('Operating hours start must be before operating hours end.'))
+
+    def action_view_bookings(self):
+        """
+        Open tree view of all bookings related to this facility
+        
+        :return: Action dictionary to display bookings
+        """
+        self.ensure_one()
+        
+        return {
+            'name': _('Bookings for %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'sports.booking',
+            'view_mode': 'tree,form,calendar',
+            'domain': [('facility_id', '=', self.id)],
+            'context': {
+                'default_facility_id': self.id,
+                'search_default_facility_id': self.id,
+            },
+            'target': 'current',
+        }
