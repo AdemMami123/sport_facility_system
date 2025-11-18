@@ -29,7 +29,9 @@
     ],
     'data': [
         # Security
+        'security/security_groups.xml',
         'security/ir.model.access.csv',
+        'security/record_rules.xml',
         
         # Views
         'views/facility_views.xml',

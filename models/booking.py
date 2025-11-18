@@ -71,6 +71,7 @@ class SportsBooking(models.Model):
         compute='_compute_total_cost',
         store=True,
         digits='Product Price',
+        groups='sport_facility_system.group_sports_manager',
         help='Total cost of the booking'
     )
     
@@ -80,6 +81,7 @@ class SportsBooking(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', required=True, tracking=True,
+       groups='sport_facility_system.group_sports_manager',
        help='Current status of the booking')
     
     equipment_ids = fields.Many2many(
