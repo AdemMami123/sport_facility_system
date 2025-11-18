@@ -351,15 +351,19 @@ class SportsBooking(models.Model):
             # Update booking status
             record.write({'status': 'confirmed'})
             
-            # Send confirmation email
+            # Send confirmation email after status change
             try:
                 template = self.env.ref('sport_facility_system.email_template_booking_confirmation', 
                                        raise_if_not_found=False)
                 if template:
                     template.send_mail(record.id, force_send=True)
+                    _logger.info(
+                        'Booking confirmation email sent successfully for booking %s',
+                        record.booking_reference
+                    )
             except Exception as e:
                 # Log error but don't fail the confirmation
-                _logger.warning(
+                _logger.error(
                     'Failed to send booking confirmation email for booking %s: %s',
                     record.booking_reference, str(e)
                 )
@@ -467,9 +471,13 @@ class SportsBooking(models.Model):
                                        raise_if_not_found=False)
                 if template:
                     template.send_mail(record.id, force_send=True)
+                    _logger.info(
+                        'Booking cancellation email sent successfully for booking %s',
+                        record.booking_reference
+                    )
             except Exception as e:
                 # Log error but don't fail the cancellation
-                _logger.warning(
+                _logger.error(
                     'Failed to send booking cancellation email for booking %s: %s',
                     record.booking_reference, str(e)
                 )
