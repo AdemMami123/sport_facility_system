@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <!-- Email Template: Booking Cancelled (Alternative) -->
+        <record id="email_template_booking_cancelled" model="mail.template">
+            <field name="name">Sports Booking Cancelled</field>
+            <field name="model_id" ref="model_sports_booking"/>
+            <field name="subject">Booking Cancelled - ${object.booking_reference}</field>
+            <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
+            <field name="email_to">${object.customer_id.email}</field>
+            <field name="lang">${object.customer_id.lang}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            color: #333333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .apology-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #dc2626;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .apology-box h2 {
+            margin: 0 0 10px 0;
+            color: #991b1b;
+            font-size: 22px;
+        }
+        .apology-box p {
+            margin: 5px 0;
+            color: #7f1d1d;
+            font-size: 15px;
+        }
+        .booking-details {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .booking-details h3 {
+            margin-top: 0;
+            color: #374151;
+            font-size: 18px;
+        }
+        .detail-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #6b7280;
+            width: 150px;
+            flex-shrink: 0;
+        }
+        .detail-value {
+            color: #111827;
+            flex-grow: 1;
+        }
+        .refund-section {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .refund-section h3 {
+            margin: 0 0 15px 0;
+            color: #065f46;
+            font-size: 20px;
+        }
+        .refund-amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #047857;
+            margin: 15px 0;
+        }
+        .refund-details {
+            background-color: #ecfdf5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .refund-details p {
+            margin: 5px 0;
+            color: #065f46;
+            font-size: 14px;
+        }
+        .process-timeline {
+            background-color: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .process-timeline h4 {
+            margin-top: 0;
+            color: #374151;
+            font-size: 16px;
+        }
+        .timeline-step {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 0;
+        }
+        .step-number {
+            background-color: #667eea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+        .step-content {
+            flex-grow: 1;
+            padding-top: 3px;
+        }
+        .step-content strong {
+            color: #374151;
+        }
+        .step-content p {
+            margin: 2px 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+        .cta-section {
+            background-color: #f9fafb;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .cta-section h3 {
+            margin: 0 0 15px 0;
+            color: #374151;
+            font-size: 20px;
+        }
+        .cta-section p {
+            margin: 10px 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #667eea;
+            color: white;
+            padding: 14px 35px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 15px 5px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .button-secondary {
+            background-color: #6b7280;
+        }
+        .info-box {
+            background-color: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #1e3a8a;
+            font-size: 13px;
+        }
+        .signature {
+            background-color: #f9fafb;
+            padding: 25px 20px;
+            border-top: 3px solid #667eea;
+            margin-top: 30px;
+        }
+        .signature-header {
+            font-size: 16px;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+        .company-info {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .company-info strong {
+            color: #374151;
+        }
+        .company-info a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .social-links {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer {
+            background-color: #f3f4f6;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>❌ Booking Cancelled</h1>
+            <p>We're sorry to see your booking cancelled</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Apology Message -->
+            <div class="apology-box">
+                <h2>We Apologize</h2>
+                <p>Dear <strong>${object.customer_id.name}</strong>,</p>
+                <p style="margin-top: 15px;">
+                    We regret to inform you that your booking has been cancelled. We understand this may cause inconvenience, 
+                    and we sincerely apologize for any disruption to your plans.
+                </p>
+            </div>
+            
+            <!-- Original Booking Details -->
+            <div class="booking-details">
+                <h3>📋 Original Booking Details</h3>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Booking Reference:</div>
+                    <div class="detail-value"><strong>${object.booking_reference}</strong></div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Facility:</div>
+                    <div class="detail-value"><strong>${object.facility_id.name}</strong></div>
+                </div>
+                
+                <t t-if="object.facility_id.location">
+                    <div class="detail-row">
+                        <div class="detail-label">Location:</div>
+                        <div class="detail-value">${object.facility_id.location}</div>
+                    </div>
+                </t>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Date:</div>
+                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='EEEE, MMMM d, yyyy', lang_code=object.customer_id.lang)}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Time:</div>
+                    <div class="detail-value">
+                        ${format_datetime(object.start_datetime, dt_format='HH:mm', lang_code=object.customer_id.lang, tz=object.customer_id.tz)} - 
+                        ${format_datetime(object.end_datetime, dt_format='HH:mm', lang_code=object.customer_id.lang, tz=object.customer_id.tz)}
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">${'%.1f' % object.duration} hours</div>
+                </div>
+                
+                <t t-if="object.equipment_ids">
+                    <div class="detail-row">
+                        <div class="detail-label">Equipment:</div>
+                        <div class="detail-value">
+                            <t t-foreach="object.equipment_ids" t-as="equipment">
+                                <span style="display: inline-block; background-color: #e5e7eb; padding: 3px 10px; border-radius: 12px; margin: 2px; font-size: 12px;">
+                                    ${equipment.name}
+                                </span>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Original Amount:</div>
+                    <div class="detail-value"><strong>${object.currency_id.symbol or '$'}${'%.2f' % object.total_cost}</strong></div>
+                </div>
+            </div>
+            
+            <!-- Refund Information -->
+            <div class="refund-section">
+                <h3>💰 Refund Information</h3>
+                <p style="color: #065f46; font-size: 15px;">Your refund will be processed according to our cancellation policy</p>
+                
+                <t t-if="'Refund:' in (object.notes or '')">
+                    <div class="refund-amount">
+                        ${object.currency_id.symbol or '$'}${str(object.notes).split('Amount: ')[-1].split(' ')[0] if 'Amount: ' in (object.notes or '') else '0.00'}
+                    </div>
+                    <p style="color: #047857; font-size: 14px; margin: 10px 0;">
+                        ${str(object.notes).split('Refund: ')[-1].split('%')[0] if 'Refund: ' in (object.notes or '') else '0'}% Refund Applied
+                    </p>
+                </t>
+                
+                <div class="refund-details">
+                    <p><strong>Refund Method:</strong> Original payment method</p>
+                    <p><strong>Processing Time:</strong> 5-7 business days</p>
+                    <p><strong>Confirmation:</strong> You'll receive a separate email once processed</p>
+                </div>
+            </div>
+            
+            <!-- Refund Process Timeline -->
+            <div class="process-timeline">
+                <h4>🔄 Refund Process Timeline</h4>
+                
+                <div class="timeline-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <strong>Cancellation Confirmed</strong>
+                        <p>Your booking has been cancelled and removed from our system</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <strong>Refund Initiated (1-2 days)</strong>
+                        <p>Our accounting team processes your refund request</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <strong>Payment Processing (3-5 days)</strong>
+                        <p>Your bank or payment provider processes the refund</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <strong>Refund Complete</strong>
+                        <p>Funds appear in your original payment account</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Important Information -->
+            <div class="info-box">
+                <p><strong>ℹ️ Important Notes:</strong></p>
+                <p>• If you don't see the refund within 7 business days, please contact us</p>
+                <p>• Refunds are processed to the original payment method used for booking</p>
+                <p>• You'll receive an email confirmation once the refund is processed</p>
+                <p>• For questions about your refund, reference booking number: <strong>${object.booking_reference}</strong></p>
+            </div>
+            
+            <!-- Call to Action - Book Again -->
+            <div class="cta-section">
+                <h3>🎾 We'd Love to See You Again!</h3>
+                <p>Don't let this stop you from enjoying our facilities. We have many other available slots and would be happy to serve you.</p>
+                <p style="font-size: 16px; color: #374151; margin: 15px 0;">
+                    <strong>Book your next session today and get back in the game!</strong>
+                </p>
+                
+                <a href="/sports/facilities" class="button">Browse Available Facilities</a>
+                <a t-attf-href="/sports/booking/${object.facility_id.id}" class="button button-secondary">Book ${object.facility_id.name} Again</a>
+            </div>
+            
+            <p style="text-align: center; color: #6b7280; font-size: 14px; margin-top: 30px;">
+                If you have any questions or concerns about this cancellation, our customer support team is here to help.
+            </p>
+            
+            <!-- Company Signature -->
+            <div class="signature">
+                <div class="signature-header">Best Regards,</div>
+                <div class="company-info">
+                    <p style="margin: 5px 0;"><strong>${object.company_id.name or 'Sports Facility Management Team'}</strong></p>
+                    
+                    <t t-if="object.facility_id.location">
+                        <p style="margin: 5px 0;">📍 ${object.facility_id.location}</p>
+                    </t>
+                    
+                    <t t-if="object.company_id.phone">
+                        <p style="margin: 5px 0;">
+                            📞 Phone: <a t-attf-href="tel:${object.company_id.phone}">${object.company_id.phone}</a>
+                        </p>
+                    </t>
+                    
+                    <t t-if="object.company_id.email">
+                        <p style="margin: 5px 0;">
+                            ✉️ Email: <a t-attf-href="mailto:${object.company_id.email}">${object.company_id.email}</a>
+                        </p>
+                    </t>
+                    
+                    <t t-if="object.company_id.website">
+                        <p style="margin: 5px 0;">
+                            🌐 Website: <a t-attf-href="${object.company_id.website}" target="_blank">${object.company_id.website}</a>
+                        </p>
+                    </t>
+                    
+                    <div class="social-links">
+                        <p style="font-size: 13px; color: #9ca3af; margin: 5px 0;">
+                            Follow us for updates, promotions, and facility news
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>This is an automated notification regarding your booking cancellation.</p>
+            <p>For assistance, please contact our support team using the information above.</p>
+            <p style="margin-top: 10px;">© ${datetime.now().year} ${object.company_id.name or 'Sports Facility'}. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+]]>
+            </field>
+        </record>
+        
+    </data>
+</odoo>
