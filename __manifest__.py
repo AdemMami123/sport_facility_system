@@ -37,6 +37,7 @@
         'data/email_template_booking_confirmation.xml',
         'data/email_template_booking_cancellation.xml',
         'data/email_template_booking_reminder.xml',
+        'data/automated_actions.xml',
         
         # Views
         'views/facility_views.xml',

@@ -492,6 +492,68 @@ class SportsBooking(models.Model):
             record.write({'status': 'draft'})
         return True
 
+    @api.model
+    def _cron_send_booking_reminders(self):
+        """
+        Scheduled action to send booking reminders for bookings happening in the next 24 hours
+        Runs daily at 9:00 AM
+        """
+        from datetime import datetime
+        
+        # Calculate time range: now to now + 24 hours
+        now = fields.Datetime.now()
+        tomorrow = now + timedelta(hours=24)
+        
+        # Search for confirmed bookings starting in the next 24 hours
+        upcoming_bookings = self.env['sports.booking'].search([
+            ('start_datetime', '>=', now),
+            ('start_datetime', '<=', tomorrow),
+            ('status', '=', 'confirmed'),
+        ])
+        
+        _logger.info(
+            'Booking reminder cron started. Found %d bookings in the next 24 hours',
+            len(upcoming_bookings)
+        )
+        
+        # Send reminder email to each booking
+        reminder_count = 0
+        error_count = 0
+        
+        for booking in upcoming_bookings:
+            try:
+                template = self.env.ref('sport_facility_system.email_template_booking_reminder', 
+                                       raise_if_not_found=False)
+                if template:
+                    template.send_mail(booking.id, force_send=True)
+                    reminder_count += 1
+                    _logger.info(
+                        'Reminder email sent for booking %s (Customer: %s, Facility: %s, Start: %s)',
+                        booking.booking_reference,
+                        booking.customer_id.name,
+                        booking.facility_id.name,
+                        booking.start_datetime
+                    )
+                else:
+                    _logger.warning('Reminder email template not found')
+                    error_count += 1
+            except Exception as e:
+                error_count += 1
+                _logger.error(
+                    'Failed to send reminder email for booking %s: %s',
+                    booking.booking_reference,
+                    str(e)
+                )
+        
+        _logger.info(
+            'Booking reminder cron completed. Sent: %d, Errors: %d, Total: %d',
+            reminder_count,
+            error_count,
+            len(upcoming_bookings)
+        )
+        
+        return True
+
     def name_get(self):
         result = []
         for record in self:
