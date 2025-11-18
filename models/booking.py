@@ -554,6 +554,61 @@ class SportsBooking(models.Model):
         
         return True
 
+    @api.model
+    def _cron_archive_expired_bookings(self):
+        """
+        Scheduled action to archive old completed bookings (older than 30 days)
+        Runs daily to keep the active booking list clean
+        """
+        from datetime import datetime
+        
+        # Calculate the cutoff date: 30 days ago from now
+        now = fields.Datetime.now()
+        cutoff_date = now - timedelta(days=30)
+        
+        # Search for completed bookings older than 30 days
+        expired_bookings = self.env['sports.booking'].search([
+            ('status', '=', 'completed'),
+            ('end_datetime', '<', cutoff_date),
+            ('active', '=', True),
+        ])
+        
+        _logger.info(
+            'Archive expired bookings cron started. Found %d bookings to archive',
+            len(expired_bookings)
+        )
+        
+        # Archive the bookings by setting active=False
+        archived_count = 0
+        error_count = 0
+        
+        for booking in expired_bookings:
+            try:
+                booking.write({'active': False})
+                archived_count += 1
+                _logger.debug(
+                    'Archived booking %s (Customer: %s, End Date: %s)',
+                    booking.booking_reference,
+                    booking.customer_id.name,
+                    booking.end_datetime
+                )
+            except Exception as e:
+                error_count += 1
+                _logger.error(
+                    'Failed to archive booking %s: %s',
+                    booking.booking_reference,
+                    str(e)
+                )
+        
+        _logger.info(
+            'Archive expired bookings cron completed. Archived: %d, Errors: %d, Total: %d',
+            archived_count,
+            error_count,
+            len(expired_bookings)
+        )
+        
+        return True
+
     def name_get(self):
         result = []
         for record in self:
