@@ -145,20 +145,54 @@ class SportsBooking(models.Model):
             else:
                 record.duration = 0.0
 
-    @api.depends('duration', 'facility_id', 'facility_id.hourly_rate', 'equipment_ids', 'equipment_ids.rental_rate')
+    @api.depends('duration', 'facility_id', 'facility_id.hourly_rate', 
+                 'equipment_ids', 'equipment_ids.rental_rate',
+                 'customer_id', 'start_datetime')
     def _compute_total_cost(self):
+        """
+        Calculate total booking cost including:
+        1) Facility hourly rate * duration
+        2) Sum of all equipment rental rates * duration
+        3) Apply membership discount if customer has active membership
+        
+        The field is stored in database and handles all edge cases.
+        """
         for record in self:
             total = 0.0
-            # Calculate facility cost
+            
+            # 1) Calculate facility cost (duration * hourly_rate)
             if record.facility_id and record.duration:
-                total += record.facility_id.hourly_rate * record.duration
+                facility_rate = record.facility_id.hourly_rate or 0.0
+                total += facility_rate * record.duration
             
-            # Add equipment rental costs
-            for equipment in record.equipment_ids:
-                if equipment.rental_rate:
-                    total += equipment.rental_rate * record.duration
+            # 2) Add equipment rental costs (sum of rental_rates * duration)
+            if record.equipment_ids and record.duration:
+                for equipment in record.equipment_ids:
+                    equipment_rate = equipment.rental_rate or 0.0
+                    total += equipment_rate * record.duration
             
-            record.total_cost = total
+            # 3) Apply membership discount if customer has active membership
+            discount_percentage = 0.0
+            if record.customer_id and record.start_datetime:
+                # Find active membership for the customer at booking start date
+                active_membership = self.env['sports.membership'].search([
+                    ('member_id', '=', record.customer_id.id),
+                    ('status', '=', 'active'),
+                    ('start_date', '<=', record.start_datetime.date()),
+                    ('end_date', '>=', record.start_datetime.date()),
+                    ('payment_status', '=', 'paid'),
+                ], limit=1)
+                
+                if active_membership:
+                    discount_percentage = active_membership.discount_percentage or 0.0
+            
+            # Apply discount to total cost
+            if discount_percentage > 0 and total > 0:
+                discount_amount = (total * discount_percentage) / 100.0
+                total = total - discount_amount
+            
+            # Ensure total is never negative and round to 2 decimal places
+            record.total_cost = float_round(max(0.0, total), precision_digits=2)
 
     @api.constrains('start_datetime', 'end_datetime')
     def validate_booking_dates(self):
