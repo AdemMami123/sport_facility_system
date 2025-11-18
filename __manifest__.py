@@ -37,6 +37,10 @@
         # Menus
         'views/menu_views.xml',
     ],
+    'demo': [
+        # Demo Data
+        'data/demo_data.xml',
+    ],
     'installable': True,
     'application': True,
     'auto_install': False,
