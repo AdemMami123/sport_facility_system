@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 from odoo.tools import float_round
 import pytz
 import logging
@@ -407,6 +408,24 @@ class SportsBooking(models.Model):
                     'Failed to send booking confirmation email for booking %s: %s',
                     record.booking_reference, str(e)
                 )
+            
+            # Generate recurring bookings if enabled
+            if record.is_recurring:
+                try:
+                    record.generate_recurring_bookings()
+                    _logger.info(
+                        'Recurring bookings generated successfully for booking %s',
+                        record.booking_reference
+                    )
+                except Exception as e:
+                    _logger.error(
+                        'Failed to generate recurring bookings for booking %s: %s',
+                        record.booking_reference, str(e)
+                    )
+                    # Don't fail the confirmation, but inform the user
+                    raise UserError(_(
+                        'Booking confirmed successfully, but recurring bookings could not be created: %s'
+                    ) % str(e))
         
         return True
 
@@ -507,7 +526,7 @@ class SportsBooking(models.Model):
             
             # Send cancellation email
             try:
-                template = self.env.ref('sport_facility_system.email_template_booking_cancellation',
+                template = self.env.ref('sport_facility_system.email_template_booking_cancellation', 
                                        raise_if_not_found=False)
                 if template:
                     template.send_mail(record.id, force_send=True)
@@ -523,8 +542,163 @@ class SportsBooking(models.Model):
                 )
         
         return True
-
-    def action_reset_to_draft(self):
+    
+    def generate_recurring_bookings(self):
+        """
+        Generate child bookings based on recurrence settings.
+        Called automatically from action_confirm() when is_recurring=True.
+        
+        Creates a series of bookings with the same facility, customer, equipment,
+        and time slots but on different dates according to recurrence_type.
+        """
+        self.ensure_one()
+        
+        # Validation: Check if recurring is enabled
+        if not self.is_recurring:
+            raise ValidationError(_(
+                'Cannot generate recurring bookings: is_recurring is not enabled.'
+            ))
+        
+        # Validation: Check if recurrence type is set
+        if not self.recurrence_type:
+            raise ValidationError(_(
+                'Cannot generate recurring bookings: recurrence_type must be set '
+                '(daily, weekly, or monthly).'
+            ))
+        
+        # Validation: Check if at least one stop condition is set
+        if not self.recurrence_count and not self.recurrence_end_date:
+            raise ValidationError(_(
+                'Cannot generate recurring bookings: either recurrence_count or '
+                'recurrence_end_date must be specified.'
+            ))
+        
+        # Calculate duration for consistent booking length
+        booking_duration = self.duration
+        
+        # Track created bookings
+        created_bookings = self.env['sports.booking']
+        failed_bookings = []
+        
+        # Starting point for next occurrence
+        current_start = self.start_datetime
+        current_end = self.end_datetime
+        occurrence_count = 0
+        
+        # Loop to create recurring bookings
+        while True:
+            # Calculate next occurrence date
+            if self.recurrence_type == 'daily':
+                current_start = current_start + timedelta(days=1)
+                current_end = current_end + timedelta(days=1)
+            elif self.recurrence_type == 'weekly':
+                current_start = current_start + timedelta(days=7)
+                current_end = current_end + timedelta(days=7)
+            elif self.recurrence_type == 'monthly':
+                current_start = current_start + relativedelta(months=1)
+                current_end = current_end + relativedelta(months=1)
+            else:
+                raise ValidationError(_(
+                    'Invalid recurrence_type: %s. Must be daily, weekly, or monthly.'
+                ) % self.recurrence_type)
+            
+            occurrence_count += 1
+            
+            # Check stop conditions
+            if self.recurrence_count and occurrence_count >= self.recurrence_count:
+                break
+            
+            if self.recurrence_end_date:
+                # Convert datetime to date for comparison
+                next_booking_date = current_start.date()
+                if next_booking_date > self.recurrence_end_date:
+                    break
+            
+            # Prepare child booking values
+            booking_vals = {
+                'facility_id': self.facility_id.id,
+                'customer_id': self.customer_id.id,
+                'start_datetime': current_start,
+                'end_datetime': current_end,
+                'equipment_ids': [(6, 0, self.equipment_ids.ids)],
+                'status': 'draft',  # Child bookings start as draft
+                'notes': _('Recurring booking (Occurrence %d) generated from %s') % (
+                    occurrence_count, self.booking_reference
+                ),
+                'parent_booking_id': self.id,
+                'is_recurring': False,  # Child bookings are not themselves recurring
+            }
+            
+            try:
+                # Check if slot is available before creating
+                overlapping = self.search([
+                    ('facility_id', '=', self.facility_id.id),
+                    ('status', 'in', ['draft', 'confirmed']),
+                    ('start_datetime', '<', current_end),
+                    ('end_datetime', '>', current_start),
+                ])
+                
+                if overlapping:
+                    failed_bookings.append({
+                        'occurrence': occurrence_count,
+                        'date': current_start,
+                        'reason': _('Facility not available - conflicts with booking %s') % 
+                                 overlapping[0].booking_reference
+                    })
+                    _logger.warning(
+                        'Skipping recurring booking occurrence %d for %s: slot not available',
+                        occurrence_count, self.booking_reference
+                    )
+                    continue
+                
+                # Create the child booking
+                child_booking = self.create(booking_vals)
+                created_bookings |= child_booking
+                
+                _logger.info(
+                    'Created recurring booking %s (occurrence %d) from parent %s',
+                    child_booking.booking_reference, occurrence_count, self.booking_reference
+                )
+                
+            except Exception as e:
+                failed_bookings.append({
+                    'occurrence': occurrence_count,
+                    'date': current_start,
+                    'reason': str(e)
+                })
+                _logger.error(
+                    'Failed to create recurring booking occurrence %d for %s: %s',
+                    occurrence_count, self.booking_reference, str(e)
+                )
+        
+        # Log summary
+        _logger.info(
+            'Recurring booking generation complete for %s: %d created, %d failed',
+            self.booking_reference, len(created_bookings), len(failed_bookings)
+        )
+        
+        # If all bookings failed, raise error
+        if not created_bookings and failed_bookings:
+            failure_details = '\n'.join([
+                _('Occurrence %d (%s): %s') % (
+                    fb['occurrence'], 
+                    fb['date'].strftime('%Y-%m-%d %H:%M'),
+                    fb['reason']
+                )
+                for fb in failed_bookings[:5]  # Show first 5 failures
+            ])
+            raise UserError(_(
+                'Failed to create any recurring bookings. Details:\n%s%s'
+            ) % (failure_details, '\n...' if len(failed_bookings) > 5 else ''))
+        
+        # If some bookings failed, add note to parent
+        if failed_bookings:
+            failure_summary = _('\nRecurring Booking Generation: %d created, %d failed') % (
+                len(created_bookings), len(failed_bookings)
+            )
+            self.write({'notes': (self.notes or '') + failure_summary})
+        
+        return created_bookings    def action_reset_to_draft(self):
         """Reset booking to draft status"""
         for record in self:
             if record.status == 'completed':
