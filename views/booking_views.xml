@@ -86,6 +86,47 @@
                                        nolabel="1"/>
                             </group>
                         </group>
+                        
+                        <notebook>
+                            <!-- Recurrence Tab -->
+                            <page string="Recurrence" name="recurrence_tab">
+                                <group>
+                                    <group name="recurrence_settings" string="Recurrence Settings">
+                                        <field name="is_recurring"/>
+                                        <field name="recurrence_type" 
+                                               attrs="{'invisible': [('is_recurring', '=', False)],
+                                                       'required': [('is_recurring', '=', True)]}"/>
+                                        <field name="recurrence_count" 
+                                               attrs="{'invisible': [('is_recurring', '=', False)],
+                                                       'required': [('is_recurring', '=', True), ('recurrence_end_date', '=', False)]}"/>
+                                        <field name="recurrence_end_date" 
+                                               attrs="{'invisible': [('is_recurring', '=', False)]}"/>
+                                    </group>
+                                    
+                                    <group name="recurrence_tracking" string="Recurrence Tracking">
+                                        <field name="parent_booking_id" 
+                                               readonly="1"
+                                               attrs="{'invisible': [('parent_booking_id', '=', False)]}"/>
+                                    </group>
+                                </group>
+                                
+                                <group name="child_bookings" string="Generated Bookings" 
+                                       attrs="{'invisible': [('child_booking_ids', '=', [])]}">
+                                    <field name="child_booking_ids" nolabel="1">
+                                        <tree string="Child Bookings" 
+                                              decoration-success="status=='completed'" 
+                                              decoration-info="status=='confirmed'" 
+                                              decoration-muted="status=='cancelled'">
+                                            <field name="booking_reference"/>
+                                            <field name="start_datetime"/>
+                                            <field name="end_datetime"/>
+                                            <field name="duration" widget="float_time"/>
+                                            <field name="status" widget="badge"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                     
                     <!-- Chatter -->

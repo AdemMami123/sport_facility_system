@@ -104,6 +104,46 @@ class SportsBooking(models.Model):
         help='Set to false to archive the booking'
     )
     
+    # Recurrence fields
+    is_recurring = fields.Boolean(
+        string='Recurring Booking',
+        default=False,
+        help='Enable to create recurring bookings'
+    )
+    
+    recurrence_type = fields.Selection([
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+    ], string='Recurrence Type',
+       help='Frequency of recurring bookings')
+    
+    recurrence_count = fields.Integer(
+        string='Number of Occurrences',
+        default=1,
+        help='How many times this booking should repeat'
+    )
+    
+    recurrence_end_date = fields.Date(
+        string='Recurrence End Date',
+        help='Alternative to count - bookings will be created until this date'
+    )
+    
+    parent_booking_id = fields.Many2one(
+        'sports.booking',
+        string='Parent Booking',
+        ondelete='cascade',
+        index=True,
+        help='Original booking that generated this recurring booking'
+    )
+    
+    child_booking_ids = fields.One2many(
+        'sports.booking',
+        'parent_booking_id',
+        string='Child Bookings',
+        help='Bookings created from this recurring booking'
+    )
+    
     company_id = fields.Many2one(
         'res.company',
         string='Company',
