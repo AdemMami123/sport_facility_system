@@ -137,16 +137,23 @@ class SportsBooking(models.Model):
             record.total_cost = total
 
     @api.constrains('start_datetime', 'end_datetime')
-    def _check_dates(self):
+    def validate_booking_dates(self):
+        """Ensure end_datetime is after start_datetime"""
         for record in self:
             if record.start_datetime and record.end_datetime:
                 if record.end_datetime <= record.start_datetime:
-                    raise ValidationError(_('End date must be after start date.'))
+                    raise ValidationError(_(
+                        'Invalid booking dates: End date and time must be after start date and time.\n'
+                        'Start: %s\n'
+                        'End: %s'
+                    ) % (record.start_datetime, record.end_datetime))
 
-    @api.constrains('start_datetime', 'end_datetime', 'facility_id')
-    def _check_booking_overlap(self):
+    @api.constrains('start_datetime', 'end_datetime', 'facility_id', 'status')
+    def check_facility_availability(self):
+        """Prevent double booking by checking overlapping bookings for same facility"""
         for record in self:
             if record.facility_id and record.start_datetime and record.end_datetime:
+                # Only check for active bookings (not cancelled)
                 overlapping = self.search([
                     ('id', '!=', record.id),
                     ('facility_id', '=', record.facility_id.id),
@@ -155,10 +162,82 @@ class SportsBooking(models.Model):
                     ('end_datetime', '>', record.start_datetime),
                 ])
                 if overlapping:
+                    overlapping_booking = overlapping[0]
                     raise ValidationError(_(
-                        'This facility is already booked for the selected time period. '
+                        'Facility "%s" is not available for the selected time period.\n\n'
+                        'Conflicting booking: %s\n'
+                        'Time: %s to %s\n\n'
                         'Please choose a different time slot or facility.'
+                    ) % (
+                        record.facility_id.name,
+                        overlapping_booking.booking_reference,
+                        overlapping_booking.start_datetime,
+                        overlapping_booking.end_datetime
                     ))
+
+    @api.constrains('start_datetime', 'end_datetime', 'facility_id')
+    def validate_operating_hours(self):
+        """Ensure booking times are within facility operating hours"""
+        for record in self:
+            if record.facility_id and record.start_datetime and record.end_datetime:
+                # Extract time from datetime
+                start_time = record.start_datetime.hour + record.start_datetime.minute / 60.0
+                end_time = record.end_datetime.hour + record.end_datetime.minute / 60.0
+                
+                operating_start = record.facility_id.operating_hours_start
+                operating_end = record.facility_id.operating_hours_end
+                
+                # Check if booking is on the same day
+                if record.start_datetime.date() == record.end_datetime.date():
+                    # Single day booking
+                    if start_time < operating_start:
+                        raise ValidationError(_(
+                            'Booking start time (%02d:%02d) is before facility operating hours.\n'
+                            'Facility "%s" opens at %02d:%02d.'
+                        ) % (
+                            record.start_datetime.hour,
+                            record.start_datetime.minute,
+                            record.facility_id.name,
+                            int(operating_start),
+                            int((operating_start % 1) * 60)
+                        ))
+                    
+                    if end_time > operating_end:
+                        raise ValidationError(_(
+                            'Booking end time (%02d:%02d) is after facility operating hours.\n'
+                            'Facility "%s" closes at %02d:%02d.'
+                        ) % (
+                            record.end_datetime.hour,
+                            record.end_datetime.minute,
+                            record.facility_id.name,
+                            int(operating_end),
+                            int((operating_end % 1) * 60)
+                        ))
+                else:
+                    # Multi-day booking - check first and last day
+                    if start_time < operating_start:
+                        raise ValidationError(_(
+                            'Booking start time (%02d:%02d) is before facility operating hours.\n'
+                            'Facility "%s" opens at %02d:%02d.'
+                        ) % (
+                            record.start_datetime.hour,
+                            record.start_datetime.minute,
+                            record.facility_id.name,
+                            int(operating_start),
+                            int((operating_start % 1) * 60)
+                        ))
+                    
+                    if end_time > operating_end:
+                        raise ValidationError(_(
+                            'Booking end time (%02d:%02d) is after facility operating hours.\n'
+                            'Facility "%s" closes at %02d:%02d.'
+                        ) % (
+                            record.end_datetime.hour,
+                            record.end_datetime.minute,
+                            record.facility_id.name,
+                            int(operating_end),
+                            int((operating_end % 1) * 60)
+                        ))
 
     def action_confirm(self):
         """Confirm the booking"""
