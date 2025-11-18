@@ -3,6 +3,8 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import timedelta
+from odoo.tools import float_round
+import pytz
 
 
 class SportsBooking(models.Model):
@@ -114,10 +116,32 @@ class SportsBooking(models.Model):
 
     @api.depends('start_datetime', 'end_datetime')
     def _compute_duration(self):
+        """
+        Calculate hours between start_datetime and end_datetime.
+        Handles timezone conversions properly to ensure accurate duration calculation.
+        The field is stored in the database for performance optimization.
+        """
         for record in self:
             if record.start_datetime and record.end_datetime:
-                delta = record.end_datetime - record.start_datetime
-                record.duration = delta.total_seconds() / 3600.0
+                # Get user timezone or default to UTC
+                tz_name = self.env.user.tz or 'UTC'
+                user_tz = pytz.timezone(tz_name)
+                
+                # Convert datetime to user timezone for accurate calculation
+                # Odoo stores datetime in UTC, so we need to localize properly
+                start_utc = pytz.UTC.localize(record.start_datetime.replace(tzinfo=None))
+                end_utc = pytz.UTC.localize(record.end_datetime.replace(tzinfo=None))
+                
+                # Convert to user timezone
+                start_local = start_utc.astimezone(user_tz)
+                end_local = end_utc.astimezone(user_tz)
+                
+                # Calculate duration in seconds and convert to hours
+                delta = end_local - start_local
+                duration_hours = delta.total_seconds() / 3600.0
+                
+                # Round to 2 decimal places for precision
+                record.duration = float_round(duration_hours, precision_digits=2)
             else:
                 record.duration = 0.0
 
