@@ -33,6 +33,10 @@
         'security/ir.model.access.csv',
         'security/record_rules.xml',
         
+        # Data
+        'data/email_template_booking_confirmation.xml',
+        'data/email_template_booking_cancellation.xml',
+        
         # Views
         'views/facility_views.xml',
         'views/booking_views.xml',

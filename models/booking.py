@@ -353,7 +353,7 @@ class SportsBooking(models.Model):
             
             # Send confirmation email
             try:
-                template = self.env.ref('sport_facility_booking_system.email_template_booking_confirmation', 
+                template = self.env.ref('sport_facility_system.email_template_booking_confirmation', 
                                        raise_if_not_found=False)
                 if template:
                     template.send_mail(record.id, force_send=True)
@@ -463,7 +463,7 @@ class SportsBooking(models.Model):
             
             # Send cancellation email
             try:
-                template = self.env.ref('sport_facility_booking_system.email_template_booking_cancellation',
+                template = self.env.ref('sport_facility_system.email_template_booking_cancellation',
                                        raise_if_not_found=False)
                 if template:
                     template.send_mail(record.id, force_send=True)
