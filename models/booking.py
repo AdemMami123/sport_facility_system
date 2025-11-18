@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from datetime import timedelta
 from odoo.tools import float_round
 import pytz
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class SportsBooking(models.Model):
@@ -298,27 +301,172 @@ class SportsBooking(models.Model):
                         ))
 
     def action_confirm(self):
-        """Confirm the booking"""
+        """
+        Confirm the booking:
+        - Validate availability
+        - Set status to 'confirmed'
+        - Decrease equipment quantity_available for each equipment
+        - Send confirmation email using mail template
+        """
         for record in self:
+            # Validate current status
             if record.status != 'draft':
                 raise ValidationError(_('Only draft bookings can be confirmed.'))
+            
+            # Validate facility availability (double-check)
+            if record.facility_id and record.start_datetime and record.end_datetime:
+                overlapping = self.search([
+                    ('id', '!=', record.id),
+                    ('facility_id', '=', record.facility_id.id),
+                    ('status', 'in', ['draft', 'confirmed']),
+                    ('start_datetime', '<', record.end_datetime),
+                    ('end_datetime', '>', record.start_datetime),
+                ])
+                if overlapping:
+                    raise ValidationError(_(
+                        'Facility is no longer available for this time slot. '
+                        'Please refresh and select a different time.'
+                    ))
+            
+            # Checkout equipment - decrease available quantity
+            equipment_checkout_errors = []
+            for equipment in record.equipment_ids:
+                try:
+                    equipment.checkout_equipment(quantity=1)
+                except Exception as e:
+                    equipment_checkout_errors.append(str(e))
+            
+            if equipment_checkout_errors:
+                raise ValidationError(_(
+                    'Equipment checkout failed:\n%s'
+                ) % '\n'.join(equipment_checkout_errors))
+            
+            # Update booking status
             record.write({'status': 'confirmed'})
+            
+            # Send confirmation email
+            try:
+                template = self.env.ref('sport_facility_booking_system.email_template_booking_confirmation', 
+                                       raise_if_not_found=False)
+                if template:
+                    template.send_mail(record.id, force_send=True)
+            except Exception as e:
+                # Log error but don't fail the confirmation
+                _logger.warning(
+                    'Failed to send booking confirmation email for booking %s: %s',
+                    record.booking_reference, str(e)
+                )
+        
         return True
 
     def action_complete(self):
-        """Mark the booking as completed"""
+        """
+        Mark the booking as completed:
+        - Set status to 'completed'
+        - Restore equipment quantities
+        """
         for record in self:
+            # Validate current status
             if record.status != 'confirmed':
                 raise ValidationError(_('Only confirmed bookings can be completed.'))
+            
+            # Return equipment - restore available quantity
+            equipment_return_errors = []
+            for equipment in record.equipment_ids:
+                try:
+                    equipment.return_equipment(quantity=1)
+                except Exception as e:
+                    equipment_return_errors.append(str(e))
+            
+            if equipment_return_errors:
+                raise ValidationError(_(
+                    'Equipment return failed:\n%s'
+                ) % '\n'.join(equipment_return_errors))
+            
+            # Update booking status
             record.write({'status': 'completed'})
+        
         return True
 
     def action_cancel(self):
-        """Cancel the booking"""
+        """
+        Cancel the booking:
+        - Set status to 'cancelled'
+        - Restore equipment quantities
+        - Handle refund logic
+        """
         for record in self:
+            # Validate current status
             if record.status == 'completed':
                 raise ValidationError(_('Completed bookings cannot be cancelled.'))
-            record.write({'status': 'cancelled'})
+            
+            # Store original status for refund calculation
+            original_status = record.status
+            
+            # Return equipment if booking was confirmed
+            if original_status == 'confirmed':
+                equipment_return_errors = []
+                for equipment in record.equipment_ids:
+                    try:
+                        equipment.return_equipment(quantity=1)
+                    except Exception as e:
+                        equipment_return_errors.append(str(e))
+                
+                if equipment_return_errors:
+                    raise ValidationError(_(
+                        'Equipment return failed:\n%s'
+                    ) % '\n'.join(equipment_return_errors))
+            
+            # Calculate refund amount based on cancellation policy
+            refund_amount = 0.0
+            refund_percentage = 0.0
+            
+            if original_status == 'confirmed' and record.total_cost > 0:
+                # Calculate hours until booking starts
+                from datetime import datetime
+                now = fields.Datetime.now()
+                
+                if record.start_datetime > now:
+                    hours_until_booking = (record.start_datetime - now).total_seconds() / 3600.0
+                    
+                    # Refund policy based on cancellation time
+                    if hours_until_booking >= 48:
+                        refund_percentage = 100.0  # Full refund if cancelled 48+ hours before
+                    elif hours_until_booking >= 24:
+                        refund_percentage = 50.0   # 50% refund if cancelled 24-48 hours before
+                    elif hours_until_booking >= 12:
+                        refund_percentage = 25.0   # 25% refund if cancelled 12-24 hours before
+                    else:
+                        refund_percentage = 0.0    # No refund if cancelled less than 12 hours before
+                    
+                    refund_amount = (record.total_cost * refund_percentage) / 100.0
+            
+            # Update booking status and add cancellation note
+            cancellation_note = _(
+                'Booking cancelled. Refund: %.2f%% (Amount: %.2f %s)'
+            ) % (refund_percentage, refund_amount, record.currency_id.name or '')
+            
+            existing_notes = record.notes or ''
+            updated_notes = f"{existing_notes}\n\n{cancellation_note}" if existing_notes else cancellation_note
+            
+            record.write({
+                'status': 'cancelled',
+                'notes': updated_notes,
+            })
+            
+            # Send cancellation email
+            try:
+                template = self.env.ref('sport_facility_booking_system.email_template_booking_cancellation',
+                                       raise_if_not_found=False)
+                if template:
+                    template.send_mail(record.id, force_send=True)
+            except Exception as e:
+                # Log error but don't fail the cancellation
+                _logger.warning(
+                    'Failed to send booking cancellation email for booking %s: %s',
+                    record.booking_reference, str(e)
+                )
+        
         return True
 
     def action_reset_to_draft(self):
