@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Email Template: Waitlist Notification -->
+        <record id="email_template_waitlist_notification" model="mail.template">
+            <field name="name">Waitlist: Facility Available Notification</field>
+            <field name="model_id" ref="model_sports_waitlist"/>
+            <field name="subject">Good News! ${object.facility_id.name} is now available</field>
+            <field name="email_from">${(object.facility_id.company_id.email or user.email_formatted) | safe}</field>
+            <field name="email_to">${object.customer_email | safe}</field>
+            <field name="lang">${object.customer_id.lang}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            -webkit-font-smoothing: antialiased;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 40px 30px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+        .facility-info {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .facility-info h2 {
+            color: #667eea;
+            margin: 0 0 15px 0;
+            font-size: 22px;
+        }
+        .facility-details {
+            color: #555555;
+            font-size: 15px;
+        }
+        .facility-details .detail-row {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        .facility-details .icon {
+            margin-right: 10px;
+            color: #667eea;
+            font-size: 16px;
+        }
+        .urgency-banner {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .urgency-banner .clock-icon {
+            font-size: 24px;
+            color: #ff9800;
+            margin-bottom: 8px;
+        }
+        .urgency-banner p {
+            margin: 5px 0;
+            color: #856404;
+            font-weight: 500;
+        }
+        .urgency-banner .expiry {
+            font-size: 14px;
+            color: #856404;
+        }
+        .cta-button {
+            text-align: center;
+            margin: 35px 0;
+        }
+        .cta-button a {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        .cta-button a:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            transform: translateY(-2px);
+        }
+        .additional-info {
+            background-color: #e3f2fd;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .additional-info h3 {
+            color: #1976d2;
+            margin: 0 0 12px 0;
+            font-size: 16px;
+        }
+        .additional-info ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #555555;
+        }
+        .additional-info li {
+            margin: 6px 0;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 25px 20px;
+            }
+            .header {
+                padding: 30px 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .cta-button a {
+                padding: 14px 35px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="icon">🎉</div>
+            <h1>Facility Now Available!</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="greeting">Dear <strong>${object.customer_id.name}</strong>,</p>
+            
+            <p>Great news! We're excited to inform you that a booking slot has just become available for the facility you've been waiting for.</p>
+
+            <!-- Facility Information -->
+            <div class="facility-info">
+                <h2>${object.facility_id.name}</h2>
+                <div class="facility-details">
+                    % if object.preferred_date:
+                    <div class="detail-row">
+                        <span class="icon">📅</span>
+                        <span><strong>Your Preferred Date:</strong> ${format_date(object.preferred_date, format='EEEE, MMMM d, yyyy')}</span>
+                    </div>
+                    % endif
+                    % if object.preferred_time_start and object.preferred_time_end:
+                    <div class="detail-row">
+                        <span class="icon">🕐</span>
+                        <span><strong>Your Preferred Time:</strong> ${'{:02.0f}:{:02.0f}'.format(*divmod(object.preferred_time_start * 60, 60))} - ${'{:02.0f}:{:02.0f}'.format(*divmod(object.preferred_time_end * 60, 60))}</span>
+                    </div>
+                    % endif
+                    <div class="detail-row">
+                        <span class="icon">📍</span>
+                        <span><strong>Location:</strong> ${object.facility_id.location or 'Main Sports Complex'}</span>
+                    </div>
+                    % if object.facility_id.hourly_rate:
+                    <div class="detail-row">
+                        <span class="icon">💰</span>
+                        <span><strong>Rate:</strong> ${object.facility_id.hourly_rate} ${object.facility_id.currency_id.symbol or ''}/hour</span>
+                    </div>
+                    % endif
+                </div>
+            </div>
+
+            <!-- Urgency Banner -->
+            <div class="urgency-banner">
+                <div class="clock-icon">⏰</div>
+                <p><strong>Act Fast - Limited Time Offer!</strong></p>
+                <p class="expiry">This booking link is valid for <strong>24 hours</strong> only</p>
+                <p class="expiry">First come, first served</p>
+            </div>
+
+            <!-- Call to Action Button -->
+            <div class="cta-button">
+                <%
+                    # Build booking URL with pre-filled parameters
+                    base_url = ctx.get('booking_url') or '/sports/booking/create'
+                    
+                    # If booking_url is not in context, build it manually
+                    if not ctx.get('booking_url'):
+                        params = []
+                        params.append(f'facility_id={object.facility_id.id}')
+                        params.append(f'customer_id={object.customer_id.id}')
+                        if object.preferred_date:
+                            params.append(f'date={object.preferred_date}')
+                        if object.preferred_time_start:
+                            params.append(f'start_time={object.preferred_time_start}')
+                        if object.preferred_time_end:
+                            params.append(f'end_time={object.preferred_time_end}')
+                        base_url = f"{base_url}?{'&'.join(params)}"
+                    
+                    booking_link = base_url
+                %>
+                <a href="${booking_link}" style="color: #ffffff;">Book Now</a>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="additional-info">
+                <h3>📋 What to Do Next:</h3>
+                <ul>
+                    <li>Click the "Book Now" button to proceed with your booking</li>
+                    <li>Review and confirm your booking details</li>
+                    <li>Complete the payment process</li>
+                    <li>You'll receive a confirmation email with all details</li>
+                </ul>
+            </div>
+
+            <p style="margin-top: 30px;">This opportunity has been offered to you based on your waitlist priority. If you're no longer interested in this booking, please disregard this email and the slot will be offered to the next person on the waitlist.</p>
+
+            <p style="margin-top: 25px;">If you have any questions or need assistance, please don't hesitate to contact us.</p>
+
+            <p style="margin-top: 25px; color: #555555;">
+                Best regards,<br/>
+                <strong>Sports Booking Team</strong>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Sports Facility Booking System</strong></p>
+            <p>You received this email because you signed up for our waitlist notification service.</p>
+            % if object.facility_id.company_id.phone:
+            <p>📞 ${object.facility_id.company_id.phone}</p>
+            % endif
+            % if object.facility_id.company_id.email:
+            <p>✉️ <a href="mailto:${object.facility_id.company_id.email}">${object.facility_id.company_id.email}</a></p>
+            % endif
+            <p style="margin-top: 15px; font-size: 11px; color: #999999;">
+                This is an automated notification. Please do not reply to this email.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+]]>
+            </field>
+        </record>
+    </data>
+</odoo>

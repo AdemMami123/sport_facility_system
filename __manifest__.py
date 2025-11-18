@@ -38,6 +38,7 @@
         'data/email_template_booking_cancellation.xml',
         'data/email_template_booking_cancelled.xml',
         'data/email_template_booking_reminder.xml',
+        'data/email_template_waitlist_notification.xml',
         'data/automated_actions.xml',
         
         # Views
