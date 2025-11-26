@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sports_timeslot_form" model="ir.ui.view">
+        <field name="name">sports.timeslot.form</field>
+        <field name="model">sports.timeslot</field>
+        <field name="arch" type="xml">
+            <form string="Time Slot">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="facility_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                            <field name="duration"/>
+                            <field name="is_available"/>
+                            <field name="booking_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sports_timeslot_tree" model="ir.ui.view">
+        <field name="name">sports.timeslot.tree</field>
+        <field name="model">sports.timeslot</field>
+        <field name="arch" type="xml">
+            <tree string="Time Slots">
+                <field name="facility_id"/>
+                <field name="date"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="duration"/>
+                <field name="is_available"/>
+                <field name="booking_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_sports_timeslot" model="ir.actions.act_window">
+        <field name="name">Time Slots</field>
+        <field name="res_model">sports.timeslot</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

@@ -1,28 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-        
-        <!-- Security Category: Sports Booking -->
-        <record id="module_category_sports_booking" model="ir.module.category">
-            <field name="name">Sports Booking</field>
-            <field name="description">Category for Sports Facility Booking System permissions</field>
-            <field name="sequence">20</field>
-        </record>
-        
-        <!-- Security Group: Sports User -->
-        <record id="group_sports_user" model="res.groups">
-            <field name="name">Sports User</field>
-            <field name="category_id" ref="module_category_sports_booking"/>
-            <field name="comment">Sports User can view facilities, create and manage their own bookings, view equipment, and view their own memberships. This is the basic access level for customers and regular users.</field>
-        </record>
-        
-        <!-- Security Group: Sports Manager -->
-        <record id="group_sports_manager" model="res.groups">
-            <field name="name">Sports Manager</field>
-            <field name="category_id" ref="module_category_sports_booking"/>
-            <field name="implied_ids" eval="[(4, ref('group_sports_user'))]"/>
-            <field name="comment">Sports Manager has full administrative access to all sports booking system features including: managing facilities, viewing and modifying all bookings, managing equipment inventory, creating and managing memberships, accessing analytics and reports. This role is for administrators and staff managing the sports facility operations.</field>
-        </record>
-        
-    </data>
+    <record id="module_category_sports_booking" model="ir.module.category">
+        <field name="name">Sports Booking</field>
+        <field name="description">Category for Sports Facility Booking System permissions</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="group_sports_user" model="res.groups">
+        <field name="name">Sports User</field>
+        <field name="category_id" ref="module_category_sports_booking"/>
+        <field name="comment">Sports User can view facilities and manage their own bookings</field>
+    </record>
+
+    <record id="group_sports_manager" model="res.groups">
+        <field name="name">Sports Manager</field>
+        <field name="category_id" ref="module_category_sports_booking"/>
+        <field name="implied_ids" eval="[(4, ref('group_sports_user'))]"/>
+        <field name="comment">Sports Manager has full administrative access to all features</field>
+    </record>
 </odoo>

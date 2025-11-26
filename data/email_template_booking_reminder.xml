@@ -1,375 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-        
-        <!-- Email Template: Booking Reminder -->
-        <record id="email_template_booking_reminder" model="mail.template">
-            <field name="name">Sports Booking Reminder</field>
-            <field name="model_id" ref="model_sports_booking"/>
-            <field name="subject">Reminder: Your booking tomorrow at ${object.facility_id.name}</field>
-            <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
-            <field name="email_to">${object.customer_id.email}</field>
-            <field name="lang">${object.customer_id.lang}</field>
-            <field name="auto_delete" eval="False"/>
-            <field name="body_html" type="html">
-<![CDATA[
+    <record id="email_template_booking_reminder" model="mail.template">
+        <field name="name">Sports Booking Reminder</field>
+        <field name="model_id" ref="model_sports_booking"/>
+        <field name="subject">Reminder: Your booking tomorrow at ${object.facility_id.name}</field>
+        <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
+        <field name="email_to">${object.customer_id.email}</field>
+        <field name="lang">${object.customer_id.lang}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html"><![CDATA[
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
     <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 14px;
-            color: #333333;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: #ffffff;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .header p {
-            margin: 10px 0 0 0;
-            font-size: 16px;
-            opacity: 0.95;
-        }
-        .content {
-            padding: 30px 20px;
-        }
-        .greeting {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: #333333;
-        }
-        .reminder-badge {
-            display: inline-block;
-            background-color: #f59e0b;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
-        .highlight-box {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 2px solid #f59e0b;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 25px 0;
-            text-align: center;
-        }
-        .highlight-box h2 {
-            margin: 0 0 10px 0;
-            color: #92400e;
-            font-size: 24px;
-        }
-        .highlight-box .time {
-            font-size: 32px;
-            font-weight: bold;
-            color: #b45309;
-            margin: 10px 0;
-        }
-        .highlight-box .facility {
-            font-size: 20px;
-            color: #78350f;
-            margin: 5px 0;
-        }
-        .booking-details {
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        .detail-row {
-            display: flex;
-            padding: 12px 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-        .detail-label {
-            font-weight: bold;
-            color: #6b7280;
-            width: 140px;
-            flex-shrink: 0;
-        }
-        .detail-value {
-            color: #111827;
-            flex-grow: 1;
-        }
-        .checklist {
-            background-color: #ecfdf5;
-            border-left: 4px solid #10b981;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        .checklist h3 {
-            margin-top: 0;
-            color: #065f46;
-            font-size: 18px;
-        }
-        .checklist ul {
-            margin: 10px 0;
-            padding-left: 25px;
-        }
-        .checklist li {
-            padding: 6px 0;
-            color: #047857;
-            font-size: 14px;
-        }
-        .checklist li:before {
-            content: "✓ ";
-            color: #10b981;
-            font-weight: bold;
-            margin-right: 5px;
-        }
-        .info-box {
-            background-color: #dbeafe;
-            border-left: 4px solid #3b82f6;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        .info-box h4 {
-            margin-top: 0;
-            color: #1e40af;
-            font-size: 16px;
-        }
-        .info-box p {
-            margin: 5px 0;
-            color: #1e3a8a;
-            font-size: 13px;
-        }
-        .location-box {
-            background-color: #f3f4f6;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .location-box .icon {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-        .location-box .address {
-            font-size: 16px;
-            color: #374151;
-            font-weight: 500;
-            margin: 10px 0;
-        }
-        .button {
-            display: inline-block;
-            background-color: #f59e0b;
-            color: white;
-            padding: 14px 35px;
-            text-decoration: none;
-            border-radius: 6px;
-            margin: 10px 5px;
-            font-weight: bold;
-            font-size: 15px;
-        }
-        .button-secondary {
-            background-color: #6b7280;
-        }
-        .footer {
-            background-color: #f9fafb;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #e5e7eb;
-            font-size: 12px;
-            color: #6b7280;
-        }
-        .footer p {
-            margin: 5px 0;
-        }
-        .footer a {
-            color: #f59e0b;
-            text-decoration: none;
-        }
-        .emoji {
-            font-size: 20px;
-        }
+        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+        .content { padding: 30px 20px; }
+        .booking-details { background-color: #fffbeb; padding: 20px; border-radius: 6px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #fef3c7; }
+        .detail-label { font-weight: bold; width: 150px; color: #92400e; }
+        .detail-value { flex: 1; color: #78350f; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <h1>⏰ Friendly Reminder!</h1>
-            <p>Your booking is coming up soon</p>
+            <h1>⏰ Booking Reminder</h1>
+            <p>Don't forget your upcoming reservation</p>
         </div>
-        
-        <!-- Content -->
         <div class="content">
-            <!-- Greeting -->
-            <div class="greeting">
-                <p>Hi <strong>${object.customer_id.name}</strong>! 👋</p>
-                <div class="reminder-badge">📅 Tomorrow's Booking</div>
-                <p>Just a friendly reminder that you have a booking scheduled for tomorrow. We're looking forward to seeing you!</p>
-            </div>
+            <p>Dear ${object.customer_id.name},</p>
+            <p>This is a friendly reminder about your upcoming booking at <strong>${object.facility_id.name}</strong>.</p>
             
-            <!-- Highlighted Booking Time -->
-            <div class="highlight-box">
-                <h2>Your Booking</h2>
-                <div class="time">
-                    ${format_datetime(object.start_datetime, dt_format='HH:mm', lang_code=object.customer_id.lang, tz=object.customer_id.tz)}
-                </div>
-                <div class="facility">${object.facility_id.name}</div>
-                <p style="margin: 15px 0 5px 0; color: #92400e; font-size: 15px;">
-                    ${format_datetime(object.start_datetime, dt_format='EEEE, MMMM d, yyyy', lang_code=object.customer_id.lang)}
-                </p>
-            </div>
-            
-            <!-- Quick Details -->
             <div class="booking-details">
-                <h3 style="margin-top: 0; color: #374151;">📋 Quick Details</h3>
-                
+                <h3 style="margin-top: 0; color: #92400e;">Your Booking Details</h3>
                 <div class="detail-row">
-                    <div class="detail-label">Booking Ref:</div>
-                    <div class="detail-value"><strong>${object.booking_reference}</strong></div>
+                    <div class="detail-label">Reference:</div>
+                    <div class="detail-value">${object.booking_reference}</div>
                 </div>
-                
+                <div class="detail-row">
+                    <div class="detail-label">Facility:</div>
+                    <div class="detail-value">${object.facility_id.name}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">When:</div>
+                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='medium', tz=object.customer_id.tz or 'UTC')}</div>
+                </div>
                 <div class="detail-row">
                     <div class="detail-label">Duration:</div>
-                    <div class="detail-value">${'%.1f' % object.duration} hours (until ${format_datetime(object.end_datetime, dt_format='HH:mm', lang_code=object.customer_id.lang, tz=object.customer_id.tz)})</div>
+                    <div class="detail-value">${'%.2f' % object.duration} hours</div>
                 </div>
-                
-                <t t-if="object.equipment_ids">
-                    <div class="detail-row">
-                        <div class="detail-label">Equipment:</div>
-                        <div class="detail-value">
-                            <t t-foreach="object.equipment_ids" t-as="equipment">
-                                <span style="display: inline-block; background-color: #e5e7eb; padding: 3px 10px; border-radius: 12px; margin: 2px; font-size: 12px;">
-                                    ${equipment.name}
-                                </span>
-                            </t>
-                        </div>
-                    </div>
-                </t>
             </div>
             
-            <!-- Location -->
-            <t t-if="object.facility_id.location">
-                <div class="location-box">
-                    <div class="icon">📍</div>
-                    <h3 style="margin: 5px 0; color: #111827;">Where to Find Us</h3>
-                    <div class="address">${object.facility_id.location}</div>
-                    <p style="color: #6b7280; font-size: 13px; margin-top: 10px;">
-                        💡 Tip: Please arrive 10 minutes early for check-in
-                    </p>
-                </div>
-            </t>
+            <p><strong>Important reminders:</strong></p>
+            <ul>
+                <li>Please arrive 10 minutes before your scheduled time</li>
+                <li>Bring any required equipment or accessories</li>
+                <li>Contact us if you need to cancel or reschedule</li>
+            </ul>
             
-            <!-- What to Bring Checklist -->
-            <div class="checklist">
-                <h3>🎒 What to Bring</h3>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li>Your booking confirmation (this email or QR code)</li>
-                    <li>Valid ID for verification</li>
-                    <li>Appropriate sports attire and footwear</li>
-                    <li>Water bottle to stay hydrated</li>
-                    <t t-if="not object.equipment_ids">
-                        <li>Your own equipment (no equipment rental included)</li>
-                    </t>
-                    <li>A positive attitude and ready to have fun! 😊</li>
-                </ul>
-            </div>
-            
-            <!-- Important Information -->
-            <div class="info-box">
-                <h4>⚠️ Important Information</h4>
-                <p><strong>Check-in:</strong> Please check in at the reception desk 10 minutes before your booking time.</p>
-                <p><strong>Late Arrival:</strong> If you're running late, please call us to let us know. Late arrivals may result in reduced booking time.</p>
-                <t t-if="object.equipment_ids">
-                    <p><strong>Equipment Collection:</strong> Your reserved equipment will be ready for pickup at the reception desk.</p>
-                </t>
-            </div>
-            
-            <!-- Cancellation Policy -->
-            <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 4px;">
-                <h4 style="margin-top: 0; color: #991b1b; font-size: 16px;">📝 Need to Cancel or Reschedule?</h4>
-                <p style="margin: 5px 0; color: #7f1d1d; font-size: 13px;">
-                    We understand plans change! If you need to cancel or modify your booking:
-                </p>
-                <ul style="margin: 10px 0; padding-left: 25px; color: #7f1d1d; font-size: 13px;">
-                    <li>Cancel 48+ hours in advance for a full refund (100%)</li>
-                    <li>Cancel 24-48 hours in advance for a 50% refund</li>
-                    <li>Cancel 12-24 hours in advance for a 25% refund</li>
-                    <li>Cancellations within 12 hours are non-refundable</li>
-                </ul>
-                <p style="margin: 10px 0 5px 0; color: #7f1d1d; font-size: 13px;">
-                    <strong>Contact us immediately if you need to make changes!</strong>
-                </p>
-            </div>
-            
-            <!-- Call to Action Buttons -->
-            <div style="text-align: center; margin: 30px 0;">
-                <a t-attf-href="/my/bookings/${object.id}" class="button">View Booking Details</a>
-                <t t-if="object.company_id.phone">
-                    <a t-attf-href="tel:${object.company_id.phone}" class="button button-secondary">Call Us</a>
-                </t>
-            </div>
-            
-            <!-- Friendly Closing -->
-            <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; text-align: center; margin-top: 30px;">
-                <p style="font-size: 16px; color: #374151; margin: 5px 0;">
-                    <strong>We can't wait to see you tomorrow!</strong> 🎉
-                </p>
-                <p style="font-size: 14px; color: #6b7280; margin: 10px 0;">
-                    If you have any questions or concerns, don't hesitate to reach out. Our team is here to help make your experience amazing!
-                </p>
-            </div>
-            
-            <p style="margin-top: 30px; color: #6b7280; font-size: 13px; text-align: center;">
-                Have a great day, and see you soon! 👋
-            </p>
+            <p>We look forward to seeing you!</p>
         </div>
-        
-        <!-- Footer -->
         <div class="footer">
-            <p><strong>${object.company_id.name or 'Sports Facility'}</strong></p>
-            <p t-if="object.company_id.phone">
-                📞 Phone: <a t-attf-href="tel:${object.company_id.phone}">${object.company_id.phone}</a>
-            </p>
-            <p t-if="object.company_id.email">
-                ✉️ Email: <a t-attf-href="mailto:${object.company_id.email}">${object.company_id.email}</a>
-            </p>
-            <p t-if="object.company_id.website">
-                🌐 Website: <a t-attf-href="${object.company_id.website}" target="_blank">${object.company_id.website}</a>
-            </p>
-            <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">
-                This is an automated reminder. You're receiving this because you have an upcoming booking.
-            </p>
+            <p>This is an automated reminder. Please do not reply to this email.</p>
+            <p>© ${datetime.datetime.now().year} Sports Facility Booking System. All rights reserved.</p>
         </div>
     </div>
 </body>
 </html>
-]]>
-            </field>
-        </record>
-        
-    </data>
+]]></field>
+    </record>
 </odoo>
+
+

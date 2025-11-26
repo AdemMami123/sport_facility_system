@@ -1,142 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Actions for Calendar View -->
-        <record id="action_sports_booking_calendar" model="ir.actions.act_window">
-            <field name="name">Booking Calendar</field>
-            <field name="res_model">sports.booking</field>
-            <field name="view_mode">calendar,tree,form</field>
-            <field name="view_id" ref="view_sports_booking_calendar"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No bookings scheduled
-                </p>
-                <p>
-                    Create your first booking to see it on the calendar.
-                </p>
-            </field>
-        </record>
-        
-        <!-- Actions for Membership -->
-        <record id="action_sports_membership" model="ir.actions.act_window">
-            <field name="name">Memberships</field>
-            <field name="res_model">sports.membership</field>
-            <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create your first Membership
-                </p>
-                <p>
-                    Click the create button to add a new membership plan.
-                </p>
-            </field>
-        </record>
-        
-        <!-- Actions for Time Slots -->
-        <record id="action_sports_timeslot" model="ir.actions.act_window">
-            <field name="name">Time Slots</field>
-            <field name="res_model">sports.timeslot</field>
-            <field name="view_mode">tree,form,calendar</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create your first Time Slot
-                </p>
-                <p>
-                    Click the create button to add a new time slot.
-                </p>
-            </field>
-        </record>
-        
-        <!-- Root Menu: Sports Booking -->
-        <menuitem id="menu_sports_root" 
-                  name="Sports Booking" 
-                  web_icon="sport_facility_system,static/description/icon.png"
-                  sequence="10"/>
-        
-        <!-- Main menu items -->
-        <menuitem id="menu_sports_dashboard" 
-                  name="Dashboard" 
-                  parent="menu_sports_root" 
-                  action="action_booking_dashboard" 
-                  sequence="5"/>
-        
-        <menuitem id="menu_sports_bookings" 
-                  name="Bookings" 
-                  parent="menu_sports_root" 
-                  action="action_sports_booking" 
-                  sequence="10"/>
-        
-        <menuitem id="menu_sports_facilities" 
-                  name="Facilities" 
-                  parent="menu_sports_root" 
-                  action="action_sports_facility" 
-                  sequence="2"/>
-        
-        <menuitem id="menu_sports_equipment" 
-                  name="Equipment" 
-                  parent="menu_sports_root" 
-                  action="action_sports_equipment" 
-                  sequence="3"/>
-        
-        <menuitem id="menu_sports_calendar" 
-                  name="Calendar" 
-                  parent="menu_sports_root" 
-                  action="action_sports_booking_calendar" 
-                  sequence="4"/>
-        
-        <menuitem id="menu_sports_analysis" 
-                  name="Reports" 
-                  parent="menu_sports_root" 
-                  sequence="50"/>
-        
-        <menuitem id="menu_sports_booking_analysis" 
-                  name="Booking Analysis" 
-                  parent="menu_sports_analysis" 
-                  action="action_booking_pivot" 
-                  sequence="10"/>
-        
-        <menuitem id="menu_sports_revenue_facility" 
-                  name="Revenue by Facility" 
-                  parent="menu_sports_analysis" 
-                  action="action_booking_revenue_facility" 
-                  sequence="20"/>
-        
-        <menuitem id="menu_sports_booking_trend" 
-                  name="Bookings Trend" 
-                  parent="menu_sports_analysis" 
-                  action="action_booking_trend" 
-                  sequence="30"/>
-        
-        <menuitem id="menu_sports_booking_distribution" 
-                  name="Booking Distribution" 
-                  parent="menu_sports_analysis" 
-                  action="action_booking_distribution" 
-                  sequence="40"/>
-        
-        <!-- Separator (using sequence gap) -->
-        
-        <!-- Configuration Submenu -->
-        <menuitem id="menu_sports_configuration" 
-                  name="Configuration" 
-                  parent="menu_sports_root" 
-                  sequence="100"/>
-        
-        <menuitem id="menu_sports_memberships" 
-                  name="Memberships" 
-                  parent="menu_sports_configuration" 
-                  action="action_sports_membership" 
-                  sequence="10"/>
-        
-        <menuitem id="menu_sports_timeslots" 
-                  name="Time Slots" 
-                  parent="menu_sports_configuration" 
-                  action="action_sports_timeslot" 
-                  sequence="20"/>
-        
-        <menuitem id="menu_sports_waitlist" 
-                  name="Waitlist" 
-                  parent="menu_sports_configuration" 
-                  action="action_sports_waitlist" 
-                  sequence="30"/>
-    </data>
+    <menuitem id="menu_sports_root" name="Sports Booking" web_icon="sport_facility_system,static/description/icon.png" sequence="10"/>
+
+    <menuitem id="menu_sports_dashboard" name="Dashboard" parent="menu_sports_root" action="action_booking_dashboard" sequence="1"/>
+
+    <menuitem id="menu_sports_facilities" name="Facilities" parent="menu_sports_root" action="action_sports_facility" sequence="2"/>
+
+    <menuitem id="menu_sports_equipment" name="Equipment" parent="menu_sports_root" action="action_sports_equipment" sequence="3"/>
+
+    <menuitem id="menu_sports_bookings" name="Bookings" parent="menu_sports_root" action="action_sports_booking" sequence="4"/>
+
+    <menuitem id="menu_sports_calendar" name="Calendar" parent="menu_sports_root" action="action_sports_booking_calendar" sequence="5"/>
+
+    <menuitem id="menu_sports_configuration" name="Configuration" parent="menu_sports_root" sequence="100"/>
+
+    <menuitem id="menu_sports_memberships" name="Memberships" parent="menu_sports_configuration" action="action_sports_membership" sequence="10"/>
+
+    <menuitem id="menu_sports_timeslots" name="Time Slots" parent="menu_sports_configuration" action="action_sports_timeslot" sequence="20"/>
+
+    <menuitem id="menu_sports_waitlist" name="Waitlist" parent="menu_sports_configuration" action="action_sports_waitlist" sequence="30"/>
 </odoo>

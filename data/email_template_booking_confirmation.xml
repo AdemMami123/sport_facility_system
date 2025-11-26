@@ -1,319 +1,82 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-        
-        <!-- Email Template: Booking Confirmation -->
-        <record id="email_template_booking_confirmation" model="mail.template">
-            <field name="name">Sports Booking Confirmation</field>
-            <field name="model_id" ref="model_sports_booking"/>
-            <field name="subject">Booking Confirmation - ${object.booking_reference}</field>
-            <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
-            <field name="email_to">${object.customer_id.email}</field>
-            <field name="lang">${object.customer_id.lang}</field>
-            <field name="auto_delete" eval="False"/>
-            <field name="body_html" type="html">
-<![CDATA[
+    <record id="email_template_booking_confirmation" model="mail.template">
+        <field name="name">Sports Booking Confirmation</field>
+        <field name="model_id" ref="model_sports_booking"/>
+        <field name="subject">Booking Confirmation - ${object.booking_reference}</field>
+        <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
+        <field name="email_to">${object.customer_id.email}</field>
+        <field name="lang">${object.customer_id.lang}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html"><![CDATA[
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
     <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 14px;
-            color: #333333;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #ffffff;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .header p {
-            margin: 10px 0 0 0;
-            font-size: 16px;
-            opacity: 0.9;
-        }
-        .content {
-            padding: 30px 20px;
-        }
-        .greeting {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: #333333;
-        }
-        .success-badge {
-            display: inline-block;
-            background-color: #10b981;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .booking-details {
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        .detail-row {
-            display: flex;
-            padding: 12px 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-        .detail-label {
-            font-weight: bold;
-            color: #6b7280;
-            width: 140px;
-            flex-shrink: 0;
-        }
-        .detail-value {
-            color: #111827;
-            flex-grow: 1;
-        }
-        .equipment-list {
-            list-style: none;
-            padding: 0;
-            margin: 5px 0;
-        }
-        .equipment-list li {
-            padding: 4px 0;
-            padding-left: 20px;
-            position: relative;
-        }
-        .equipment-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #10b981;
-            font-weight: bold;
-        }
-        .total-cost {
-            background-color: #667eea;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .qr-section {
-            text-align: center;
-            padding: 20px;
-            background-color: #f9fafb;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        .qr-section img {
-            max-width: 200px;
-            height: auto;
-            border: 3px solid #667eea;
-            border-radius: 8px;
-            padding: 10px;
-            background-color: white;
-        }
-        .qr-section p {
-            margin-top: 10px;
-            color: #6b7280;
-            font-size: 13px;
-        }
-        .info-box {
-            background-color: #dbeafe;
-            border-left: 4px solid #3b82f6;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        .info-box p {
-            margin: 5px 0;
-            color: #1e40af;
-            font-size: 13px;
-        }
-        .footer {
-            background-color: #f9fafb;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #e5e7eb;
-            font-size: 12px;
-            color: #6b7280;
-        }
-        .footer p {
-            margin: 5px 0;
-        }
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        .button {
-            display: inline-block;
-            background-color: #667eea;
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 6px;
-            margin: 20px 0;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+        .content { padding: 30px 20px; }
+        .booking-details { background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
+        .detail-label { font-weight: bold; width: 150px; color: #495057; }
+        .detail-value { flex: 1; color: #212529; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
+        .button { display: inline-block; padding: 12px 30px; background-color: #667eea; color: #fff; text-decoration: none; border-radius: 5px; margin: 20px 0; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <h1>🎾 Booking Confirmed!</h1>
-            <p>Your sports facility reservation is confirmed</p>
+            <h1>✓ Booking Confirmed</h1>
+            <p>Your reservation has been confirmed</p>
         </div>
-        
-        <!-- Content -->
         <div class="content">
-            <!-- Greeting -->
-            <div class="greeting">
-                <p>Dear <strong>${object.customer_id.name}</strong>,</p>
-                <div class="success-badge">✓ Booking Confirmed</div>
-                <p>Thank you for your booking! We're excited to have you at our facility. Your reservation has been successfully confirmed.</p>
-            </div>
+            <p>Dear ${object.customer_id.name},</p>
+            <p>We are pleased to confirm your booking for <strong>${object.facility_id.name}</strong>.</p>
             
-            <!-- Booking Details -->
             <div class="booking-details">
-                <h2 style="margin-top: 0; color: #667eea;">Booking Details</h2>
-                
+                <h3 style="margin-top: 0;">Booking Details</h3>
                 <div class="detail-row">
-                    <div class="detail-label">Booking Reference:</div>
-                    <div class="detail-value"><strong>${object.booking_reference}</strong></div>
+                    <div class="detail-label">Reference:</div>
+                    <div class="detail-value">${object.booking_reference}</div>
                 </div>
-                
                 <div class="detail-row">
                     <div class="detail-label">Facility:</div>
-                    <div class="detail-value"><strong>${object.facility_id.name}</strong></div>
+                    <div class="detail-value">${object.facility_id.name}</div>
                 </div>
-                
-                <div class="detail-row">
-                    <div class="detail-label">Date:</div>
-                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='EEEE, MMMM d, yyyy', lang_code=object.customer_id.lang)}</div>
-                </div>
-                
                 <div class="detail-row">
                     <div class="detail-label">Start Time:</div>
-                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='HH:mm', lang_code=object.customer_id.lang, tz=object.customer_id.tz)}</div>
+                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='medium', tz=object.customer_id.tz or 'UTC')}</div>
                 </div>
-                
                 <div class="detail-row">
                     <div class="detail-label">End Time:</div>
-                    <div class="detail-value">${format_datetime(object.end_datetime, dt_format='HH:mm', lang_code=object.customer_id.lang, tz=object.customer_id.tz)}</div>
+                    <div class="detail-value">${format_datetime(object.end_datetime, dt_format='medium', tz=object.customer_id.tz or 'UTC')}</div>
                 </div>
-                
                 <div class="detail-row">
                     <div class="detail-label">Duration:</div>
-                    <div class="detail-value">${'%.1f' % object.duration} hours</div>
+                    <div class="detail-value">${'%.2f' % object.duration} hours</div>
                 </div>
-                
-                <t t-if="object.equipment_ids">
-                    <div class="detail-row">
-                        <div class="detail-label">Equipment:</div>
-                        <div class="detail-value">
-                            <ul class="equipment-list">
-                                <t t-foreach="object.equipment_ids" t-as="equipment">
-                                    <li>${equipment.name}</li>
-                                </t>
-                            </ul>
-                        </div>
-                    </div>
-                </t>
-                
-                <t t-if="not object.equipment_ids">
-                    <div class="detail-row">
-                        <div class="detail-label">Equipment:</div>
-                        <div class="detail-value"><em>No equipment requested</em></div>
-                    </div>
-                </t>
-                
-                <t t-if="object.notes">
-                    <div class="detail-row">
-                        <div class="detail-label">Notes:</div>
-                        <div class="detail-value">${object.notes}</div>
-                    </div>
-                </t>
+                <div class="detail-row">
+                    <div class="detail-label">Total Cost:</div>
+                    <div class="detail-value"><strong>${'%.2f' % object.total_cost} ${object.currency_id.symbol or '$'}</strong></div>
+                </div>
             </div>
             
-            <!-- Total Cost -->
-            <div class="total-cost">
-                Total Amount: ${object.currency_id.symbol or '$'}${'%.2f' % object.total_cost}
-            </div>
-            
-            <!-- QR Code Section -->
-            <div class="qr-section">
-                <h3 style="margin-top: 0; color: #667eea;">Check-In QR Code</h3>
-                <img t-attf-src="/report/barcode/?type=QR&amp;value=${object.booking_reference}&amp;width=200&amp;height=200" alt="Booking QR Code"/>
-                <p>Present this QR code at the facility for quick check-in</p>
-            </div>
-            
-            <!-- Important Information -->
-            <div class="info-box">
-                <h4 style="margin-top: 0; color: #1e40af;">📋 Important Information</h4>
-                <p><strong>•</strong> Please arrive 10 minutes before your booking start time.</p>
-                <p><strong>•</strong> Bring this confirmation email or show the QR code at reception.</p>
-                <p t-if="object.equipment_ids"><strong>•</strong> Your equipment will be ready for pickup at the reception desk.</p>
-                <p><strong>•</strong> Cancellations made 48+ hours in advance receive a full refund.</p>
-            </div>
-            
-            <!-- Call to Action -->
-            <div style="text-align: center;">
-                <a t-attf-href="/my/bookings/${object.id}" class="button">View Booking Details</a>
-            </div>
-            
-            <p style="margin-top: 30px; color: #6b7280; font-size: 13px;">
-                If you need to modify or cancel your booking, please contact us as soon as possible.
-            </p>
+            <p>Please arrive 10 minutes before your scheduled time. If you need to cancel or modify your booking, please contact us at least 24 hours in advance.</p>
+            <p>We look forward to seeing you!</p>
         </div>
-        
-        <!-- Footer -->
         <div class="footer">
-            <p><strong>${object.company_id.name or 'Sports Facility'}</strong></p>
-            <p t-if="object.facility_id.location">
-                📍 ${object.facility_id.location}
-            </p>
-            <p t-if="object.company_id.phone">
-                📞 Phone: <a t-attf-href="tel:${object.company_id.phone}">${object.company_id.phone}</a>
-            </p>
-            <p t-if="object.company_id.email">
-                ✉️ Email: <a t-attf-href="mailto:${object.company_id.email}">${object.company_id.email}</a>
-            </p>
-            <p t-if="object.company_id.website">
-                🌐 Website: <a t-attf-href="${object.company_id.website}" target="_blank">${object.company_id.website}</a>
-            </p>
-            <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">
-                This is an automated confirmation email. Please do not reply directly to this email.
-            </p>
+            <p>This is an automated message. Please do not reply to this email.</p>
+            <p>© ${datetime.datetime.now().year} Sports Facility Booking System. All rights reserved.</p>
         </div>
     </div>
 </body>
 </html>
-]]>
-            </field>
-        </record>
-        
-    </data>
+]]></field>
+    </record>
 </odoo>
+
+
