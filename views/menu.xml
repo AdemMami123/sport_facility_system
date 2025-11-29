@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Actions for Calendar View -->
-        <record id="action_sports_booking_calendar" model="ir.actions.act_window">
-            <field name="name">Booking Calendar</field>
-            <field name="res_model">sports.booking</field>
-            <field name="view_mode">calendar,tree,form</field>
-            <field name="view_id" ref="view_sports_booking_calendar"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No bookings scheduled
-                </p>
-                <p>
-                    Create your first booking to see it on the calendar.
-                </p>
-            </field>
-        </record>
-        
-        <!-- Actions for Membership -->
-        <record id="action_sports_membership" model="ir.actions.act_window">
+    <!-- Actions for Calendar View -->
+<record id="action_sports_booking_calendar" model="ir.actions.act_window">
+        <field name="name">Booking Calendar</field>
+        <field name="res_model">sports.booking</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="view_id" ref="view_sports_booking_calendar"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No bookings scheduled
+            </p>
+            <p>
+                Create your first booking to see it on the calendar.
+            </p>
+        </field>
+    </record>
+
+    <!-- Actions for Membership -->
+<record id="action_sports_membership" model="ir.actions.act_window">
             <field name="name">Memberships</field>
             <field name="res_model">sports.membership</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create your first Membership
@@ -33,10 +32,10 @@
         </record>
         
         <!-- Actions for Time Slots -->
-        <record id="action_sports_timeslot" model="ir.actions.act_window">
+<record id="action_sports_timeslot" model="ir.actions.act_window">
             <field name="name">Time Slots</field>
             <field name="res_model">sports.timeslot</field>
-            <field name="view_mode">tree,form,calendar</field>
+            <field name="view_mode">list,form,calendar</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create your first Time Slot
@@ -54,12 +53,6 @@
                   sequence="10"/>
         
         <!-- Main menu items -->
-        <menuitem id="menu_sports_dashboard" 
-                  name="Dashboard" 
-                  parent="menu_sports_root" 
-                  action="action_booking_dashboard" 
-                  sequence="5"/>
-        
         <menuitem id="menu_sports_bookings" 
                   name="Bookings" 
                   parent="menu_sports_root" 
@@ -138,5 +131,4 @@
                   parent="menu_sports_configuration" 
                   action="action_sports_waitlist" 
                   sequence="30"/>
-    </data>
 </odoo>
