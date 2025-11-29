@@ -1,95 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="email_template_booking_reminder" model="mail.template">
-            <field name="name">Sports Booking Reminder</field>
-            <field name="model_id" ref="sports_booking.model_sports_booking"/>
-            <field name="subject">Reminder: Your booking tomorrow at {{ object.facility_id.name }}</field>
-            <field name="email_from">{{ (object.company_id.email or user.email or '') }}</field>
-            <field name="email_to">{{ object.customer_id.email }}</field>
-            <field name="lang">{{ object.customer_id.lang }}</field>
-            <field name="auto_delete" eval="False"/>
-            <field name="body_html" type="html">
-<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F4F4F4; font-family: Arial, Helvetica, sans-serif; color: #454748; width: 100%; border-collapse: separate;">
-    <tr>
-        <td align="center">
-            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: #FFFFFF; color: #454748; border-collapse: separate;">
-                <tbody>
-                    <tr>
-                        <td align="center" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; padding: 30px 20px;">
-                            <h1 style="margin: 0; font-size: 28px; font-weight: bold;">Friendly Reminder!</h1>
-                            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.95;">Your booking is coming up soon</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 30px 20px;">
-                            <p style="font-size: 16px; margin-bottom: 20px; color: #333333;">
-                                Hi <strong t-out="object.customer_id.name">Customer</strong>!
-                            </p>
-                            <p>Just a friendly reminder that you have a booking scheduled for tomorrow. We're looking forward to seeing you!</p>
-                            
-                            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 25px; margin: 25px 0; text-align: center;">
-                                <h2 style="margin: 0 0 10px 0; color: #92400e; font-size: 24px;">Your Booking</h2>
-                                <div style="font-size: 32px; font-weight: bold; color: #b45309; margin: 10px 0;" t-out="format_datetime(object.start_datetime, dt_format='HH:mm')">10:00</div>
-                                <div style="font-size: 20px; color: #78350f; margin: 5px 0;" t-out="object.facility_id.name">Tennis Court 1</div>
-                                <p style="margin: 15px 0 5px 0; color: #92400e; font-size: 15px;" t-out="format_datetime(object.start_datetime, dt_format='EEEE, MMMM d, yyyy')">Monday, January 1, 2024</p>
-                            </div>
-                            
-                            <table border="0" cellpadding="8" cellspacing="0" style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; width: 100%;">
-                                <tr>
-                                    <td style="font-weight: bold; color: #6b7280; width: 140px;">Booking Ref:</td>
-                                    <td style="color: #111827;"><strong t-out="object.booking_reference">REF-001</strong></td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight: bold; color: #6b7280;">Duration:</td>
-                                    <td style="color: #111827;"><t t-out="'%.1f' % object.duration">1.0</t> hours (until <t t-out="format_datetime(object.end_datetime, dt_format='HH:mm')">11:00</t>)</td>
-                                </tr>
-                                <tr t-if="object.equipment_ids">
-                                    <td style="font-weight: bold; color: #6b7280;">Equipment:</td>
-                                    <td style="color: #111827;">
-                                        <t t-foreach="object.equipment_ids" t-as="equipment">
-                                            <span t-out="equipment.name">Equipment</span><t t-if="not equipment_last">, </t>
-                                        </t>
-                                    </td>
-                                </tr>
-                            </table>
-                            
-                            <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 20px; margin: 20px 0; border-radius: 4px;">
-                                <h3 style="margin-top: 0; color: #065f46; font-size: 18px;">What to Bring</h3>
-                                <p style="padding: 6px 0; color: #047857; font-size: 14px;">Your booking confirmation (this email)</p>
-                                <p style="padding: 6px 0; color: #047857; font-size: 14px;">Valid ID for verification</p>
-                                <p style="padding: 6px 0; color: #047857; font-size: 14px;">Appropriate sports attire and footwear</p>
-                                <p style="padding: 6px 0; color: #047857; font-size: 14px;">Water bottle to stay hydrated</p>
-                            </div>
-                            
-                            <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; border-radius: 4px;">
-                                <h4 style="margin-top: 0; color: #1e40af; font-size: 16px;">Important Information</h4>
-                                <p style="margin: 5px 0; color: #1e3a8a; font-size: 13px;"><strong>Check-in:</strong> Please check in at the reception desk 10 minutes before your booking time.</p>
-                                <p style="margin: 5px 0; color: #1e3a8a; font-size: 13px;"><strong>Late Arrival:</strong> If you're running late, please call us to let us know.</p>
-                            </div>
-                            
-                            <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; text-align: center; margin-top: 30px;">
-                                <p style="font-size: 16px; color: #374151; margin: 5px 0;">
-                                    <strong>We can't wait to see you tomorrow!</strong>
-                                </p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
-                            <p style="margin: 5px 0;"><strong t-out="object.company_id.name or 'Sports Facility'">Sports Facility</strong></p>
-                            <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">
-                                This is an automated reminder. You're receiving this because you have an upcoming booking.
-                            </p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-</table>
-            </field>
-        </record>
-    </data>
+    <record id="email_template_booking_reminder" model="mail.template">
+        <field name="name">Sports Booking Reminder</field>
+        <field name="model_id" ref="model_sports_booking"/>
+        <field name="subject">Reminder: Your booking tomorrow at ${object.facility_id.name}</field>
+        <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
+        <field name="email_to">${object.customer_id.email}</field>
+        <field name="lang">${object.customer_id.lang}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html"><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+        .content { padding: 30px 20px; }
+        .booking-details { background-color: #fffbeb; padding: 20px; border-radius: 6px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #fef3c7; }
+        .detail-label { font-weight: bold; width: 150px; color: #92400e; }
+        .detail-value { flex: 1; color: #78350f; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ Booking Reminder</h1>
+            <p>Don't forget your upcoming reservation</p>
+        </div>
+        <div class="content">
+            <p>Dear ${object.customer_id.name},</p>
+            <p>This is a friendly reminder about your upcoming booking at <strong>${object.facility_id.name}</strong>.</p>
+            
+            <div class="booking-details">
+                <h3 style="margin-top: 0; color: #92400e;">Your Booking Details</h3>
+                <div class="detail-row">
+                    <div class="detail-label">Reference:</div>
+                    <div class="detail-value">${object.booking_reference}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Facility:</div>
+                    <div class="detail-value">${object.facility_id.name}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">When:</div>
+                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='medium', tz=object.customer_id.tz or 'UTC')}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">${'%.2f' % object.duration} hours</div>
+                </div>
+            </div>
+            
+            <p><strong>Important reminders:</strong></p>
+            <ul>
+                <li>Please arrive 10 minutes before your scheduled time</li>
+                <li>Bring any required equipment or accessories</li>
+                <li>Contact us if you need to cancel or reschedule</li>
+            </ul>
+            
+            <p>We look forward to seeing you!</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated reminder. Please do not reply to this email.</p>
+            <p>© ${datetime.datetime.now().year} Sports Facility Booking System. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+]]></field>
+    </record>
 </odoo>
+
 

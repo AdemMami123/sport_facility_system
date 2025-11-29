@@ -1,336 +1,201 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Sample Facilities -->
     <record id="facility_tennis_court" model="sports.facility">
-            <field name="name">Tennis Court A</field>
-            <field name="facility_type">court</field>
-            <field name="description">Professional tennis court with clay surface, suitable for singles and doubles matches. Includes night lighting and seating area.</field>
-            <field name="capacity">4</field>
-            <field name="hourly_rate">25.00</field>
-            <field name="status">available</field>
-            <field name="location">North Wing, Building A</field>
-            <field name="operating_hours_start">7.0</field>
-            <field name="operating_hours_end">22.0</field>
-        </record>
+        <field name="name">Tennis Court A</field>
+        <field name="facility_type">court</field>
+        <field name="description">Professional tennis court with clay surface</field>
+        <field name="capacity">4</field>
+        <field name="hourly_rate">25.00</field>
+        <field name="status">available</field>
+        <field name="location">North Wing, Building A</field>
+        <field name="operating_hours_start">7.0</field>
+        <field name="operating_hours_end">22.0</field>
+    </record>
 
-        <record id="facility_gym" model="sports.facility">
-            <field name="name">Main Fitness Gym</field>
-            <field name="facility_type">gym</field>
-            <field name="description">Fully equipped gym with cardio machines, weight training equipment, and functional training area. Air-conditioned with modern amenities.</field>
-            <field name="capacity">30</field>
-            <field name="hourly_rate">15.00</field>
-            <field name="status">available</field>
-            <field name="location">Ground Floor, Building B</field>
-            <field name="operating_hours_start">6.0</field>
-            <field name="operating_hours_end">23.0</field>
-        </record>
+    <record id="facility_gym" model="sports.facility">
+        <field name="name">Main Fitness Gym</field>
+        <field name="facility_type">gym</field>
+        <field name="description">Fully equipped gym with cardio and weight machines</field>
+        <field name="capacity">30</field>
+        <field name="hourly_rate">15.00</field>
+        <field name="status">available</field>
+        <field name="location">Ground Floor, Building B</field>
+        <field name="operating_hours_start">6.0</field>
+        <field name="operating_hours_end">23.0</field>
+    </record>
 
-        <record id="facility_swimming_pool" model="sports.facility">
-            <field name="name">Olympic Swimming Pool</field>
-            <field name="facility_type">pool</field>
-            <field name="description">50-meter Olympic-size swimming pool with 8 lanes. Heated water, diving boards, and lifeguard services included.</field>
-            <field name="capacity">50</field>
-            <field name="hourly_rate">30.00</field>
-            <field name="status">available</field>
-            <field name="location">Aquatic Center</field>
-            <field name="operating_hours_start">6.0</field>
-            <field name="operating_hours_end">21.0</field>
-        </record>
+    <record id="facility_swimming_pool" model="sports.facility">
+        <field name="name">Olympic Swimming Pool</field>
+        <field name="facility_type">pool</field>
+        <field name="description">50-meter Olympic-size swimming pool</field>
+        <field name="capacity">50</field>
+        <field name="hourly_rate">30.00</field>
+        <field name="status">available</field>
+        <field name="location">Aquatic Center</field>
+        <field name="operating_hours_start">6.0</field>
+        <field name="operating_hours_end">21.0</field>
+    </record>
 
-        <record id="facility_soccer_field" model="sports.facility">
-            <field name="name">Outdoor Soccer Field</field>
-            <field name="facility_type">field</field>
-            <field name="description">Full-size regulation soccer field with natural grass. Includes goals, corner flags, and spectator bleachers.</field>
-            <field name="capacity">22</field>
-            <field name="hourly_rate">40.00</field>
-            <field name="status">available</field>
-            <field name="location">Outdoor Sports Complex</field>
-            <field name="operating_hours_start">8.0</field>
-            <field name="operating_hours_end">20.0</field>
-        </record>
+    <record id="facility_soccer_field" model="sports.facility">
+        <field name="name">Outdoor Soccer Field</field>
+        <field name="facility_type">field</field>
+        <field name="description">Full-size regulation soccer field</field>
+        <field name="capacity">22</field>
+        <field name="hourly_rate">40.00</field>
+        <field name="status">available</field>
+        <field name="location">Outdoor Sports Complex</field>
+        <field name="operating_hours_start">8.0</field>
+        <field name="operating_hours_end">20.0</field>
+    </record>
 
-        <record id="facility_basketball_court" model="sports.facility">
-            <field name="name">Indoor Basketball Court</field>
-            <field name="facility_type">court</field>
-            <field name="description">Indoor basketball court with maple hardwood flooring, professional hoops, and scoreboard. Climate controlled environment.</field>
-            <field name="capacity">10</field>
-            <field name="hourly_rate">20.00</field>
-            <field name="status">available</field>
-            <field name="location">South Wing, Building C</field>
-            <field name="operating_hours_start">7.0</field>
-            <field name="operating_hours_end">22.0</field>
-        </record>
+    <record id="facility_basketball_court" model="sports.facility">
+        <field name="name">Indoor Basketball Court</field>
+        <field name="facility_type">court</field>
+        <field name="description">Indoor basketball court with maple hardwood flooring</field>
+        <field name="capacity">10</field>
+        <field name="hourly_rate">20.00</field>
+        <field name="status">available</field>
+        <field name="location">South Wing, Building C</field>
+        <field name="operating_hours_start">7.0</field>
+        <field name="operating_hours_end">22.0</field>
+    </record>
 
-        <!-- Sample Equipment -->
-        <record id="equipment_tennis_rackets" model="sports.equipment">
-            <field name="name">Professional Tennis Rackets</field>
-            <field name="equipment_type">racket</field>
-            <field name="total_quantity">10</field>
-            <field name="quantity_available">10</field>
-            <field name="rental_rate">5.00</field>
-            <field name="condition">excellent</field>
-        </record>
+    <record id="equipment_tennis_rackets" model="sports.equipment">
+        <field name="name">Professional Tennis Rackets</field>
+        <field name="equipment_type">racket</field>
+        <field name="total_quantity">10</field>
+        <field name="quantity_available">10</field>
+        <field name="rental_rate">5.00</field>
+        <field name="condition">excellent</field>
+    </record>
 
-        <record id="equipment_basketballs" model="sports.equipment">
-            <field name="name">Official Size Basketballs</field>
-            <field name="equipment_type">ball</field>
-            <field name="total_quantity">15</field>
-            <field name="quantity_available">15</field>
-            <field name="rental_rate">3.00</field>
-            <field name="condition">good</field>
-        </record>
+    <record id="equipment_basketballs" model="sports.equipment">
+        <field name="name">Official Size Basketballs</field>
+        <field name="equipment_type">ball</field>
+        <field name="total_quantity">15</field>
+        <field name="quantity_available">15</field>
+        <field name="rental_rate">3.00</field>
+        <field name="condition">good</field>
+    </record>
 
-        <record id="equipment_yoga_mats" model="sports.equipment">
-            <field name="name">Premium Yoga Mats</field>
-            <field name="equipment_type">mat</field>
-            <field name="total_quantity">20</field>
-            <field name="quantity_available">20</field>
-            <field name="rental_rate">2.00</field>
-            <field name="condition">excellent</field>
-        </record>
+    <record id="equipment_yoga_mats" model="sports.equipment">
+        <field name="name">Premium Yoga Mats</field>
+        <field name="equipment_type">mat</field>
+        <field name="total_quantity">20</field>
+        <field name="quantity_available">20</field>
+        <field name="rental_rate">2.00</field>
+        <field name="condition">excellent</field>
+    </record>
 
-        <record id="equipment_dumbbells" model="sports.equipment">
-            <field name="name">Adjustable Dumbbells Set</field>
-            <field name="equipment_type">weights</field>
-            <field name="total_quantity">8</field>
-            <field name="quantity_available">8</field>
-            <field name="rental_rate">4.00</field>
-            <field name="condition">good</field>
-        </record>
+    <record id="equipment_dumbbells" model="sports.equipment">
+        <field name="name">Adjustable Dumbbells Set</field>
+        <field name="equipment_type">weights</field>
+        <field name="total_quantity">8</field>
+        <field name="quantity_available">8</field>
+        <field name="rental_rate">4.00</field>
+        <field name="condition">good</field>
+    </record>
 
-        <record id="equipment_pool_floats" model="sports.equipment">
-            <field name="name">Swimming Pool Floats</field>
-            <field name="equipment_type">ball</field>
-            <field name="total_quantity">5</field>
-            <field name="quantity_available">5</field>
-            <field name="rental_rate">2.50</field>
-            <field name="condition">good</field>
-        </record>
+    <record id="equipment_pool_floats" model="sports.equipment">
+        <field name="name">Swimming Pool Floats</field>
+        <field name="equipment_type">ball</field>
+        <field name="total_quantity">5</field>
+        <field name="quantity_available">5</field>
+        <field name="rental_rate">2.50</field>
+        <field name="condition">good</field>
+    </record>
 
-        <record id="equipment_soccer_balls" model="sports.equipment">
-            <field name="name">FIFA Approved Soccer Balls</field>
-            <field name="equipment_type">ball</field>
-            <field name="total_quantity">12</field>
-            <field name="quantity_available">12</field>
-            <field name="rental_rate">3.50</field>
-            <field name="condition">excellent</field>
-        </record>
+    <record id="equipment_soccer_balls" model="sports.equipment">
+        <field name="name">FIFA Approved Soccer Balls</field>
+        <field name="equipment_type">ball</field>
+        <field name="total_quantity">12</field>
+        <field name="quantity_available">12</field>
+        <field name="rental_rate">3.50</field>
+        <field name="condition">excellent</field>
+    </record>
 
-        <record id="equipment_volleyball_nets" model="sports.equipment">
-            <field name="name">Portable Volleyball Nets</field>
-            <field name="equipment_type">net</field>
-            <field name="total_quantity">4</field>
-            <field name="quantity_available">4</field>
-            <field name="rental_rate">6.00</field>
-            <field name="condition">good</field>
-        </record>
+    <record id="customer_john_doe" model="res.partner">
+        <field name="name">John Doe</field>
+        <field name="email">john.doe@example.com</field>
+        <field name="phone">+1-555-0101</field>
+        <field name="street">123 Main Street</field>
+        <field name="city">New York</field>
+        <field name="zip">10001</field>
+        <field name="country_id" ref="base.us"/>
+    </record>
 
-        <record id="equipment_resistance_bands" model="sports.equipment">
-            <field name="name">Resistance Bands Set</field>
-            <field name="equipment_type">weights</field>
-            <field name="total_quantity">15</field>
-            <field name="quantity_available">15</field>
-            <field name="rental_rate">1.50</field>
-            <field name="condition">excellent</field>
-        </record>
+    <record id="customer_jane_smith" model="res.partner">
+        <field name="name">Jane Smith</field>
+        <field name="email">jane.smith@example.com</field>
+        <field name="phone">+1-555-0102</field>
+        <field name="street">456 Oak Avenue</field>
+        <field name="city">Los Angeles</field>
+        <field name="zip">90001</field>
+        <field name="country_id" ref="base.us"/>
+    </record>
 
-        <record id="equipment_jump_ropes" model="sports.equipment">
-            <field name="name">Speed Jump Ropes</field>
-            <field name="equipment_type">weights</field>
-            <field name="total_quantity">10</field>
-            <field name="quantity_available">10</field>
-            <field name="rental_rate">1.00</field>
-            <field name="condition">good</field>
-        </record>
+    <record id="customer_mike_johnson" model="res.partner">
+        <field name="name">Mike Johnson</field>
+        <field name="email">mike.johnson@example.com</field>
+        <field name="phone">+1-555-0103</field>
+        <field name="street">789 Park Boulevard</field>
+        <field name="city">Chicago</field>
+        <field name="zip">60601</field>
+        <field name="country_id" ref="base.us"/>
+    </record>
 
-        <record id="equipment_weight_benches" model="sports.equipment">
-            <field name="name">Adjustable Weight Benches</field>
-            <field name="equipment_type">weights</field>
-            <field name="total_quantity">3</field>
-            <field name="quantity_available">3</field>
-            <field name="rental_rate">5.00</field>
-            <field name="condition">excellent</field>
-        </record>
+    <record id="membership_john_basic" model="sports.membership">
+        <field name="member_id" ref="customer_john_doe"/>
+        <field name="membership_type">basic</field>
+        <field name="start_date" eval="(datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')"/>
+        <field name="end_date" eval="(datetime.now() + timedelta(days=335)).strftime('%Y-%m-%d')"/>
+        <field name="discount_percentage">10.00</field>
+        <field name="status">active</field>
+        <field name="payment_status">paid</field>
+        <field name="membership_fee">99.00</field>
+        <field name="notes">Basic membership with 10% discount</field>
+    </record>
 
-        <!-- Sample Customers/Members -->
-        <record id="customer_john_doe" model="res.partner">
-            <field name="name">John Doe</field>
-            <field name="email">john.doe@example.com</field>
-            <field name="phone">+1-555-0101</field>
-            <field name="street">123 Main Street</field>
-            <field name="city">New York</field>
-            <field name="zip">10001</field>
-            <field name="country_id" ref="base.us"/>
-        </record>
+    <record id="membership_jane_premium" model="sports.membership">
+        <field name="member_id" ref="customer_jane_smith"/>
+        <field name="membership_type">premium</field>
+        <field name="start_date" eval="(datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')"/>
+        <field name="end_date" eval="(datetime.now() + timedelta(days=305)).strftime('%Y-%m-%d')"/>
+        <field name="discount_percentage">20.00</field>
+        <field name="status">active</field>
+        <field name="payment_status">paid</field>
+        <field name="membership_fee">199.00</field>
+        <field name="notes">Premium membership with 20% discount</field>
+    </record>
 
-        <record id="customer_jane_smith" model="res.partner">
-            <field name="name">Jane Smith</field>
-            <field name="email">jane.smith@example.com</field>
-            <field name="phone">+1-555-0102</field>
-            <field name="street">456 Oak Avenue</field>
-            <field name="city">Los Angeles</field>
-            <field name="zip">90001</field>
-            <field name="country_id" ref="base.us"/>
-        </record>
+    <record id="booking_tennis_confirmed" model="sports.booking">
+        <field name="booking_reference">BOOK/2025/0001</field>
+        <field name="facility_id" ref="facility_tennis_court"/>
+        <field name="customer_id" ref="customer_john_doe"/>
+        <field name="start_datetime" eval="(datetime.now() + timedelta(days=2, hours=10)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="end_datetime" eval="(datetime.now() + timedelta(days=2, hours=12)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="status">confirmed</field>
+        <field name="notes">Tennis practice session</field>
+    </record>
 
-        <record id="customer_mike_johnson" model="res.partner">
-            <field name="name">Mike Johnson</field>
-            <field name="email">mike.johnson@example.com</field>
-            <field name="phone">+1-555-0103</field>
-            <field name="street">789 Park Boulevard</field>
-            <field name="city">Chicago</field>
-            <field name="zip">60601</field>
-            <field name="country_id" ref="base.us"/>
-        </record>
+    <record id="booking_gym_draft" model="sports.booking">
+        <field name="booking_reference">BOOK/2025/0002</field>
+        <field name="facility_id" ref="facility_gym"/>
+        <field name="customer_id" ref="customer_jane_smith"/>
+        <field name="start_datetime" eval="(datetime.now() + timedelta(days=3, hours=8)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="end_datetime" eval="(datetime.now() + timedelta(days=3, hours=9)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="status">draft</field>
+        <field name="notes">Morning workout session</field>
+    </record>
 
-        <record id="customer_sarah_williams" model="res.partner">
-            <field name="name">Sarah Williams</field>
-            <field name="email">sarah.williams@example.com</field>
-            <field name="phone">+1-555-0104</field>
-            <field name="street">321 Lake Drive</field>
-            <field name="city">Miami</field>
-            <field name="zip">33101</field>
-            <field name="country_id" ref="base.us"/>
-        </record>
-
-        <record id="customer_robert_brown" model="res.partner">
-            <field name="name">Robert Brown</field>
-            <field name="email">robert.brown@example.com</field>
-            <field name="phone">+1-555-0105</field>
-            <field name="street">654 Hill Road</field>
-            <field name="city">Seattle</field>
-            <field name="zip">98101</field>
-            <field name="country_id" ref="base.us"/>
-        </record>
-
-        <!-- Sample Memberships -->
-        <record id="membership_john_basic" model="sports.membership">
-            <field name="member_id" ref="customer_john_doe"/>
-            <field name="membership_type">basic</field>
-            <field name="start_date" eval="(datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')"/>
-            <field name="end_date" eval="(datetime.now() + timedelta(days=335)).strftime('%Y-%m-%d')"/>
-            <field name="discount_percentage">10.00</field>
-            <field name="status">active</field>
-            <field name="payment_status">paid</field>
-            <field name="membership_fee">99.00</field>
-            <field name="notes">Basic membership with 10% discount on all bookings</field>
-        </record>
-
-        <record id="membership_jane_premium" model="sports.membership">
-            <field name="member_id" ref="customer_jane_smith"/>
-            <field name="membership_type">premium</field>
-            <field name="start_date" eval="(datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')"/>
-            <field name="end_date" eval="(datetime.now() + timedelta(days=305)).strftime('%Y-%m-%d')"/>
-            <field name="discount_percentage">20.00</field>
-            <field name="status">active</field>
-            <field name="payment_status">paid</field>
-            <field name="membership_fee">199.00</field>
-            <field name="notes">Premium membership with 20% discount on all bookings</field>
-        </record>
-
-        <record id="membership_mike_vip" model="sports.membership">
-            <field name="member_id" ref="customer_mike_johnson"/>
-            <field name="membership_type">vip</field>
-            <field name="start_date" eval="(datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')"/>
-            <field name="end_date" eval="(datetime.now() + timedelta(days=275)).strftime('%Y-%m-%d')"/>
-            <field name="discount_percentage">30.00</field>
-            <field name="status">active</field>
-            <field name="payment_status">paid</field>
-            <field name="membership_fee">399.00</field>
-            <field name="notes">VIP membership with 30% discount on all bookings and priority access</field>
-        </record>
-
-        <!-- Sample Bookings -->
-        <record id="booking_tennis_confirmed" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0001</field>
-            <field name="facility_id" ref="facility_tennis_court"/>
-            <field name="customer_id" ref="customer_john_doe"/>
-            <field name="start_datetime" eval="(datetime.now() + timedelta(days=2, hours=10)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() + timedelta(days=2, hours=12)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">confirmed</field>
-            <field name="notes">Tennis practice session with coach</field>
-        </record>
-
-        <record id="booking_gym_draft" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0002</field>
-            <field name="facility_id" ref="facility_gym"/>
-            <field name="customer_id" ref="customer_jane_smith"/>
-            <field name="start_datetime" eval="(datetime.now() + timedelta(days=3, hours=8)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() + timedelta(days=3, hours=9)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">draft</field>
-            <field name="notes">Morning workout session</field>
-        </record>
-
-        <record id="booking_pool_completed" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0003</field>
-            <field name="facility_id" ref="facility_swimming_pool"/>
-            <field name="customer_id" ref="customer_mike_johnson"/>
-            <field name="start_datetime" eval="(datetime.now() - timedelta(days=1, hours=14)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() - timedelta(days=1, hours=15)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">completed</field>
-            <field name="notes">Swimming training session completed</field>
-        </record>
-
-        <record id="booking_soccer_confirmed" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0004</field>
-            <field name="facility_id" ref="facility_soccer_field"/>
-            <field name="customer_id" ref="customer_sarah_williams"/>
-            <field name="start_datetime" eval="(datetime.now() + timedelta(days=5, hours=15)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() + timedelta(days=5, hours=17)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">confirmed</field>
-            <field name="notes">Team practice match</field>
-        </record>
-
-        <record id="booking_basketball_cancelled" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0005</field>
-            <field name="facility_id" ref="facility_basketball_court"/>
-            <field name="customer_id" ref="customer_robert_brown"/>
-            <field name="start_datetime" eval="(datetime.now() + timedelta(days=1, hours=18)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() + timedelta(days=1, hours=20)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">cancelled</field>
-            <field name="notes">Cancelled due to scheduling conflict</field>
-        </record>
-
-        <!-- Link equipment to bookings -->
-        <record id="booking_tennis_equipment_rel" model="sports.booking">
-            <field name="id" ref="booking_tennis_confirmed"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_tennis_rackets')])]"/>
-        </record>
-
-        <record id="booking_gym_equipment_rel" model="sports.booking">
-            <field name="id" ref="booking_gym_draft"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_dumbbells'), ref('equipment_yoga_mats')])]"/>
-        </record>
-
-        <record id="booking_soccer_equipment_rel" model="sports.booking">
-            <field name="id" ref="booking_soccer_confirmed"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_soccer_balls'), ref('equipment_volleyball_nets')])]"/>
-        </record>
-
-        <!-- Link equipment to facilities -->
-        <record id="facility_tennis_equipment" model="sports.facility">
-            <field name="id" ref="facility_tennis_court"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_tennis_rackets')])]"/>
-        </record>
-
-        <record id="facility_gym_equipment" model="sports.facility">
-            <field name="id" ref="facility_gym"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_dumbbells'), ref('equipment_yoga_mats'), ref('equipment_resistance_bands'), ref('equipment_jump_ropes'), ref('equipment_weight_benches')])]"/>
-        </record>
-
-        <record id="facility_pool_equipment" model="sports.facility">
-            <field name="id" ref="facility_swimming_pool"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_pool_floats')])]"/>
-        </record>
-
-        <record id="facility_soccer_equipment" model="sports.facility">
-            <field name="id" ref="facility_soccer_field"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_soccer_balls'), ref('equipment_volleyball_nets')])]"/>
-        </record>
-
-        <record id="facility_basketball_equipment" model="sports.facility">
-            <field name="id" ref="facility_basketball_court"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_basketballs')])]"/>
-        </record>
-
+    <record id="booking_pool_completed" model="sports.booking">
+        <field name="booking_reference">BOOK/2025/0003</field>
+        <field name="facility_id" ref="facility_swimming_pool"/>
+        <field name="customer_id" ref="customer_mike_johnson"/>
+        <field name="start_datetime" eval="(datetime.now() - timedelta(days=1, hours=14)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="end_datetime" eval="(datetime.now() - timedelta(days=1, hours=15)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="status">completed</field>
+        <field name="notes">Swimming training completed</field>
+    </record>
 </odoo>
+

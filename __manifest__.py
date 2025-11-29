@@ -21,19 +21,16 @@
     'website': 'https://github.com/AdemMami123/sport_facility_system',
     'depends': [
         'base',
-        'web',
-        'website',
-        'calendar',
-        'sale_management',
         'mail',
     ],
     'data': [
-        # Security
+        # Security - MUST BE FIRST
         'security/security_groups.xml',
         'security/ir.model.access.csv',
         'security/record_rules.xml',
         
-        # Data
+        # Data - Sequences must come before views that use them
+        'data/sequences.xml',
         'data/email_template_booking_confirmation.xml',
         'data/email_template_booking_cancellation.xml',
         'data/email_template_booking_cancelled.xml',
@@ -45,6 +42,8 @@
         'views/facility_views.xml',
         'views/booking_views.xml',
         'views/equipment_views.xml',
+        'views/membership_views.xml',
+        'views/timeslot_views.xml',
         'views/waitlist_views.xml',
         
         # Templates
