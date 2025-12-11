@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<<<<<<< HEAD
     <data>
         <record id="email_template_booking_cancelled" model="mail.template">
             <field name="name">Sports Booking Cancelled</field>
@@ -115,3 +116,48 @@
     </data>
 </odoo>
 
+=======
+    <record id="email_template_booking_cancelled" model="mail.template">
+        <field name="name">Sports Booking Cancelled (System)</field>
+        <field name="model_id" ref="model_sports_booking"/>
+        <field name="subject">Booking Cancelled - ${object.booking_reference}</field>
+        <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
+        <field name="email_to">${object.customer_id.email}</field>
+        <field name="lang">${object.customer_id.lang}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html"><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: #fff; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+        .content { padding: 30px 20px; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Booking Cancelled</h1>
+        </div>
+        <div class="content">
+            <p>Dear ${object.customer_id.name},</p>
+            <p>Your booking ${object.booking_reference} for ${object.facility_id.name} has been cancelled by the system.</p>
+            <p>If you have any questions, please contact us.</p>
+        </div>
+        <div class="footer">
+            <p>© ${datetime.datetime.now().year} Sports Facility Booking System</p>
+        </div>
+    </div>
+</body>
+</html>
+]]></field>
+    </record>
+</odoo>
+
+
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73

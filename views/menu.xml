@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<<<<<<< HEAD
     <!-- Actions for Calendar View -->
 <record id="action_sports_booking_calendar" model="ir.actions.act_window">
         <field name="name">Booking Calendar</field>
@@ -131,4 +132,25 @@
                   parent="menu_sports_configuration" 
                   action="action_sports_waitlist" 
                   sequence="30"/>
+=======
+    <menuitem id="menu_sports_root" name="Sports Booking" web_icon="sport_facility_system,static/description/icon.png" sequence="10"/>
+
+    <menuitem id="menu_sports_dashboard" name="Dashboard" parent="menu_sports_root" action="action_booking_dashboard" sequence="1"/>
+
+    <menuitem id="menu_sports_facilities" name="Facilities" parent="menu_sports_root" action="action_sports_facility" sequence="2"/>
+
+    <menuitem id="menu_sports_equipment" name="Equipment" parent="menu_sports_root" action="action_sports_equipment" sequence="3"/>
+
+    <menuitem id="menu_sports_bookings" name="Bookings" parent="menu_sports_root" action="action_sports_booking" sequence="4"/>
+
+    <menuitem id="menu_sports_calendar" name="Calendar" parent="menu_sports_root" action="action_sports_booking_calendar" sequence="5"/>
+
+    <menuitem id="menu_sports_configuration" name="Configuration" parent="menu_sports_root" sequence="100"/>
+
+    <menuitem id="menu_sports_memberships" name="Memberships" parent="menu_sports_configuration" action="action_sports_membership" sequence="10"/>
+
+    <menuitem id="menu_sports_timeslots" name="Time Slots" parent="menu_sports_configuration" action="action_sports_timeslot" sequence="20"/>
+
+    <menuitem id="menu_sports_waitlist" name="Waitlist" parent="menu_sports_configuration" action="action_sports_waitlist" sequence="30"/>
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
 </odoo>

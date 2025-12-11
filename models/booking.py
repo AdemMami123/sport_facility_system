@@ -72,7 +72,6 @@ class SportsBooking(models.Model):
         compute='_compute_total_cost',
         store=True,
         digits='Product Price',
-        groups='sport_facility_system.group_sports_manager',
         help='Total cost of the booking'
     )
     
@@ -83,7 +82,6 @@ class SportsBooking(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', required=True, tracking=True,
-       groups='sport_facility_system.group_sports_manager',
        help='Current status of the booking')
     
     checkin_datetime = fields.Datetime(
@@ -402,7 +400,7 @@ class SportsBooking(models.Model):
             
             # Send confirmation email after status change
             try:
-                template = self.env.ref('sport_facility_system.email_template_booking_confirmation', 
+                template = self.env.ref('sport_facility_booking_system.email_template_booking_confirmation', 
                                        raise_if_not_found=False)
                 if template:
                     template.send_mail(record.id, force_send=True)
@@ -534,7 +532,7 @@ class SportsBooking(models.Model):
             
             # Send cancellation email
             try:
-                template = self.env.ref('sport_facility_system.email_template_booking_cancellation', 
+                template = self.env.ref('sport_facility_booking_system.email_template_booking_cancellation', 
                                        raise_if_not_found=False)
                 if template:
                     template.send_mail(record.id, force_send=True)
@@ -639,7 +637,7 @@ class SportsBooking(models.Model):
         # Send notification email with booking link
         try:
             # Try to use email template if it exists
-            template = self.env.ref('sport_facility_system.email_template_waitlist_notification', 
+            template = self.env.ref('sport_facility_booking_system.email_template_waitlist_notification', 
                                    raise_if_not_found=False)
             
             if template:
@@ -851,7 +849,11 @@ class SportsBooking(models.Model):
             self.write({'notes': (self.notes or '') + failure_summary})
         
         return created_bookings
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     def action_reset_to_draft(self):
         """Reset booking to draft status"""
         for record in self:
@@ -890,7 +892,7 @@ class SportsBooking(models.Model):
         
         for booking in upcoming_bookings:
             try:
-                template = self.env.ref('sport_facility_system.email_template_booking_reminder', 
+                template = self.env.ref('sport_facility_booking_system.email_template_booking_reminder', 
                                        raise_if_not_found=False)
                 if template:
                     template.send_mail(booking.id, force_send=True)

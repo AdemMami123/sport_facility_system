@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sports_membership_form" model="ir.ui.view">
+        <field name="name">sports.membership.form</field>
+        <field name="model">sports.membership</field>
+        <field name="arch" type="xml">
+            <form string="Membership">
+                <header>
+                    <button name="action_activate" string="Activate" type="object" class="oe_highlight" states="draft"/>
+                    <button name="action_cancel" string="Cancel" type="object" states="active"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="member_id"/>
+                            <field name="membership_type"/>
+                            <field name="discount_percentage"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="payment_status"/>
+                            <field name="membership_fee"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Additional notes..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sports_membership_tree" model="ir.ui.view">
+        <field name="name">sports.membership.tree</field>
+        <field name="model">sports.membership</field>
+        <field name="arch" type="xml">
+            <tree string="Memberships">
+                <field name="member_id"/>
+                <field name="membership_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="discount_percentage"/>
+                <field name="status"/>
+                <field name="payment_status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_sports_membership" model="ir.actions.act_window">
+        <field name="name">Memberships</field>
+        <field name="res_model">sports.membership</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

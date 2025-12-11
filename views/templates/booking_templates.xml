@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<<<<<<< HEAD
     <!-- Booking Form Template -->
     <template id="booking_form_template" name="Facility Booking Form">
         <t t-call="website.layout">
@@ -529,270 +530,97 @@
                                     <div class="card-body text-center">
                                         <h5 class="mb-3">
                                             <i class="fa fa-phone mr-2"/>Need Help?
-                                        </h5>
-                                        <p class="mb-2">
-                                            If you have any questions about your booking, please contact us:
-                                        </p>
-                                        <p class="mb-0">
-                                            <i class="fa fa-envelope mr-2"/>
-                                            <a href="mailto:support@sportsfacility.com">support@sportsfacility.com</a>
-                                            <span class="mx-3">|</span>
-                                            <i class="fa fa-phone mr-2"/>
-                                            <a href="tel:+15551234567">+1 (555) 123-4567</a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Custom CSS -->
-                <style>
-                    .alert-success {
-                        border-left: 5px solid #28a745;
-                    }
-                    .card {
-                        transition: transform 0.2s;
-                    }
-                    .card:hover {
-                        transform: translateY(-2px);
-                    }
-                    dt {
-                        font-weight: 600;
-                        color: #495057;
-                    }
-                    dd {
-                        margin-bottom: 1rem;
-                    }
-                </style>
-            </t>
-        </template>
-
-        <!-- Booking Error Template -->
-        <template id="booking_error_template" name="Booking Error">
-            <t t-call="website.layout">
-                <div id="wrap" class="oe_structure">
-                    <div class="container mt-5 mb-5">
-                        <div class="row">
-                            <div class="col-lg-6 offset-lg-3">
-                                <div class="alert alert-danger text-center shadow-lg" role="alert">
-                                    <div class="mb-3">
-                                        <i class="fa fa-exclamation-triangle fa-5x text-danger"/>
-                                    </div>
-                                    <h2 class="alert-heading mb-3">
-                                        <strong>Booking Error</strong>
-                                    </h2>
-                                    <p class="lead mb-4">
-                                        <t t-esc="error"/>
-                                    </p>
-                                    <hr/>
-                                    <div class="mt-4">
-                                        <a href="/sports/facilities" class="btn btn-primary btn-lg">
-                                            <i class="fa fa-arrow-left mr-2"/>
-                                            Back to Facilities
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </t>
-        </template>
-        
-        <!-- Check-in Success Template -->
-        <template id="checkin_success_template" name="Check-in Success">
-            <t t-call="website.layout">
-                <div id="wrap" class="oe_structure">
-                    <div class="container mt-5 mb-5">
-                        <div class="row">
-                            <div class="col-lg-8 offset-lg-2">
-                                <!-- Success Message -->
-                                <div class="alert alert-success shadow-lg text-center mb-4" role="alert">
-                                    <div class="mb-3">
-                                        <i class="fa fa-check-circle fa-5x text-success"/>
-                                    </div>
-                                    <h2 class="alert-heading mb-3">
-                                        <strong>Check-in Successful!</strong>
-                                    </h2>
-                                    <p class="lead mb-0">
-                                        Welcome, <strong><t t-esc="customer_name"/></strong>!
-                                    </p>
-                                </div>
-
-                                <!-- Check-in Details Card -->
-                                <div class="card shadow-sm mb-4">
-                                    <div class="card-header bg-success text-white">
-                                        <h4 class="mb-0">
-                                            <i class="fa fa-info-circle mr-2"/>Check-in Details
-                                        </h4>
-                                    </div>
+=======
+    <template id="facilities_list_template" name="Facilities List">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-4">
+                    <h1 class="text-center mb-4">Our Sports Facilities</h1>
+                    <div class="row">
+                        <t t-foreach="facilities" t-as="facility">
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
                                     <div class="card-body">
-                                        <dl class="row mb-0">
-                                            <dt class="col-sm-5">
-                                                <i class="fa fa-barcode mr-2"/>Booking Reference:
-                                            </dt>
-                                            <dd class="col-sm-7">
-                                                <strong class="text-primary" style="font-size: 1.2em;">
-                                                    <t t-esc="booking.booking_reference"/>
-                                                </strong>
-                                            </dd>
-
-                                            <dt class="col-sm-5">
-                                                <i class="fa fa-building mr-2"/>Facility:
-                                            </dt>
-                                            <dd class="col-sm-7">
-                                                <strong><t t-esc="facility_name"/></strong>
-                                            </dd>
-
-                                            <dt class="col-sm-5">
-                                                <i class="fa fa-clock-o mr-2"/>Check-in Time:
-                                            </dt>
-                                            <dd class="col-sm-7">
-                                                <strong class="text-success">
-                                                    <t t-esc="checkin_time.strftime('%I:%M %p')"/>
-                                                </strong>
-                                                <br/>
-                                                <small class="text-muted">
-                                                    <t t-esc="checkin_time.strftime('%B %d, %Y')"/>
-                                                </small>
-                                            </dd>
-
-                                            <dt class="col-sm-5">
-                                                <i class="fa fa-calendar mr-2"/>Booking Time:
-                                            </dt>
-                                            <dd class="col-sm-7">
-                                                <t t-esc="booking.start_datetime.strftime('%I:%M %p')"/> - 
-                                                <t t-esc="booking.end_datetime.strftime('%I:%M %p')"/>
-                                            </dd>
-
-                                            <dt class="col-sm-5">
-                                                <i class="fa fa-hourglass-half mr-2"/>Duration:
-                                            </dt>
-                                            <dd class="col-sm-7">
-                                                <t t-esc="booking.duration"/> hours
-                                            </dd>
-
-                                            <t t-if="booking.equipment_ids">
-                                                <dt class="col-sm-5">
-                                                    <i class="fa fa-cube mr-2"/>Equipment:
-                                                </dt>
-                                                <dd class="col-sm-7">
-                                                    <t t-foreach="booking.equipment_ids" t-as="equipment">
-                                                        <span class="badge badge-info mr-1 mb-1">
-                                                            <t t-esc="equipment.name"/>
-                                                        </span>
-                                                    </t>
-                                                </dd>
-                                            </t>
-                                        </dl>
+                                        <h5 class="card-title">
+                                            <t t-esc="facility.name"/>
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
+                                        </h5>
+                                        <p class="card-text">
+                                            <strong>Type:</strong>
+                                            <t t-esc="facility.facility_type"/>
+                                        </p>
+                                        <p class="card-text">
+                                            <strong>Hourly Rate:</strong>
+                                            <t t-esc="facility.hourly_rate"/>
+                                        </p>
+                                        <a t-attf-href="/sports/facility/{{ facility.id }}" class="btn btn-primary">Book Now</a>
                                     </div>
-                                </div>
-
-                                <!-- Important Information -->
-                                <div class="alert alert-info" role="alert">
-                                    <h5 class="alert-heading">
-                                        <i class="fa fa-info-circle mr-2"/>Important Information
-                                    </h5>
-                                    <ul class="mb-0">
-                                        <li>Your booking is now <strong>in progress</strong></li>
-                                        <li>Please collect any equipment from the front desk</li>
-                                        <li>Remember to check out when you're done</li>
-                                        <li>Follow all facility rules and safety guidelines</li>
-                                        <li>If you need assistance, contact staff immediately</li>
-                                    </ul>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="text-center">
-                                    <a href="/sports/facilities" class="btn btn-primary btn-lg">
-                                        <i class="fa fa-home mr-2"/>
-                                        Back to Home
-                                    </a>
                                 </div>
                             </div>
-                        </div>
+                        </t>
                     </div>
                 </div>
+            </div>
+        </t>
+    </template>
 
-                <!-- Custom CSS -->
-                <style>
-                    .alert-success {
-                        border-left: 5px solid #28a745;
-                    }
-                    dt {
-                        font-weight: 600;
-                        color: #495057;
-                    }
-                    dd {
-                        margin-bottom: 1rem;
-                    }
-                </style>
-            </t>
-        </template>
-
-        <!-- Check-in Error Template -->
-        <template id="checkin_error_template" name="Check-in Error">
-            <t t-call="website.layout">
-                <div id="wrap" class="oe_structure">
-                    <div class="container mt-5 mb-5">
-                        <div class="row">
-                            <div class="col-lg-6 offset-lg-3">
-                                <div class="alert alert-danger text-center shadow-lg" role="alert">
-                                    <div class="mb-3">
-                                        <i class="fa fa-times-circle fa-5x text-danger"/>
-                                    </div>
-                                    <h2 class="alert-heading mb-3">
-                                        <strong><t t-esc="error_title or 'Check-in Failed'"/></strong>
-                                    </h2>
-                                    <p class="lead mb-4">
-                                        <t t-esc="error_message or 'Unable to complete check-in'"/>
-                                    </p>
-                                    
-                                    <t t-if="booking">
-                                        <hr/>
-                                        <div class="text-left mt-4">
-                                            <h6>Booking Information:</h6>
-                                            <ul class="list-unstyled">
-                                                <li><strong>Reference:</strong> <t t-esc="booking.booking_reference"/></li>
-                                                <li><strong>Status:</strong> <t t-esc="booking.status.title()"/></li>
-                                                <li><strong>Facility:</strong> <t t-esc="booking.facility_id.name"/></li>
-                                            </ul>
+    <template id="booking_form_template" name="Facility Booking Form">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-4 mb-5">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <h1 class="text-center mb-4">Book <t t-esc="facility.name"/></h1>
+                            <div class="card">
+                                <div class="card-body">
+                                    <form id="booking_form" action="/sports/confirm_booking" method="POST">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="facility_id" t-att-value="facility.id"/>
+                                        <div class="form-group">
+                                            <label for="customer_name">Name</label>
+                                            <input type="text" class="form-control" id="customer_name" name="customer_name" required="required"/>
                                         </div>
-                                    </t>
-                                    
-                                    <hr/>
-                                    <div class="mt-4">
-                                        <a href="/sports/facilities" class="btn btn-primary btn-lg mr-2">
-                                            <i class="fa fa-home mr-2"/>
-                                            Back to Home
-                                        </a>
-                                        <a href="/sports/my/bookings" class="btn btn-outline-secondary btn-lg">
-                                            <i class="fa fa-list mr-2"/>
-                                            My Bookings
-                                        </a>
-                                    </div>
-                                </div>
-                                
-                                <!-- Help Information -->
-                                <div class="card shadow-sm mt-4">
-                                    <div class="card-body text-center">
-                                        <h6 class="mb-3">
-                                            <i class="fa fa-question-circle mr-2"/>Need Help?
-                                        </h6>
-                                        <p class="mb-2">
-                                            Please contact the front desk or facility staff for assistance.
-                                        </p>
-                                        <p class="mb-0 text-muted">
-                                            <small>Error Code: <strong><t t-esc="error_code or 'UNKNOWN'"/></strong></small>
-                                        </p>
-                                    </div>
+                                        <div class="form-group">
+                                            <label for="customer_email">Email</label>
+                                            <input type="email" class="form-control" id="customer_email" name="customer_email" required="required"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="start_datetime">Start Date &amp; Time</label>
+                                            <input type="datetime-local" class="form-control" id="start_datetime" name="start_datetime" required="required"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="end_datetime">End Date &amp; Time</label>
+                                            <input type="datetime-local" class="form-control" id="end_datetime" name="end_datetime" required="required"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="notes">Additional Notes</label>
+                                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-block">Confirm Booking</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+<<<<<<< HEAD
             </t>
+=======
+            </div>
+        </t>
+    </template>
+
+    <template id="booking_confirmation_template" name="Booking Confirmation">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-5 text-center">
+                    <h1 class="text-success">Booking Confirmed!</h1>
+                    <p class="lead">Your booking has been successfully created.</p>
+                    <p>Reference: <strong><t t-esc="booking.booking_reference"/></strong></p>
+                    <a href="/sports/facilities" class="btn btn-primary">Back to Facilities</a>
+                </div>
+            </div>
+        </t>
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     </template>
 </odoo>

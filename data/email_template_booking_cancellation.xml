@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<<<<<<< HEAD
     <data>
         <record id="email_template_booking_cancellation" model="mail.template">
             <field name="name">Sports Booking Cancellation</field>
@@ -79,3 +80,72 @@
     </data>
 </odoo>
 
+=======
+    <record id="email_template_booking_cancellation" model="mail.template">
+        <field name="name">Sports Booking Cancellation</field>
+        <field name="model_id" ref="model_sports_booking"/>
+        <field name="subject">Booking Cancelled - ${object.booking_reference}</field>
+        <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
+        <field name="email_to">${object.customer_id.email}</field>
+        <field name="lang">${object.customer_id.lang}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html"><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+        .content { padding: 30px 20px; }
+        .booking-details { background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
+        .detail-label { font-weight: bold; width: 150px; color: #495057; }
+        .detail-value { flex: 1; color: #212529; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✗ Booking Cancelled</h1>
+            <p>Your reservation has been cancelled</p>
+        </div>
+        <div class="content">
+            <p>Dear ${object.customer_id.name},</p>
+            <p>This is to confirm that your booking has been cancelled as requested.</p>
+            
+            <div class="booking-details">
+                <h3 style="margin-top: 0;">Cancelled Booking Details</h3>
+                <div class="detail-row">
+                    <div class="detail-label">Reference:</div>
+                    <div class="detail-value">${object.booking_reference}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Facility:</div>
+                    <div class="detail-value">${object.facility_id.name}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Original Time:</div>
+                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='medium', tz=object.customer_id.tz or 'UTC')}</div>
+                </div>
+            </div>
+            
+            <p>If this cancellation was made in error, please contact us immediately to rebook.</p>
+            <p>We hope to serve you again in the future.</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message. Please do not reply to this email.</p>
+            <p>© ${datetime.datetime.now().year} Sports Facility Booking System. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+]]></field>
+    </record>
+</odoo>
+
+
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73

@@ -1,10 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<<<<<<< HEAD
     <!-- Form View for Sports Booking -->
+=======
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     <record id="view_sports_booking_form" model="ir.ui.view">
         <field name="name">sports.booking.form</field>
         <field name="model">sports.booking</field>
         <field name="arch" type="xml">
+<<<<<<< HEAD
                 <form string="Sports Booking">
                     <header>
                         <field name="status" widget="statusbar" 
@@ -423,4 +427,123 @@
                 </p>
             </field>
         </record>
+=======
+            <form string="Sports Booking">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" states="draft" class="oe_highlight"/>
+                    <button name="action_complete" string="Complete" type="object" states="confirmed" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" type="object" states="draft,confirmed"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="booking_reference" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="facility_id"/>
+                            <field name="start_datetime"/>
+                            <field name="end_datetime"/>
+                            <field name="duration" widget="float_time"/>
+                        </group>
+                        <group>
+                            <field name="total_cost" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="equipment_ids" widget="many2many_tags">
+                            <tree>
+                                <field name="name"/>
+                                <field name="rental_rate"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Booking notes..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sports_booking_tree" model="ir.ui.view">
+        <field name="name">sports.booking.tree</field>
+        <field name="model">sports.booking</field>
+        <field name="arch" type="xml">
+            <tree string="Bookings">
+                <field name="booking_reference"/>
+                <field name="customer_id"/>
+                <field name="facility_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="duration" widget="float_time"/>
+                <field name="total_cost" widget="monetary"/>
+                <field name="status"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_sports_booking_calendar" model="ir.ui.view">
+        <field name="name">sports.booking.calendar</field>
+        <field name="model">sports.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Bookings Calendar" date_start="start_datetime" date_stop="end_datetime" color="facility_id">
+                <field name="customer_id"/>
+                <field name="facility_id"/>
+                <field name="status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_sports_booking_search" model="ir.ui.view">
+        <field name="name">sports.booking.search</field>
+        <field name="model">sports.booking</field>
+        <field name="arch" type="xml">
+            <search string="Search Bookings">
+                <field name="booking_reference"/>
+                <field name="customer_id"/>
+                <field name="facility_id"/>
+                <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('status', '=', 'confirmed')]"/>
+                <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('status', '=', 'cancelled')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Facility" name="group_facility" context="{'group_by': 'facility_id'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sports_booking" model="ir.actions.act_window">
+        <field name="name">Bookings</field>
+        <field name="res_model">sports.booking</field>
+        <field name="view_mode">tree,form,calendar</field>
+    </record>
+
+    <record id="action_sports_booking_calendar" model="ir.actions.act_window">
+        <field name="name">Booking Calendar</field>
+        <field name="res_model">sports.booking</field>
+        <field name="view_mode">calendar,tree,form</field>
+        <field name="view_id" ref="view_sports_booking_calendar"/>
+    </record>
+
+    <record id="action_booking_dashboard" model="ir.actions.act_window">
+        <field name="name">Booking Dashboard</field>
+        <field name="res_model">sports.booking</field>
+        <field name="view_mode">tree,form,calendar</field>
+    </record>
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
 </odoo>

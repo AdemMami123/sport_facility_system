@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<<<<<<< HEAD
     <!-- Scheduled Action: Send Booking Reminders -->
+=======
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     <record id="ir_cron_send_booking_reminders" model="ir.cron">
         <field name="name">Send Booking Reminders</field>
         <field name="model_id" ref="model_sports_booking"/>
@@ -8,10 +11,19 @@
         <field name="code">model._cron_send_booking_reminders()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
+<<<<<<< HEAD
         <field name="active" eval="True"/>
     </record>
 
     <!-- Scheduled Action: Archive Expired Bookings -->
+=======
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=9, minute=0, second=0)"/>
+    </record>
+
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     <record id="ir_cron_archive_expired_bookings" model="ir.cron">
         <field name="name">Archive Expired Bookings</field>
         <field name="model_id" ref="model_sports_booking"/>
@@ -19,10 +31,19 @@
         <field name="code">model._cron_archive_expired_bookings()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
+<<<<<<< HEAD
         <field name="active" eval="True"/>
     </record>
 
     <!-- Scheduled Action: Expire Old Waitlist Entries -->
+=======
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=2, minute=0, second=0)"/>
+    </record>
+
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     <record id="ir_cron_expire_waitlist_entries" model="ir.cron">
         <field name="name">Expire Old Waitlist Entries</field>
         <field name="model_id" ref="model_sports_waitlist"/>
@@ -30,6 +51,15 @@
         <field name="code">model._cron_expire_old_waitlist_entries()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
+<<<<<<< HEAD
         <field name="active" eval="True"/>
+=======
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=3, minute=0, second=0)"/>
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     </record>
 </odoo>
+
+

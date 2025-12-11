@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<<<<<<< HEAD
     <data>
         <record id="email_template_booking_reminder" model="mail.template">
             <field name="name">Sports Booking Reminder</field>
@@ -93,3 +94,82 @@
     </data>
 </odoo>
 
+=======
+    <record id="email_template_booking_reminder" model="mail.template">
+        <field name="name">Sports Booking Reminder</field>
+        <field name="model_id" ref="model_sports_booking"/>
+        <field name="subject">Reminder: Your booking tomorrow at ${object.facility_id.name}</field>
+        <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
+        <field name="email_to">${object.customer_id.email}</field>
+        <field name="lang">${object.customer_id.lang}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html"><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+        .content { padding: 30px 20px; }
+        .booking-details { background-color: #fffbeb; padding: 20px; border-radius: 6px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #fef3c7; }
+        .detail-label { font-weight: bold; width: 150px; color: #92400e; }
+        .detail-value { flex: 1; color: #78350f; }
+        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ Booking Reminder</h1>
+            <p>Don't forget your upcoming reservation</p>
+        </div>
+        <div class="content">
+            <p>Dear ${object.customer_id.name},</p>
+            <p>This is a friendly reminder about your upcoming booking at <strong>${object.facility_id.name}</strong>.</p>
+            
+            <div class="booking-details">
+                <h3 style="margin-top: 0; color: #92400e;">Your Booking Details</h3>
+                <div class="detail-row">
+                    <div class="detail-label">Reference:</div>
+                    <div class="detail-value">${object.booking_reference}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Facility:</div>
+                    <div class="detail-value">${object.facility_id.name}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">When:</div>
+                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='medium', tz=object.customer_id.tz or 'UTC')}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">${'%.2f' % object.duration} hours</div>
+                </div>
+            </div>
+            
+            <p><strong>Important reminders:</strong></p>
+            <ul>
+                <li>Please arrive 10 minutes before your scheduled time</li>
+                <li>Bring any required equipment or accessories</li>
+                <li>Contact us if you need to cancel or reschedule</li>
+            </ul>
+            
+            <p>We look forward to seeing you!</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated reminder. Please do not reply to this email.</p>
+            <p>© ${datetime.datetime.now().year} Sports Facility Booking System. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+]]></field>
+    </record>
+</odoo>
+
+
+>>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
