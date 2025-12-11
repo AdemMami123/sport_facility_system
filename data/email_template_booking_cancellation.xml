@@ -1,267 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-        
-        <!-- Email Template: Booking Cancellation -->
+    <data>
         <record id="email_template_booking_cancellation" model="mail.template">
             <field name="name">Sports Booking Cancellation</field>
-            <field name="model_id" ref="model_sports_booking"/>
-            <field name="subject">Booking Cancelled - ${object.booking_reference}</field>
-            <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
-            <field name="email_to">${object.customer_id.email}</field>
-            <field name="lang">${object.customer_id.lang}</field>
+            <field name="model_id" ref="sports_booking.model_sports_booking"/>
+            <field name="subject">Booking Cancelled - {{ object.booking_reference }}</field>
+            <field name="email_from">{{ (object.company_id.email or user.email or '') }}</field>
+            <field name="email_to">{{ object.customer_id.email }}</field>
+            <field name="lang">{{ object.customer_id.lang }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
-<![CDATA[
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 14px;
-            color: #333333;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: #ffffff;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .header p {
-            margin: 10px 0 0 0;
-            font-size: 16px;
-            opacity: 0.9;
-        }
-        .content {
-            padding: 30px 20px;
-        }
-        .greeting {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: #333333;
-        }
-        .cancelled-badge {
-            display: inline-block;
-            background-color: #ef4444;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .booking-details {
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        .detail-row {
-            display: flex;
-            padding: 12px 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-        .detail-label {
-            font-weight: bold;
-            color: #6b7280;
-            width: 140px;
-            flex-shrink: 0;
-        }
-        .detail-value {
-            color: #111827;
-            flex-grow: 1;
-        }
-        .refund-box {
-            background-color: #d1fae5;
-            border-left: 4px solid #10b981;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        .refund-box h4 {
-            margin-top: 0;
-            color: #065f46;
-        }
-        .refund-box p {
-            margin: 5px 0;
-            color: #047857;
-            font-size: 14px;
-        }
-        .warning-box {
-            background-color: #fee2e2;
-            border-left: 4px solid #ef4444;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
-        .warning-box p {
-            margin: 5px 0;
-            color: #991b1b;
-            font-size: 13px;
-        }
-        .footer {
-            background-color: #f9fafb;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #e5e7eb;
-            font-size: 12px;
-            color: #6b7280;
-        }
-        .footer p {
-            margin: 5px 0;
-        }
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        .button {
-            display: inline-block;
-            background-color: #667eea;
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 6px;
-            margin: 20px 0;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>❌ Booking Cancelled</h1>
-            <p>Your reservation has been cancelled</p>
-        </div>
-        
-        <!-- Content -->
-        <div class="content">
-            <!-- Greeting -->
-            <div class="greeting">
-                <p>Dear <strong>${object.customer_id.name}</strong>,</p>
-                <div class="cancelled-badge">✗ Booking Cancelled</div>
-                <p>Your booking has been successfully cancelled. We're sorry to see you go, but we hope to serve you again in the future.</p>
-            </div>
-            
-            <!-- Cancelled Booking Details -->
-            <div class="booking-details">
-                <h2 style="margin-top: 0; color: #ef4444;">Cancelled Booking Details</h2>
-                
-                <div class="detail-row">
-                    <div class="detail-label">Booking Reference:</div>
-                    <div class="detail-value"><strong>${object.booking_reference}</strong></div>
-                </div>
-                
-                <div class="detail-row">
-                    <div class="detail-label">Facility:</div>
-                    <div class="detail-value"><strong>${object.facility_id.name}</strong></div>
-                </div>
-                
-                <div class="detail-row">
-                    <div class="detail-label">Date:</div>
-                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='EEEE, MMMM d, yyyy', lang_code=object.customer_id.lang)}</div>
-                </div>
-                
-                <div class="detail-row">
-                    <div class="detail-label">Time:</div>
-                    <div class="detail-value">
-                        ${format_datetime(object.start_datetime, dt_format='HH:mm', lang_code=object.customer_id.lang, tz=object.customer_id.tz)} - 
-                        ${format_datetime(object.end_datetime, dt_format='HH:mm', lang_code=object.customer_id.lang, tz=object.customer_id.tz)}
-                    </div>
-                </div>
-                
-                <div class="detail-row">
-                    <div class="detail-label">Duration:</div>
-                    <div class="detail-value">${'%.1f' % object.duration} hours</div>
-                </div>
-                
-                <div class="detail-row">
-                    <div class="detail-label">Original Amount:</div>
-                    <div class="detail-value">${object.currency_id.symbol or '$'}${'%.2f' % object.total_cost}</div>
-                </div>
-            </div>
-            
-            <!-- Refund Information (extracted from notes) -->
-            <t t-if="'Refund:' in (object.notes or '')">
-                <div class="refund-box">
-                    <h4>💰 Refund Information</h4>
-                    <p>${object.notes.split('Booking cancelled.')[-1].strip() if object.notes else 'Refund information will be processed according to our cancellation policy.'}</p>
-                    <p><strong>Refund Processing:</strong> Your refund will be processed within 5-7 business days to your original payment method.</p>
-                </div>
-            </t>
-            
-            <t t-if="'Refund:' not in (object.notes or '')">
-                <div class="warning-box">
-                    <p><strong>⚠️ Cancellation Policy:</strong></p>
-                    <p>• Cancellations 48+ hours in advance: 100% refund</p>
-                    <p>• Cancellations 24-48 hours in advance: 50% refund</p>
-                    <p>• Cancellations 12-24 hours in advance: 25% refund</p>
-                    <p>• Cancellations less than 12 hours: No refund</p>
-                </div>
-            </t>
-            
-            <!-- Next Steps -->
-            <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3 style="margin-top: 0; color: #667eea;">What's Next?</h3>
-                <p>• You will receive a separate email confirmation when your refund is processed.</p>
-                <p>• If you have any questions about this cancellation, please contact our support team.</p>
-                <p>• We'd love to have you back! Book another facility anytime.</p>
-            </div>
-            
-            <!-- Call to Action -->
-            <div style="text-align: center;">
-                <a href="/sports/facilities" class="button">Browse Available Facilities</a>
-            </div>
-            
-            <p style="margin-top: 30px; color: #6b7280; font-size: 13px;">
-                If you cancelled by mistake or need assistance, please contact us immediately.
-            </p>
-        </div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            <p><strong>${object.company_id.name or 'Sports Facility'}</strong></p>
-            <p t-if="object.company_id.phone">
-                📞 Phone: <a t-attf-href="tel:${object.company_id.phone}">${object.company_id.phone}</a>
-            </p>
-            <p t-if="object.company_id.email">
-                ✉️ Email: <a t-attf-href="mailto:${object.company_id.email}">${object.company_id.email}</a>
-            </p>
-            <p t-if="object.company_id.website">
-                🌐 Website: <a t-attf-href="${object.company_id.website}" target="_blank">${object.company_id.website}</a>
-            </p>
-            <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">
-                This is an automated notification email. Please do not reply directly to this email.
-            </p>
-        </div>
-    </div>
-</body>
-</html>
-]]>
+<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F4F4F4; font-family: Arial, Helvetica, sans-serif; color: #454748; width: 100%; border-collapse: separate;">
+    <tr>
+        <td align="center">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: #FFFFFF; color: #454748; border-collapse: separate;">
+                <tbody>
+                    <tr>
+                        <td align="center" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; padding: 30px 20px;">
+                            <h1 style="margin: 0; font-size: 28px; font-weight: bold;">Booking Cancelled</h1>
+                            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your reservation has been cancelled</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 30px 20px;">
+                            <p style="font-size: 16px; margin-bottom: 20px; color: #333333;">
+                                Dear <strong t-out="object.customer_id.name">Customer</strong>,
+                            </p>
+                            <p>Your booking has been successfully cancelled. We're sorry to see you go, but we hope to serve you again in the future.</p>
+                            
+                            <table border="0" cellpadding="8" cellspacing="0" style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; width: 100%;">
+                                <tr>
+                                    <td style="font-weight: bold; color: #6b7280; width: 140px;">Booking Reference:</td>
+                                    <td style="color: #111827;"><strong t-out="object.booking_reference">REF-001</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; color: #6b7280;">Facility:</td>
+                                    <td style="color: #111827;"><strong t-out="object.facility_id.name">Tennis Court 1</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; color: #6b7280;">Date:</td>
+                                    <td style="color: #111827;" t-out="format_datetime(object.start_datetime, dt_format='EEEE, MMMM d, yyyy')">Monday, January 1, 2024</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; color: #6b7280;">Duration:</td>
+                                    <td style="color: #111827;"><t t-out="'%.1f' % object.duration">1.0</t> hours</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; color: #6b7280;">Original Amount:</td>
+                                    <td style="color: #111827;"><t t-out="object.currency_id.symbol or '$'">$</t><t t-out="'%.2f' % object.total_cost">0.00</t></td>
+                                </tr>
+                            </table>
+                            
+                            <div style="background-color: #fee2e2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                                <p style="margin: 5px 0; color: #991b1b; font-size: 13px;"><strong>Cancellation Policy:</strong></p>
+                                <p style="margin: 5px 0; color: #991b1b; font-size: 13px;">48+ hours: 100% refund | 24-48 hours: 50% | 12-24 hours: 25% | Less than 12 hours: No refund</p>
+                            </div>
+                            
+                            <p style="margin-top: 30px; color: #6b7280; font-size: 13px;">
+                                If you cancelled by mistake or need assistance, please contact us immediately.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
+                            <p style="margin: 5px 0;"><strong t-out="object.company_id.name or 'Sports Facility'">Sports Facility</strong></p>
+                            <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">
+                                This is an automated notification email.
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>
             </field>
         </record>
-        
     </data>
 </odoo>
+

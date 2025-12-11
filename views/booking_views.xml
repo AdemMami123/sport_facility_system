@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Form View for Sports Booking -->
-        <record id="view_sports_booking_form" model="ir.ui.view">
-            <field name="name">sports.booking.form</field>
-            <field name="model">sports.booking</field>
-            <field name="arch" type="xml">
+    <!-- Form View for Sports Booking -->
+    <record id="view_sports_booking_form" model="ir.ui.view">
+        <field name="name">sports.booking.form</field>
+        <field name="model">sports.booking</field>
+        <field name="arch" type="xml">
                 <form string="Sports Booking">
                     <header>
                         <field name="status" widget="statusbar" 
@@ -14,27 +13,27 @@
                         <button name="action_confirm" 
                                 string="Confirm" 
                                 type="object" 
-                                states="draft" 
+                                invisible="status != 'draft'" 
                                 class="oe_highlight"
                                 confirm="Confirm this booking?"/>
                         
                         <button name="action_complete" 
                                 string="Complete" 
                                 type="object" 
-                                states="confirmed" 
+                                invisible="status != 'confirmed'" 
                                 class="oe_highlight"
                                 confirm="Mark this booking as completed?"/>
                         
                         <button name="action_cancel" 
                                 string="Cancel" 
                                 type="object" 
-                                states="draft,confirmed"
+                                invisible="status not in ('draft', 'confirmed')"
                                 confirm="Are you sure you want to cancel this booking?"/>
                         
                         <button name="action_reset_to_draft" 
                                 string="Reset to Draft" 
                                 type="object" 
-                                states="cancelled"
+                                invisible="status != 'cancelled'"
                                 groups="base.group_system"/>
                     </header>
                     
@@ -94,26 +93,26 @@
                                     <group name="recurrence_settings" string="Recurrence Settings">
                                         <field name="is_recurring"/>
                                         <field name="recurrence_type" 
-                                               attrs="{'invisible': [('is_recurring', '=', False)],
-                                                       'required': [('is_recurring', '=', True)]}"/>
+                                               invisible="not is_recurring"
+                                               required="is_recurring"/>
                                         <field name="recurrence_count" 
-                                               attrs="{'invisible': [('is_recurring', '=', False)],
-                                                       'required': [('is_recurring', '=', True), ('recurrence_end_date', '=', False)]}"/>
+                                               invisible="not is_recurring"
+                                               required="is_recurring and not recurrence_end_date"/>
                                         <field name="recurrence_end_date" 
-                                               attrs="{'invisible': [('is_recurring', '=', False)]}"/>
+                                               invisible="not is_recurring"/>
                                     </group>
                                     
                                     <group name="recurrence_tracking" string="Recurrence Tracking">
                                         <field name="parent_booking_id" 
                                                readonly="1"
-                                               attrs="{'invisible': [('parent_booking_id', '=', False)]}"/>
+                                               invisible="not parent_booking_id"/>
                                     </group>
                                 </group>
                                 
                                 <group name="child_bookings" string="Generated Bookings" 
-                                       attrs="{'invisible': [('child_booking_ids', '=', [])]}">
+                                       invisible="not child_booking_ids">
                                     <field name="child_booking_ids" nolabel="1">
-                                        <tree string="Child Bookings" 
+                                        <list string="Child Bookings" 
                                               decoration-success="status=='completed'" 
                                               decoration-info="status=='confirmed'" 
                                               decoration-muted="status=='cancelled'">
@@ -122,7 +121,7 @@
                                             <field name="end_datetime"/>
                                             <field name="duration" widget="float_time"/>
                                             <field name="status" widget="badge"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
                             </page>
@@ -139,12 +138,12 @@
             </field>
         </record>
         
-        <!-- Tree View for Sports Booking -->
-        <record id="view_sports_booking_tree" model="ir.ui.view">
-            <field name="name">sports.booking.tree</field>
+        <!-- List View for Sports Booking -->
+        <record id="view_sports_booking_list" model="ir.ui.view">
+            <field name="name">sports.booking.list</field>
             <field name="model">sports.booking</field>
             <field name="arch" type="xml">
-                <tree string="Sports Bookings" 
+                <list string="Sports Bookings" 
                       decoration-success="status=='completed'" 
                       decoration-info="status=='confirmed'" 
                       decoration-muted="status=='cancelled'"
@@ -163,7 +162,7 @@
                     <field name="end_datetime" optional="hide"/>
                     <field name="equipment_ids" widget="many2many_tags" optional="hide"/>
                     <field name="currency_id" invisible="1"/>
-                </tree>
+                </list>
             </field>
         </record>
         
@@ -177,9 +176,7 @@
                           date_stop="end_datetime" 
                           color="facility_id" 
                           mode="week"
-                          quick_create="true"
-                          all_day="false"
-                          form_view_id="%(view_sports_booking_form)d"
+                          quick_create="false"
                           event_open_popup="true"
                           event_limit="5">
                     <field name="customer_id"/>
@@ -197,7 +194,7 @@
             <field name="model">sports.booking</field>
             <field name="arch" type="xml">
                 <pivot string="Booking Analysis" 
-                       display_quantity="true"
+                       display_quantity="1"
                        sample="1">
                     <field name="facility_id" type="row"/>
                     <field name="status" type="col"/>
@@ -214,8 +211,7 @@
             <field name="arch" type="xml">
                 <graph string="Booking Statistics" 
                        type="bar" 
-                       sample="1"
-                       mode="bar">
+                       sample="1">
                     <field name="facility_id"/>
                     <field name="total_cost" type="measure"/>
                 </graph>
@@ -229,8 +225,7 @@
             <field name="arch" type="xml">
                 <graph string="Revenue per Facility" 
                        type="bar" 
-                       sample="1"
-                       mode="bar">
+                       sample="1">
                     <field name="facility_id"/>
                     <field name="total_cost" type="measure"/>
                     <field name="duration" type="measure"/>
@@ -264,42 +259,6 @@
                     <field name="facility_id"/>
                     <field name="total_cost" type="measure"/>
                 </graph>
-            </field>
-        </record>
-        
-        <!-- Dashboard View -->
-        <record id="view_sports_booking_dashboard" model="ir.ui.view">
-            <field name="name">sports.booking.dashboard</field>
-            <field name="model">sports.booking</field>
-            <field name="arch" type="xml">
-                <board>
-                    <column>
-                        <!-- Today's Calendar View -->
-                        <action name="action_booking_calendar" 
-                                string="Today's Bookings" 
-                                context="{'search_default_today': 1}"
-                                view_mode="calendar"/>
-                        
-                        <!-- Top 5 Facilities Pivot Table -->
-                        <action name="action_booking_pivot" 
-                                string="Top 5 Facilities by Revenue" 
-                                context="{'pivot_measures': ['total_cost'], 'pivot_row_groupby': ['facility_id'], 'search_default_confirmed': 1}"
-                                view_mode="pivot"/>
-                    </column>
-                    <column>
-                        <!-- Revenue Graph Last 30 Days -->
-                        <action name="action_booking_trend" 
-                                string="Revenue Last 30 Days" 
-                                context="{'search_default_last_30_days': 1, 'graph_mode': 'line'}"
-                                view_mode="graph"/>
-                        
-                        <!-- Upcoming Bookings List -->
-                        <action name="action_sports_booking" 
-                                string="Next 7 Days" 
-                                context="{'search_default_next_7_days': 1}"
-                                view_mode="tree"/>
-                    </column>
-                </board>
             </field>
         </record>
         
@@ -371,10 +330,10 @@
         </record>
         
         <!-- Action for Sports Booking -->
-        <record id="action_sports_booking" model="ir.actions.act_window">
+<record id="action_sports_booking" model="ir.actions.act_window">
             <field name="name">Bookings</field>
             <field name="res_model">sports.booking</field>
-            <field name="view_mode">tree,form,calendar</field>
+            <field name="view_mode">list,form,calendar</field>
             <field name="context">{'search_default_confirmed': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
@@ -387,10 +346,10 @@
         </record>
         
         <!-- Action for Booking Pivot Analysis -->
-        <record id="action_booking_pivot" model="ir.actions.act_window">
+<record id="action_booking_pivot" model="ir.actions.act_window">
             <field name="name">Booking Analysis</field>
             <field name="res_model">sports.booking</field>
-            <field name="view_mode">pivot,graph,tree</field>
+            <field name="view_mode">pivot,graph,list</field>
             <field name="view_id" ref="view_sports_booking_pivot"/>
             <field name="context">{
                 'search_default_confirmed': 1,
@@ -408,10 +367,10 @@
         </record>
         
         <!-- Action for Revenue by Facility (Bar Chart) -->
-        <record id="action_booking_revenue_facility" model="ir.actions.act_window">
+<record id="action_booking_revenue_facility" model="ir.actions.act_window">
             <field name="name">Revenue by Facility</field>
             <field name="res_model">sports.booking</field>
-            <field name="view_mode">graph,pivot,tree</field>
+            <field name="view_mode">graph,pivot,list</field>
             <field name="view_id" ref="view_sports_booking_graph_bar"/>
             <field name="context">{
                 'search_default_confirmed': 1,
@@ -428,10 +387,10 @@
         </record>
         
         <!-- Action for Bookings Trend (Line Chart) -->
-        <record id="action_booking_trend" model="ir.actions.act_window">
+<record id="action_booking_trend" model="ir.actions.act_window">
             <field name="name">Bookings Trend</field>
             <field name="res_model">sports.booking</field>
-            <field name="view_mode">graph,pivot,tree</field>
+            <field name="view_mode">graph,pivot,list</field>
             <field name="view_id" ref="view_sports_booking_graph_line"/>
             <field name="context">{
                 'search_default_this_month': 1
@@ -447,10 +406,10 @@
         </record>
         
         <!-- Action for Booking Distribution (Pie Chart) -->
-        <record id="action_booking_distribution" model="ir.actions.act_window">
+<record id="action_booking_distribution" model="ir.actions.act_window">
             <field name="name">Booking Distribution</field>
             <field name="res_model">sports.booking</field>
-            <field name="view_mode">graph,pivot,tree</field>
+            <field name="view_mode">graph,pivot,list</field>
             <field name="view_id" ref="view_sports_booking_graph_pie"/>
             <field name="context">{
                 'search_default_confirmed': 1
@@ -464,21 +423,4 @@
                 </p>
             </field>
         </record>
-        
-        <!-- Action for Booking Dashboard -->
-        <record id="action_booking_dashboard" model="ir.actions.act_window">
-            <field name="name">Booking Dashboard</field>
-            <field name="res_model">sports.booking</field>
-            <field name="view_mode">board</field>
-            <field name="view_id" ref="view_sports_booking_dashboard"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Welcome to the Booking Dashboard
-                </p>
-                <p>
-                    Track today's bookings, revenue trends, and facility performance all in one place.
-                </p>
-            </field>
-        </record>
-    </data>
 </odoo>

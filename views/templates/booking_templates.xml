@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Booking Form Template -->
-        <template id="booking_form_template" name="Facility Booking Form">
-            <t t-call="website.layout">
+    <!-- Booking Form Template -->
+    <template id="booking_form_template" name="Facility Booking Form">
+        <t t-call="website.layout">
                 <div id="wrap" class="oe_structure">
                     <div class="container mt-4 mb-5">
                         <div class="row">
@@ -303,135 +302,16 @@
                     </div>
                 </div>
 
-                <!-- JavaScript for dynamic functionality -->
+                <!-- JavaScript functionality is provided by static/src/js/booking_form.js -->
+                <!-- Data attributes for JavaScript initialization -->
                 <script type="text/javascript">
-                    odoo.define('sport_facility_system.booking_form', function (require) {
-                        'use strict';
-
-                        var ajax = require('web.ajax');
-                        var core = require('web.core');
-                        var _t = core._t;
-
-                        $(document).ready(function() {
-                            var facilityId = $('input[name="facility_id"]').val();
-                            var hourlyRate = parseFloat('<t t-esc="facility.hourly_rate"/>');
-                            var currencySymbol = '<t t-esc="facility.currency_id.symbol or \'$\'"/>';
-
-                            // Date picker change event
-                            $('#booking_date').on('change', function() {
-                                var selectedDate = $(this).val();
-                                if (selectedDate) {
-                                    loadAvailableSlots(selectedDate);
-                                }
-                            });
-
-                            // Time slot change event
-                            $('#time_slot').on('change', function() {
-                                calculateTotalCost();
-                                updateSubmitButton();
-                            });
-
-                            // Equipment checkbox change event
-                            $('.equipment-checkbox').on('change', function() {
-                                calculateTotalCost();
-                            });
-
-                            // Load available time slots via AJAX
-                            function loadAvailableSlots(date) {
-                                $('#time_slot').prop('disabled', true).html('<option value="">Loading...</option>');
-                                
-                                ajax.jsonRpc('/sports/check_availability', 'call', {
-                                    facility_id: parseInt(facilityId),
-                                    date: date
-                                }).then(function(result) {
-                                    if (result.success &amp;&amp; result.available_slots.length > 0) {
-                                        var options = '<option value="">Select a time slot</option>';
-                                        result.available_slots.forEach(function(slot) {
-                                            options += '<option value="' + slot.start + '-' + slot.end + '" ' +
-                                                      'data-start="' + slot.start_hour + '" ' +
-                                                      'data-end="' + slot.end_hour + '">' +
-                                                      slot.start + ' - ' + slot.end + '</option>';
-                                        });
-                                        $('#time_slot').html(options).prop('disabled', false);
-                                    } else {
-                                        $('#time_slot').html('<option value="">No available slots for this date</option>');
-                                    }
-                                }).fail(function() {
-                                    $('#time_slot').html('<option value="">Error loading slots</option>');
-                                });
-                            }
-
-                            // Calculate total cost
-                            function calculateTotalCost() {
-                                var timeSlot = $('#time_slot option:selected');
-                                if (!timeSlot.val()) {
-                                    $('#total_cost').text('0.00');
-                                    $('#cost_breakdown').text('Select date and time slot to calculate');
-                                    return;
-                                }
-
-                                var startHour = parseFloat(timeSlot.data('start'));
-                                var endHour = parseFloat(timeSlot.data('end'));
-                                var duration = endHour - startHour;
-
-                                // Calculate facility cost
-                                var facilityCost = duration * hourlyRate;
-                                var equipmentCost = 0;
-
-                                // Calculate equipment cost
-                                $('.equipment-checkbox:checked').each(function() {
-                                    var rate = parseFloat($(this).data('rate')) || 0;
-                                    equipmentCost += rate * duration;
-                                });
-
-                                var totalCost = facilityCost + equipmentCost;
-                                $('#total_cost').text(totalCost.toFixed(2));
-                                
-                                var breakdown = 'Facility: ' + facilityCost.toFixed(2) + ' ' + currencySymbol;
-                                if (equipmentCost > 0) {
-                                    breakdown += ' + Equipment: ' + equipmentCost.toFixed(2) + ' ' + currencySymbol;
-                                }
-                                $('#cost_breakdown').text(breakdown);
-
-                                // Update hidden datetime fields
-                                updateDatetimeFields();
-                            }
-
-                            // Update hidden datetime fields
-                            function updateDatetimeFields() {
-                                var date = $('#booking_date').val();
-                                var timeSlot = $('#time_slot option:selected');
-                                
-                                if (date &amp;&amp; timeSlot.val()) {
-                                    var startHour = parseInt(timeSlot.data('start'));
-                                    var endHour = parseInt(timeSlot.data('end'));
-                                    
-                                    var startDatetime = date + ' ' + startHour.toString().padStart(2, '0') + ':00:00';
-                                    var endDatetime = date + ' ' + endHour.toString().padStart(2, '0') + ':00:00';
-                                    
-                                    $('#start_datetime').val(startDatetime);
-                                    $('#end_datetime').val(endDatetime);
-                                }
-                            }
-
-                            // Update submit button state
-                            function updateSubmitButton() {
-                                var isValid = $('#booking_date').val() &amp;&amp; 
-                                             $('#time_slot').val() &amp;&amp;
-                                             $('#customer_name').val() &amp;&amp;
-                                             $('#customer_email').val() &amp;&amp;
-                                             $('#customer_phone').val();
-                                
-                                $('#submit_booking').prop('disabled', !isValid);
-                            }
-
-                            // Form validation
-                            $('input[required]').on('change keyup', updateSubmitButton);
-
-                            // Set minimum date to today
-                            var today = new Date().toISOString().split('T')[0];
-                            $('#booking_date').attr('min', today);
-                        });
+                    // Initialize booking form data
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var form = document.getElementById('booking_form');
+                        if (form) {
+                            form.setAttribute('data-facility-rate', '<t t-esc="facility.hourly_rate"/>');
+                            form.setAttribute('data-currency-symbol', '<t t-esc="facility.currency_id.symbol or chr(36)"/>');
+                        }
                     });
                 </script>
 
@@ -914,6 +794,5 @@
                     </div>
                 </div>
             </t>
-        </template>
-    </data>
+    </template>
 </odoo>

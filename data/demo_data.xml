@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
-        
-        <!-- Sample Facilities -->
-        <record id="facility_tennis_court" model="sports.facility">
+    <!-- Sample Facilities -->
+    <record id="facility_tennis_court" model="sports.facility">
             <field name="name">Tennis Court A</field>
             <field name="facility_type">court</field>
             <field name="description">Professional tennis court with clay surface, suitable for singles and doubles matches. Includes night lighting and seating area.</field>
@@ -335,5 +333,4 @@
             <field name="equipment_ids" eval="[(6, 0, [ref('equipment_basketballs')])]"/>
         </record>
 
-    </data>
 </odoo>

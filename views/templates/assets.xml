@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Website Frontend Assets -->
-        <template id="assets_frontend" inherit_id="web.assets_frontend">
-            <xpath expr="." position="inside">
-                <!-- Custom JavaScript -->
-                <script type="text/javascript" src="/sport_facility_system/static/src/js/booking_form.js"/>
-                
-                <!-- Custom CSS -->
-                <link rel="stylesheet" type="text/css" href="/sport_facility_system/static/src/css/booking_styles.css"/>
-            </xpath>
-        </template>
-    </data>
+    <!-- Website Frontend Assets -->
+    <template id="assets_frontend" inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <!-- Custom JavaScript -->
+            <script type="text/javascript" src="/sports_booking/static/src/js/booking_form.js"/>
+            <!-- Custom CSS -->
+            <link rel="stylesheet" type="text/css" href="/sports_booking/static/src/css/booking_styles.css"/>
+        </xpath>
+    </template>
 </odoo>

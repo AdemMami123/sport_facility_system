@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Sports Facility Booking System',
-    'version': '17.0.1.0.0',
+    'version': '18.0.1.0.0',
     'category': 'Services',
     'summary': 'Manage sports facility bookings and reservations',
     'description': """
@@ -49,15 +49,20 @@
         
         # Templates
         'views/templates/booking_templates.xml',
-        'views/templates/assets.xml',
         
         # Menus
         'views/menu.xml',
     ],
     'demo': [
-        # Demo Data
-        'data/demo_data.xml',
+        # Demo Data - temporarily disabled
+        # 'data/demo_data.xml',
     ],
+    'assets': {
+        'web.assets_frontend': [
+            'sports_booking/static/src/js/booking_form.js',
+            'sports_booking/static/src/css/booking_styles.css',
+        ],
+    },
     'installable': True,
     'application': True,
     'auto_install': False,

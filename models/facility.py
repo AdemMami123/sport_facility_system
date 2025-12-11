@@ -45,6 +45,13 @@ class SportsFacility(models.Model):
         help='Cost per hour for booking this facility'
     )
     
+    currency_id = fields.Many2one(
+        'res.currency',
+        string='Currency',
+        default=lambda self: self.env.company.currency_id,
+        help='Currency for the hourly rate'
+    )
+    
     status = fields.Selection([
         ('available', 'Available'),
         ('maintenance', 'Under Maintenance'),

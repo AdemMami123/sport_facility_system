@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Waitlist Tree View -->
-    <record id="view_sports_waitlist_tree" model="ir.ui.view">
-        <field name="name">sports.waitlist.tree</field>
+    <!-- Waitlist List View -->
+    <record id="view_sports_waitlist_list" model="ir.ui.view">
+        <field name="name">sports.waitlist.list</field>
         <field name="model">sports.waitlist</field>
         <field name="arch" type="xml">
-            <tree string="Waitlist" decoration-muted="status == 'expired'" 
+            <list string="Waitlist" decoration-muted="status == 'expired'" 
                   decoration-success="status == 'booked'" 
                   decoration-info="status == 'notified'"
                   decoration-warning="status == 'waiting'">
@@ -17,7 +17,7 @@
                 <field name="preferred_time_end" widget="float_time"/>
                 <field name="status"/>
                 <field name="notification_sent"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -29,14 +29,14 @@
             <form string="Waitlist Entry">
                 <header>
                     <button name="action_notify_customer" string="Notify Customer" 
-                            type="object" states="waiting" 
+                            type="object" invisible="status != 'waiting'" 
                             class="oe_highlight"
                             confirm="Send availability notification to this customer?"/>
                     <button name="action_mark_booked" string="Mark as Booked" 
-                            type="object" states="waiting,notified" 
+                            type="object" invisible="status not in ('waiting', 'notified')" 
                             class="oe_highlight"/>
                     <button name="action_mark_expired" string="Mark as Expired" 
-                            type="object" states="waiting,notified"/>
+                            type="object" invisible="status not in ('waiting', 'notified')"/>
                     <field name="status" widget="statusbar" 
                            statusbar_visible="waiting,notified,booked"/>
                 </header>
@@ -135,7 +135,7 @@
                       date_start="preferred_date" 
                       color="facility_id"
                       mode="month"
-                      quick_add="False">
+                      quick_create="false">
                 <field name="customer_id"/>
                 <field name="facility_id"/>
                 <field name="status"/>
@@ -194,7 +194,7 @@
     <record id="action_sports_waitlist" model="ir.actions.act_window">
         <field name="name">Waitlist</field>
         <field name="res_model">sports.waitlist</field>
-        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
         <field name="context">{'search_default_filter_waiting': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

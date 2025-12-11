@@ -850,7 +850,9 @@ class SportsBooking(models.Model):
             )
             self.write({'notes': (self.notes or '') + failure_summary})
         
-        return created_bookings    def action_reset_to_draft(self):
+        return created_bookings
+
+    def action_reset_to_draft(self):
         """Reset booking to draft status"""
         for record in self:
             if record.status == 'completed':
