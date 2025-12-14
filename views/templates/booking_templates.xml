@@ -4,32 +4,66 @@
     <template id="facilities_list_template" name="Facilities List">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
-                <div class="container mt-4">
-                    <h1 class="text-center mb-4">Our Sports Facilities</h1>
+                <div class="container mt-5 mb-5">
+                    <!-- Hero Section -->
+                    <div class="text-center mb-5">
+                        <h1 class="display-4 mb-3">Our Sports Facilities</h1>
+                        <p class="lead text-muted">Book your favorite sports facility today</p>
+                    </div>
+                    
+                    <!-- Filter Section -->
+                    <div class="row mb-4" t-if="facility_types">
+                        <div class="col-md-6 offset-md-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form method="get" action="/sports/facilities" class="d-flex">
+                                        <select name="facility_type" class="form-control mr-2">
+                                            <option value="">All Facility Types</option>
+                                            <t t-foreach="facility_types" t-as="ft">
+                                                <option t-att-value="ft[0]" t-att-selected="current_filter == ft[0]">
+                                                    <t t-esc="ft[1]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Facilities Grid -->
                     <div class="row">
                         <t t-foreach="facilities" t-as="facility">
                             <div class="col-md-4 mb-4">
-                                <div class="card">
+                                <div class="card h-100 shadow-sm">
                                     <div class="card-body">
-                                        <h5 class="card-title">
+                                        <h5 class="card-title text-primary">
                                             <t t-esc="facility.name"/>
                                         </h5>
                                         <p class="card-text">
-                                            <strong>Type:</strong>
-                                            <t t-esc="facility.facility_type"/>
+                                            <span class="badge badge-info"><t t-esc="facility.facility_type"/></span>
                                         </p>
-                                        <p class="card-text">
-                                            <strong>Capacity:</strong>
-                                            <t t-esc="facility.capacity"/> persons
-                                        </p>
-                                        <p class="card-text">
-                                            <strong>Hourly Rate:</strong>
-                                            <t t-esc="facility.hourly_rate"/>
-                                            <t t-esc="facility.currency_id.symbol or '$'"/>
-                                        </p>
-                                        <a t-attf-href="/sports/facility/{{ facility.id }}" class="btn btn-primary">Book Now</a>
+                                        <ul class="list-unstyled">
+                                            <li><strong>Capacity:</strong> <t t-esc="facility.capacity"/> persons</li>
+                                            <li><strong>Location:</strong> <t t-esc="facility.location or 'N/A'"/></li>
+                                            <li class="text-success font-weight-bold mt-2">
+                                                <t t-esc="facility.hourly_rate"/> <t t-esc="facility.currency_id.symbol or '$'"/> / hour
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer bg-white">
+                                        <a t-attf-href="/sports/booking/{{ facility.id }}" class="btn btn-primary btn-block">
+                                            Book Now
+                                        </a>
                                     </div>
                                 </div>
+                            </div>
+                        </t>
+                        <t t-if="not facilities">
+                            <div class="col-12 text-center py-5">
+                                <h4 class="text-muted">No facilities available at the moment</h4>
+                                <p>Please check back later or contact us for more information.</p>
                             </div>
                         </t>
                     </div>
@@ -48,7 +82,7 @@
                             <h1 class="text-center mb-4">Book <t t-esc="facility.name"/></h1>
                             
                             <!-- Facility Info Card -->
-                            <div class="card mb-4">
+                            <div class="card mb-4 shadow-sm">
                                 <div class="card-header bg-primary text-white">
                                     <h5 class="mb-0">Facility Details</h5>
                                 </div>
@@ -59,7 +93,7 @@
                                             <p><strong>Capacity:</strong> <t t-esc="facility.capacity"/> persons</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p><strong>Hourly Rate:</strong> <t t-esc="facility.hourly_rate"/> <t t-esc="facility.currency_id.symbol or '$'"/></p>
+                                            <p><strong>Hourly Rate:</strong> <span class="text-success font-weight-bold"><t t-esc="facility.hourly_rate"/> <t t-esc="facility.currency_id.symbol or '$'"/></span></p>
                                             <p><strong>Location:</strong> <t t-esc="facility.location or 'Not specified'"/></p>
                                         </div>
                                     </div>
@@ -67,7 +101,7 @@
                             </div>
                             
                             <!-- Booking Form -->
-                            <div class="card">
+                            <div class="card shadow-sm">
                                 <div class="card-header bg-success text-white">
                                     <h5 class="mb-0">Booking Information</h5>
                                 </div>
@@ -101,12 +135,6 @@
                                                            t-att-value="partner.phone if partner else ''"/>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="booking_date">Booking Date <span class="text-danger">*</span></label>
-                                                    <input type="date" class="form-control" id="booking_date" name="booking_date" required="required"/>
-                                                </div>
-                                            </div>
                                         </div>
                                         
                                         <div class="row">
@@ -124,18 +152,54 @@
                                             </div>
                                         </div>
                                         
+                                        <!-- Equipment Selection -->
+                                        <t t-if="equipment">
+                                            <div class="form-group">
+                                                <label>Additional Equipment (Optional)</label>
+                                                <div class="row">
+                                                    <t t-foreach="equipment" t-as="equip">
+                                                        <div class="col-md-6 mb-2">
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input" 
+                                                                       t-attf-id="equip_{{ equip.id }}" 
+                                                                       name="equipment_ids" 
+                                                                       t-att-value="equip.id"/>
+                                                                <label class="custom-control-label" t-attf-for="equip_{{ equip.id }}">
+                                                                    <t t-esc="equip.name"/> - <span class="text-success"><t t-esc="equip.rental_rate"/> <t t-esc="equip.currency_id.symbol or '$'"/>/hr</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        
                                         <div class="form-group">
                                             <label for="notes">Additional Notes</label>
                                             <textarea class="form-control" id="notes" name="notes" rows="3" 
                                                       placeholder="Any special requirements or notes..."></textarea>
                                         </div>
                                         
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-success btn-lg">Confirm Booking</button>
-                                            <a href="/sports/facilities" class="btn btn-outline-secondary btn-lg ml-2">Back to Facilities</a>
+                                        <div class="text-center mt-4">
+                                            <button type="submit" class="btn btn-success btn-lg px-5">
+                                                <i class="fa fa-check mr-2"/>Confirm Booking
+                                            </button>
+                                            <a href="/sports/facilities" class="btn btn-outline-secondary btn-lg ml-2">
+                                                <i class="fa fa-arrow-left mr-2"/>Back
+                                            </a>
                                         </div>
                                     </form>
                                 </div>
+                            </div>
+                            
+                            <!-- Info Alert -->
+                            <div class="alert alert-info mt-4">
+                                <h6 class="alert-heading"><i class="fa fa-info-circle mr-2"/>Note</h6>
+                                <ul class="mb-0 small">
+                                    <li>You must be logged in to complete your booking</li>
+                                    <li>Your booking will be in Draft status until confirmed by staff</li>
+                                    <li>Please arrive 10 minutes before your scheduled time</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -152,20 +216,21 @@
                     <div class="row">
                         <div class="col-lg-8 offset-lg-2">
                             <!-- Success Message -->
-                            <div class="alert alert-success text-center mb-4">
+                            <div class="alert alert-success text-center mb-4 shadow">
+                                <i class="fa fa-check-circle fa-3x mb-3"/>
                                 <h2 class="alert-heading">Booking Confirmed!</h2>
                                 <p class="lead mb-0">Your booking has been successfully created.</p>
                             </div>
                             
                             <!-- Booking Details -->
-                            <div class="card mb-4">
+                            <div class="card mb-4 shadow-sm">
                                 <div class="card-header bg-primary text-white">
                                     <h5 class="mb-0">Booking Details</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <p><strong>Reference:</strong> <t t-esc="booking.booking_reference"/></p>
+                                            <p><strong>Reference:</strong> <span class="text-primary"><t t-esc="booking.booking_reference"/></span></p>
                                             <p><strong>Facility:</strong> <t t-esc="booking.facility_id.name"/></p>
                                             <p><strong>Customer:</strong> <t t-esc="booking.customer_id.name"/></p>
                                         </div>
@@ -173,12 +238,13 @@
                                             <p><strong>Date:</strong> <t t-esc="booking.start_datetime.strftime('%A, %B %d, %Y')"/></p>
                                             <p><strong>Time:</strong> <t t-esc="booking.start_datetime.strftime('%I:%M %p')"/> - <t t-esc="booking.end_datetime.strftime('%I:%M %p')"/></p>
                                             <p><strong>Duration:</strong> <t t-esc="booking.duration"/> hours</p>
+                                            <p><strong>Status:</strong> <span class="badge badge-warning"><t t-esc="booking.status"/></span></p>
                                         </div>
                                     </div>
                                     <hr/>
                                     <div class="text-center">
                                         <h4 class="text-success">
-                                            Total Cost: <t t-esc="booking.total_cost" t-options="{'widget': 'monetary', 'display_currency': booking.currency_id}"/>
+                                            Total Cost: <t t-esc="booking.total_cost"/> <t t-esc="booking.currency_id.symbol or '$'"/>
                                         </h4>
                                     </div>
                                 </div>
@@ -186,19 +252,171 @@
                             
                             <!-- Action Buttons -->
                             <div class="text-center">
-                                <a href="/sports/my/bookings" class="btn btn-primary btn-lg mr-2">View My Bookings</a>
-                                <a href="/sports/facilities" class="btn btn-success btn-lg">Book Another</a>
+                                <a href="/sports/my/bookings" class="btn btn-primary btn-lg mr-2">
+                                    <i class="fa fa-list mr-2"/>View My Bookings
+                                </a>
+                                <a href="/sports/facilities" class="btn btn-success btn-lg">
+                                    <i class="fa fa-plus mr-2"/>Book Another
+                                </a>
                             </div>
                             
                             <!-- Information -->
                             <div class="alert alert-info mt-4">
-                                <h5>What's Next?</h5>
+                                <h5><i class="fa fa-info-circle mr-2"/>What's Next?</h5>
                                 <ul class="mb-0">
                                     <li>You will receive a confirmation email shortly</li>
                                     <li>Please save your booking reference: <strong><t t-esc="booking.booking_reference"/></strong></li>
                                     <li>Please arrive 10 minutes before your scheduled time</li>
                                 </ul>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- My Bookings Template -->
+    <template id="my_bookings_template" name="My Bookings">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-5 mb-5">
+                    <div class="text-center mb-4">
+                        <h1>My Bookings</h1>
+                        <p class="text-muted">View and manage your bookings</p>
+                    </div>
+                    
+                    <t t-if="bookings">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Facility</th>
+                                        <th>Date &amp; Time</th>
+                                        <th>Duration</th>
+                                        <th>Cost</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="bookings" t-as="booking">
+                                        <tr>
+                                            <td><strong><t t-esc="booking.booking_reference"/></strong></td>
+                                            <td><t t-esc="booking.facility_id.name"/></td>
+                                            <td>
+                                                <t t-esc="booking.start_datetime.strftime('%b %d, %Y')"/>
+                                                <br/>
+                                                <small class="text-muted">
+                                                    <t t-esc="booking.start_datetime.strftime('%I:%M %p')"/> - 
+                                                    <t t-esc="booking.end_datetime.strftime('%I:%M %p')"/>
+                                                </small>
+                                            </td>
+                                            <td><t t-esc="booking.duration"/> hrs</td>
+                                            <td><t t-esc="booking.total_cost"/> <t t-esc="booking.currency_id.symbol or '$'"/></td>
+                                            <td>
+                                                <span t-attf-class="badge badge-{{ 'success' if booking.status == 'confirmed' else ('warning' if booking.status == 'draft' else ('info' if booking.status == 'in_progress' else ('secondary' if booking.status == 'completed' else 'danger'))) }}">
+                                                    <t t-esc="booking.status"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                    
+                    <t t-if="not bookings">
+                        <div class="text-center py-5">
+                            <i class="fa fa-calendar-times-o fa-4x text-muted mb-3"/>
+                            <h4 class="text-muted">No bookings found</h4>
+                            <p>You haven't made any bookings yet.</p>
+                            <a href="/sports/facilities" class="btn btn-primary btn-lg">
+                                <i class="fa fa-plus mr-2"/>Book a Facility
+                            </a>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Booking Error Template -->
+    <template id="booking_error_template" name="Booking Error">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-lg-6 offset-lg-3 text-center">
+                            <div class="alert alert-danger shadow">
+                                <i class="fa fa-exclamation-triangle fa-4x mb-3"/>
+                                <h2>Booking Error</h2>
+                                <p class="lead"><t t-esc="error"/></p>
+                            </div>
+                            <a href="/sports/facilities" class="btn btn-primary btn-lg mt-3">
+                                <i class="fa fa-arrow-left mr-2"/>Back to Facilities
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Check-in Success Template -->
+    <template id="checkin_success_template" name="Check-in Success">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 text-center">
+                            <div class="alert alert-success shadow py-5">
+                                <i class="fa fa-check-circle fa-5x mb-4 text-success"/>
+                                <h1 class="text-success">Check-in Successful!</h1>
+                                <p class="lead mt-3">Welcome, <strong><t t-esc="customer_name"/></strong>!</p>
+                                <hr/>
+                                <p class="mb-2"><strong>Facility:</strong> <t t-esc="facility_name"/></p>
+                                <p class="mb-2"><strong>Booking Reference:</strong> <t t-esc="booking.booking_reference"/></p>
+                                <p class="mb-2"><strong>Check-in Time:</strong> <t t-esc="checkin_time.strftime('%I:%M %p')"/></p>
+                                <p class="mb-0"><strong>Session Ends:</strong> <t t-esc="booking.end_datetime.strftime('%I:%M %p')"/></p>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle mr-2"/>
+                                Enjoy your session! Please ensure to check out when you're done.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Check-in Error Template -->
+    <template id="checkin_error_template" name="Check-in Error">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-lg-6 offset-lg-3 text-center">
+                            <div class="alert alert-danger shadow py-4">
+                                <i class="fa fa-times-circle fa-4x mb-3"/>
+                                <h2><t t-esc="error_title"/></h2>
+                                <p class="lead"><t t-esc="error_message"/></p>
+                                <p class="text-muted small">Error Code: <t t-esc="error_code"/></p>
+                            </div>
+                            <t t-if="booking">
+                                <div class="card mt-4">
+                                    <div class="card-body">
+                                        <h5>Booking Information</h5>
+                                        <p class="mb-1"><strong>Reference:</strong> <t t-esc="booking.booking_reference"/></p>
+                                        <p class="mb-1"><strong>Status:</strong> <t t-esc="booking.status"/></p>
+                                        <p class="mb-0"><strong>Facility:</strong> <t t-esc="booking.facility_id.name"/></p>
+                                    </div>
+                                </div>
+                            </t>
+                            <a href="/sports/facilities" class="btn btn-primary btn-lg mt-4">
+                                <i class="fa fa-home mr-2"/>Back to Facilities
+                            </a>
                         </div>
                     </div>
                 </div>

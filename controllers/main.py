@@ -46,7 +46,7 @@ class SportsBookingController(http.Controller):
                 'page_name': 'Sports Facilities',
             }
             
-            return request.render('sport_facility_system.facilities_list_template', values)
+            return request.render('sports_booking.facilities_list_template', values)
             
         except Exception as e:
             _logger.error('Error loading facilities: %s', str(e))
@@ -87,7 +87,7 @@ class SportsBookingController(http.Controller):
                 'page_name': f'Book {facility.name}',
             }
             
-            return request.render('sport_facility_system.booking_form_template', values)
+            return request.render('sports_booking.booking_form_template', values)
             
         except Exception as e:
             _logger.error('Error loading booking form for facility %s: %s', facility_id, str(e))
@@ -204,7 +204,7 @@ class SportsBookingController(http.Controller):
             missing_fields = [field for field in required_fields if not post.get(field)]
             
             if missing_fields:
-                return request.render('sport_facility_system.booking_error_template', {
+                return request.render('sports_booking.booking_error_template', {
                     'error': f"Missing required fields: {', '.join(missing_fields)}"
                 })
             
@@ -225,13 +225,13 @@ class SportsBookingController(http.Controller):
                     start_datetime = datetime.strptime(start_datetime_str, '%Y-%m-%dT%H:%M')
                     end_datetime = datetime.strptime(end_datetime_str, '%Y-%m-%dT%H:%M')
                 except ValueError as e:
-                    return request.render('sport_facility_system.booking_error_template', {
+                    return request.render('sports_booking.booking_error_template', {
                         'error': f'Invalid datetime format: {str(e)}'
                     })
             
             # Validate datetime logic
             if end_datetime <= start_datetime:
-                return request.render('sport_facility_system.booking_error_template', {
+                return request.render('sports_booking.booking_error_template', {
                     'error': 'End time must be after start time'
                 })
             
@@ -275,18 +275,18 @@ class SportsBookingController(http.Controller):
                 
             except ValidationError as ve:
                 _logger.warning('Validation error creating booking: %s', str(ve))
-                return request.render('sport_facility_system.booking_error_template', {
+                return request.render('sports_booking.booking_error_template', {
                     'error': str(ve)
                 })
             except Exception as e:
                 _logger.error('Error creating booking: %s', str(e))
-                return request.render('sport_facility_system.booking_error_template', {
+                return request.render('sports_booking.booking_error_template', {
                     'error': 'An error occurred while creating your booking. Please try again.'
                 })
             
         except Exception as e:
             _logger.error('Error in confirm_booking: %s', str(e))
-            return request.render('sport_facility_system.booking_error_template', {
+            return request.render('sports_booking.booking_error_template', {
                 'error': 'An unexpected error occurred. Please contact support.'
             })
 
@@ -313,7 +313,7 @@ class SportsBookingController(http.Controller):
                 'page_name': 'Booking Confirmation',
             }
             
-            return request.render('sport_facility_system.booking_confirmation_template', values)
+            return request.render('sports_booking.booking_confirmation_template', values)
             
         except Exception as e:
             _logger.error('Error loading booking confirmation: %s', str(e))
@@ -337,7 +337,7 @@ class SportsBookingController(http.Controller):
                 'page_name': 'My Bookings',
             }
             
-            return request.render('sport_facility_system.my_bookings_template', values)
+            return request.render('sports_booking.my_bookings_template', values)
             
         except Exception as e:
             _logger.error('Error loading user bookings: %s', str(e))
@@ -361,7 +361,7 @@ class SportsBookingController(http.Controller):
             # Validate booking exists
             if not booking:
                 _logger.warning('Check-in failed: Booking %s not found', booking_reference)
-                return request.render('sport_facility_system.checkin_error_template', {
+                return request.render('sports_booking.checkin_error_template', {
                     'error_title': 'Booking Not Found',
                     'error_message': f'No booking found with reference: {booking_reference}',
                     'error_code': 'BOOKING_NOT_FOUND'
@@ -387,7 +387,7 @@ class SportsBookingController(http.Controller):
                     f'This booking cannot be checked in (current status: {booking.status})'
                 )
                 
-                return request.render('sport_facility_system.checkin_error_template', {
+                return request.render('sports_booking.checkin_error_template', {
                     'error_title': 'Invalid Booking Status',
                     'error_message': error_message,
                     'error_code': 'INVALID_STATUS',
@@ -415,11 +415,11 @@ class SportsBookingController(http.Controller):
                 'page_name': 'Check-in Successful'
             }
             
-            return request.render('sport_facility_system.checkin_success_template', values)
+            return request.render('sports_booking.checkin_success_template', values)
             
         except Exception as e:
             _logger.error('Error during check-in for %s: %s', booking_reference, str(e))
-            return request.render('sport_facility_system.checkin_error_template', {
+            return request.render('sports_booking.checkin_error_template', {
                 'error_title': 'Check-in Error',
                 'error_message': 'An unexpected error occurred during check-in. Please contact staff for assistance.',
                 'error_code': 'SYSTEM_ERROR'
