@@ -1,19 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<<<<<<< HEAD
     <!-- Sample Facilities -->
-    <record id="facility_tennis_court" model="sports.facility">
-            <field name="name">Tennis Court A</field>
-            <field name="facility_type">court</field>
-            <field name="description">Professional tennis court with clay surface, suitable for singles and doubles matches. Includes night lighting and seating area.</field>
-            <field name="capacity">4</field>
-            <field name="hourly_rate">25.00</field>
-            <field name="status">available</field>
-            <field name="location">North Wing, Building A</field>
-            <field name="operating_hours_start">7.0</field>
-            <field name="operating_hours_end">22.0</field>
-        </record>
-=======
     <record id="facility_tennis_court" model="sports.facility">
         <field name="name">Tennis Court A</field>
         <field name="facility_type">court</field>
@@ -25,7 +12,6 @@
         <field name="operating_hours_start">7.0</field>
         <field name="operating_hours_end">22.0</field>
     </record>
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
 
     <record id="facility_gym" model="sports.facility">
         <field name="name">Main Fitness Gym</field>
@@ -75,6 +61,7 @@
         <field name="operating_hours_end">22.0</field>
     </record>
 
+    <!-- Sample Equipment -->
     <record id="equipment_tennis_rackets" model="sports.equipment">
         <field name="name">Professional Tennis Rackets</field>
         <field name="equipment_type">racket</field>
@@ -129,6 +116,7 @@
         <field name="condition">excellent</field>
     </record>
 
+    <!-- Sample Customers -->
     <record id="customer_john_doe" model="res.partner">
         <field name="name">John Doe</field>
         <field name="email">john.doe@example.com</field>
@@ -159,6 +147,7 @@
         <field name="country_id" ref="base.us"/>
     </record>
 
+    <!-- Sample Memberships -->
     <record id="membership_john_basic" model="sports.membership">
         <field name="member_id" ref="customer_john_doe"/>
         <field name="membership_type">basic</field>
@@ -183,6 +172,7 @@
         <field name="notes">Premium membership with 20% discount</field>
     </record>
 
+    <!-- Sample Bookings -->
     <record id="booking_tennis_confirmed" model="sports.booking">
         <field name="booking_reference">BOOK/2025/0001</field>
         <field name="facility_id" ref="facility_tennis_court"/>
@@ -203,158 +193,6 @@
         <field name="notes">Morning workout session</field>
     </record>
 
-<<<<<<< HEAD
-        <record id="customer_sarah_williams" model="res.partner">
-            <field name="name">Sarah Williams</field>
-            <field name="email">sarah.williams@example.com</field>
-            <field name="phone">+1-555-0104</field>
-            <field name="street">321 Lake Drive</field>
-            <field name="city">Miami</field>
-            <field name="zip">33101</field>
-            <field name="country_id" ref="base.us"/>
-        </record>
-
-        <record id="customer_robert_brown" model="res.partner">
-            <field name="name">Robert Brown</field>
-            <field name="email">robert.brown@example.com</field>
-            <field name="phone">+1-555-0105</field>
-            <field name="street">654 Hill Road</field>
-            <field name="city">Seattle</field>
-            <field name="zip">98101</field>
-            <field name="country_id" ref="base.us"/>
-        </record>
-
-        <!-- Sample Memberships -->
-        <record id="membership_john_basic" model="sports.membership">
-            <field name="member_id" ref="customer_john_doe"/>
-            <field name="membership_type">basic</field>
-            <field name="start_date" eval="(datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')"/>
-            <field name="end_date" eval="(datetime.now() + timedelta(days=335)).strftime('%Y-%m-%d')"/>
-            <field name="discount_percentage">10.00</field>
-            <field name="status">active</field>
-            <field name="payment_status">paid</field>
-            <field name="membership_fee">99.00</field>
-            <field name="notes">Basic membership with 10% discount on all bookings</field>
-        </record>
-
-        <record id="membership_jane_premium" model="sports.membership">
-            <field name="member_id" ref="customer_jane_smith"/>
-            <field name="membership_type">premium</field>
-            <field name="start_date" eval="(datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d')"/>
-            <field name="end_date" eval="(datetime.now() + timedelta(days=305)).strftime('%Y-%m-%d')"/>
-            <field name="discount_percentage">20.00</field>
-            <field name="status">active</field>
-            <field name="payment_status">paid</field>
-            <field name="membership_fee">199.00</field>
-            <field name="notes">Premium membership with 20% discount on all bookings</field>
-        </record>
-
-        <record id="membership_mike_vip" model="sports.membership">
-            <field name="member_id" ref="customer_mike_johnson"/>
-            <field name="membership_type">vip</field>
-            <field name="start_date" eval="(datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')"/>
-            <field name="end_date" eval="(datetime.now() + timedelta(days=275)).strftime('%Y-%m-%d')"/>
-            <field name="discount_percentage">30.00</field>
-            <field name="status">active</field>
-            <field name="payment_status">paid</field>
-            <field name="membership_fee">399.00</field>
-            <field name="notes">VIP membership with 30% discount on all bookings and priority access</field>
-        </record>
-
-        <!-- Sample Bookings -->
-        <record id="booking_tennis_confirmed" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0001</field>
-            <field name="facility_id" ref="facility_tennis_court"/>
-            <field name="customer_id" ref="customer_john_doe"/>
-            <field name="start_datetime" eval="(datetime.now() + timedelta(days=2, hours=10)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() + timedelta(days=2, hours=12)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">confirmed</field>
-            <field name="notes">Tennis practice session with coach</field>
-        </record>
-
-        <record id="booking_gym_draft" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0002</field>
-            <field name="facility_id" ref="facility_gym"/>
-            <field name="customer_id" ref="customer_jane_smith"/>
-            <field name="start_datetime" eval="(datetime.now() + timedelta(days=3, hours=8)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() + timedelta(days=3, hours=9)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">draft</field>
-            <field name="notes">Morning workout session</field>
-        </record>
-
-        <record id="booking_pool_completed" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0003</field>
-            <field name="facility_id" ref="facility_swimming_pool"/>
-            <field name="customer_id" ref="customer_mike_johnson"/>
-            <field name="start_datetime" eval="(datetime.now() - timedelta(days=1, hours=14)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() - timedelta(days=1, hours=15)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">completed</field>
-            <field name="notes">Swimming training session completed</field>
-        </record>
-
-        <record id="booking_soccer_confirmed" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0004</field>
-            <field name="facility_id" ref="facility_soccer_field"/>
-            <field name="customer_id" ref="customer_sarah_williams"/>
-            <field name="start_datetime" eval="(datetime.now() + timedelta(days=5, hours=15)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() + timedelta(days=5, hours=17)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">confirmed</field>
-            <field name="notes">Team practice match</field>
-        </record>
-
-        <record id="booking_basketball_cancelled" model="sports.booking">
-            <field name="booking_reference">BOOK/2025/0005</field>
-            <field name="facility_id" ref="facility_basketball_court"/>
-            <field name="customer_id" ref="customer_robert_brown"/>
-            <field name="start_datetime" eval="(datetime.now() + timedelta(days=1, hours=18)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="end_datetime" eval="(datetime.now() + timedelta(days=1, hours=20)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="status">cancelled</field>
-            <field name="notes">Cancelled due to scheduling conflict</field>
-        </record>
-
-        <!-- Link equipment to bookings -->
-        <record id="booking_tennis_equipment_rel" model="sports.booking">
-            <field name="id" ref="booking_tennis_confirmed"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_tennis_rackets')])]"/>
-        </record>
-
-        <record id="booking_gym_equipment_rel" model="sports.booking">
-            <field name="id" ref="booking_gym_draft"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_dumbbells'), ref('equipment_yoga_mats')])]"/>
-        </record>
-
-        <record id="booking_soccer_equipment_rel" model="sports.booking">
-            <field name="id" ref="booking_soccer_confirmed"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_soccer_balls'), ref('equipment_volleyball_nets')])]"/>
-        </record>
-
-        <!-- Link equipment to facilities -->
-        <record id="facility_tennis_equipment" model="sports.facility">
-            <field name="id" ref="facility_tennis_court"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_tennis_rackets')])]"/>
-        </record>
-
-        <record id="facility_gym_equipment" model="sports.facility">
-            <field name="id" ref="facility_gym"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_dumbbells'), ref('equipment_yoga_mats'), ref('equipment_resistance_bands'), ref('equipment_jump_ropes'), ref('equipment_weight_benches')])]"/>
-        </record>
-
-        <record id="facility_pool_equipment" model="sports.facility">
-            <field name="id" ref="facility_swimming_pool"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_pool_floats')])]"/>
-        </record>
-
-        <record id="facility_soccer_equipment" model="sports.facility">
-            <field name="id" ref="facility_soccer_field"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_soccer_balls'), ref('equipment_volleyball_nets')])]"/>
-        </record>
-
-        <record id="facility_basketball_equipment" model="sports.facility">
-            <field name="id" ref="facility_basketball_court"/>
-            <field name="equipment_ids" eval="[(6, 0, [ref('equipment_basketballs')])]"/>
-        </record>
-
-=======
     <record id="booking_pool_completed" model="sports.booking">
         <field name="booking_reference">BOOK/2025/0003</field>
         <field name="facility_id" ref="facility_swimming_pool"/>
@@ -364,6 +202,4 @@
         <field name="status">completed</field>
         <field name="notes">Swimming training completed</field>
     </record>
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
 </odoo>
-

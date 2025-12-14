@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<<<<<<< HEAD
     <data>
         <record id="email_template_waitlist_notification" model="mail.template">
             <field name="name">Waitlist: Facility Available Notification</field>
@@ -18,7 +17,6 @@
                 <tbody>
                     <tr>
                         <td align="center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; padding: 40px 30px;">
-                            <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
                             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">Facility Now Available!</h1>
                         </td>
                     </tr>
@@ -26,48 +24,16 @@
                         <td style="padding: 40px 30px; color: #333333; line-height: 1.6;">
                             <p style="font-size: 18px; color: #333333; margin-bottom: 20px;">Dear <strong t-out="object.customer_id.name">Customer</strong>,</p>
                             
-                            <p>Great news! We're excited to inform you that a booking slot has just become available for the facility you've been waiting for.</p>
+                            <p>Great news! A booking slot has become available for the facility you've been waiting for.</p>
 
                             <div style="background-color: #f8f9fa; border-left: 4px solid #667eea; padding: 20px; margin: 25px 0; border-radius: 4px;">
                                 <h2 style="color: #667eea; margin: 0 0 15px 0; font-size: 22px;" t-out="object.facility_id.name">Tennis Court 1</h2>
-                                <div style="color: #555555; font-size: 15px;">
-                                    <div t-if="object.preferred_date" style="margin: 8px 0;">
-                                        <span style="margin-right: 10px; color: #667eea; font-size: 16px;">📅</span>
-                                        <span><strong>Your Preferred Date:</strong> <t t-out="format_date(object.preferred_date, format='EEEE, MMMM d, yyyy')">Monday, January 1, 2024</t></span>
-                                    </div>
-                                    <div style="margin: 8px 0;">
-                                        <span style="margin-right: 10px; color: #667eea; font-size: 16px;">📍</span>
-                                        <span><strong>Location:</strong> <t t-out="object.facility_id.location or 'Main Sports Complex'">Main Sports Complex</t></span>
-                                    </div>
-                                    <div t-if="object.facility_id.hourly_rate" style="margin: 8px 0;">
-                                        <span style="margin-right: 10px; color: #667eea; font-size: 16px;">💰</span>
-                                        <span><strong>Rate:</strong> <t t-out="object.facility_id.hourly_rate">25.00</t> <t t-out="object.facility_id.currency_id.symbol or ''">$</t>/hour</span>
-                                    </div>
+                                <div t-if="object.preferred_date" style="margin: 8px 0;">
+                                    <strong>Your Preferred Date:</strong> <t t-out="format_date(object.preferred_date, format='EEEE, MMMM d, yyyy')">Monday, January 1, 2024</t>
                                 </div>
                             </div>
 
-                            <div style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 15px; margin: 25px 0; text-align: center;">
-                                <div style="font-size: 24px; color: #ff9800; margin-bottom: 8px;">⏰</div>
-                                <p style="margin: 5px 0; color: #856404; font-weight: 500;"><strong>Act Fast - Limited Time Offer!</strong></p>
-                                <p style="font-size: 14px; color: #856404;">This booking link is valid for <strong>24 hours</strong> only</p>
-                                <p style="font-size: 14px; color: #856404;">First come, first served</p>
-                            </div>
-
-                            <div style="text-align: center; margin: 35px 0;">
-                                <a t-attf-href="/sports/booking/create?facility_id={{ object.facility_id.id }}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 45px; border-radius: 50px; font-size: 18px; font-weight: 600;">Book Now</a>
-                            </div>
-
-                            <div style="background-color: #e3f2fd; border-radius: 6px; padding: 20px; margin: 25px 0;">
-                                <h3 style="color: #1976d2; margin: 0 0 12px 0; font-size: 16px;">📋 What to Do Next:</h3>
-                                <ul style="margin: 0; padding-left: 20px; color: #555555;">
-                                    <li style="margin: 6px 0;">Click the "Book Now" button to proceed with your booking</li>
-                                    <li style="margin: 6px 0;">Review and confirm your booking details</li>
-                                    <li style="margin: 6px 0;">Complete the payment process</li>
-                                    <li style="margin: 6px 0;">You'll receive a confirmation email with all details</li>
-                                </ul>
-                            </div>
-
-                            <p style="margin-top: 30px;">This opportunity has been offered to you based on your waitlist priority. If you're no longer interested in this booking, please disregard this email and the slot will be offered to the next person on the waitlist.</p>
+                            <p>This opportunity has been offered to you based on your waitlist priority. Book quickly - slots fill up fast!</p>
 
                             <p style="margin-top: 25px; color: #555555;">
                                 Best regards,<br/>
@@ -78,7 +44,6 @@
                     <tr>
                         <td style="background-color: #f8f9fa; padding: 30px; text-align: center; color: #6c757d; font-size: 13px; border-top: 1px solid #e9ecef;">
                             <p style="margin: 5px 0;"><strong>Sports Facility Booking System</strong></p>
-                            <p style="margin: 5px 0;">You received this email because you signed up for our waitlist notification service.</p>
                             <p style="margin-top: 15px; font-size: 11px; color: #999999;">
                                 This is an automated notification. Please do not reply to this email.
                             </p>
@@ -93,62 +58,3 @@
         </record>
     </data>
 </odoo>
-
-=======
-    <record id="email_template_waitlist_notification" model="mail.template">
-        <field name="name">Waitlist: Facility Available Notification</field>
-        <field name="model_id" ref="model_sports_waitlist"/>
-        <field name="subject">Good News! ${object.facility_id.name} is now available</field>
-        <field name="email_from">${(object.facility_id.company_id.email or user.email_formatted) | safe}</field>
-        <field name="email_to">${object.customer_email | safe}</field>
-        <field name="lang">${object.customer_id.lang}</field>
-        <field name="auto_delete" eval="False"/>
-        <field name="body_html" type="html"><![CDATA[
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8"/>
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 30px 20px; text-align: center; }
-        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
-        .content { padding: 30px 20px; }
-        .facility-info { background-color: #f0f9ff; padding: 20px; border-radius: 6px; border-left: 4px solid #667eea; margin: 20px 0; }
-        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
-        .button { display: inline-block; padding: 12px 30px; background-color: #667eea; color: #fff; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🎉 Facility Available!</h1>
-            <p>Great news about your waitlist request</p>
-        </div>
-        <div class="content">
-            <p>Dear ${object.customer_id.name},</p>
-            <p>Good news! The facility you requested is now available for booking.</p>
-            
-            <div class="facility-info">
-                <h3 style="margin-top: 0; color: #1e40af;">Facility Details</h3>
-                <p><strong>Facility:</strong> ${object.facility_id.name}</p>
-                <p><strong>Your Preferred Date:</strong> ${object.preferred_date}</p>
-                <p><strong>Your Preferred Time:</strong> ${object.preferred_time_start} - ${object.preferred_time_end}</p>
-            </div>
-            
-            <p>This availability is based on your waitlist request. Please book as soon as possible as slots fill up quickly.</p>
-            <p>Contact us to confirm your booking or visit our website to make a reservation.</p>
-        </div>
-        <div class="footer">
-            <p>This is an automated notification. Please do not reply to this email.</p>
-            <p>© ${datetime.datetime.now().year} Sports Facility Booking System. All rights reserved.</p>
-        </div>
-    </div>
-</body>
-</html>
-]]></field>
-    </record>
-</odoo>
-
-
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<<<<<<< HEAD
     <data>
         <record id="email_template_booking_confirmation" model="mail.template">
             <field name="name">Sports Booking Confirmation</field>
@@ -27,10 +26,7 @@
                             <p style="font-size: 16px; margin-bottom: 20px; color: #333333;">
                                 Dear <strong t-out="object.customer_id.name">Customer</strong>,
                             </p>
-                            <div style="display: inline-block; background-color: #10b981; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin-bottom: 20px;">
-                                Booking Confirmed
-                            </div>
-                            <p>Thank you for your booking! We're excited to have you at our facility. Your reservation has been successfully confirmed.</p>
+                            <p>Thank you for your booking! Your reservation has been successfully confirmed.</p>
                             
                             <table border="0" cellpadding="8" cellspacing="0" style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; width: 100%;">
                                 <tr>
@@ -57,25 +53,10 @@
                                     <td style="font-weight: bold; color: #6b7280;">Duration:</td>
                                     <td style="color: #111827;"><t t-out="'%.1f' % object.duration">1.0</t> hours</td>
                                 </tr>
-                                <tr t-if="object.equipment_ids">
-                                    <td style="font-weight: bold; color: #6b7280;">Equipment:</td>
-                                    <td style="color: #111827;">
-                                        <t t-foreach="object.equipment_ids" t-as="equipment">
-                                            <span t-out="equipment.name">Equipment</span><t t-if="not equipment_last">, </t>
-                                        </t>
-                                    </td>
-                                </tr>
                             </table>
                             
                             <div style="background-color: #667eea; color: white; padding: 15px 20px; border-radius: 8px; margin: 20px 0; text-align: center; font-size: 18px; font-weight: bold;">
                                 Total Amount: <t t-out="object.currency_id.symbol or '$'">$</t><t t-out="'%.2f' % object.total_cost">0.00</t>
-                            </div>
-                            
-                            <div style="background-color: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; border-radius: 4px;">
-                                <h4 style="margin-top: 0; color: #1e40af;">Important Information</h4>
-                                <p style="margin: 5px 0; color: #1e40af; font-size: 13px;">Please arrive 10 minutes before your booking start time.</p>
-                                <p style="margin: 5px 0; color: #1e40af; font-size: 13px;">Bring this confirmation email at reception.</p>
-                                <p style="margin: 5px 0; color: #1e40af; font-size: 13px;">Cancellations made 48+ hours in advance receive a full refund.</p>
                             </div>
                             
                             <p style="margin-top: 30px; color: #6b7280; font-size: 13px;">
@@ -86,8 +67,6 @@
                     <tr>
                         <td style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
                             <p style="margin: 5px 0;"><strong t-out="object.company_id.name or 'Sports Facility'">Sports Facility</strong></p>
-                            <p style="margin: 5px 0;" t-if="object.company_id.phone">Phone: <t t-out="object.company_id.phone">+1234567890</t></p>
-                            <p style="margin: 5px 0;" t-if="object.company_id.email">Email: <t t-out="object.company_id.email">info@example.com</t></p>
                             <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">
                                 This is an automated confirmation email. Please do not reply directly to this email.
                             </p>
@@ -101,85 +80,4 @@
             </field>
         </record>
     </data>
-=======
-    <record id="email_template_booking_confirmation" model="mail.template">
-        <field name="name">Sports Booking Confirmation</field>
-        <field name="model_id" ref="model_sports_booking"/>
-        <field name="subject">Booking Confirmation - ${object.booking_reference}</field>
-        <field name="email_from">${(object.company_id.email or user.email or '')|safe}</field>
-        <field name="email_to">${object.customer_id.email}</field>
-        <field name="lang">${object.customer_id.lang}</field>
-        <field name="auto_delete" eval="False"/>
-        <field name="body_html" type="html"><![CDATA[
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6; margin: 0; padding: 0; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 30px 20px; text-align: center; }
-        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
-        .content { padding: 30px 20px; }
-        .booking-details { background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0; }
-        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
-        .detail-label { font-weight: bold; width: 150px; color: #495057; }
-        .detail-value { flex: 1; color: #212529; }
-        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #6c757d; }
-        .button { display: inline-block; padding: 12px 30px; background-color: #667eea; color: #fff; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>✓ Booking Confirmed</h1>
-            <p>Your reservation has been confirmed</p>
-        </div>
-        <div class="content">
-            <p>Dear ${object.customer_id.name},</p>
-            <p>We are pleased to confirm your booking for <strong>${object.facility_id.name}</strong>.</p>
-            
-            <div class="booking-details">
-                <h3 style="margin-top: 0;">Booking Details</h3>
-                <div class="detail-row">
-                    <div class="detail-label">Reference:</div>
-                    <div class="detail-value">${object.booking_reference}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Facility:</div>
-                    <div class="detail-value">${object.facility_id.name}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Start Time:</div>
-                    <div class="detail-value">${format_datetime(object.start_datetime, dt_format='medium', tz=object.customer_id.tz or 'UTC')}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">End Time:</div>
-                    <div class="detail-value">${format_datetime(object.end_datetime, dt_format='medium', tz=object.customer_id.tz or 'UTC')}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Duration:</div>
-                    <div class="detail-value">${'%.2f' % object.duration} hours</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Total Cost:</div>
-                    <div class="detail-value"><strong>${'%.2f' % object.total_cost} ${object.currency_id.symbol or '$'}</strong></div>
-                </div>
-            </div>
-            
-            <p>Please arrive 10 minutes before your scheduled time. If you need to cancel or modify your booking, please contact us at least 24 hours in advance.</p>
-            <p>We look forward to seeing you!</p>
-        </div>
-        <div class="footer">
-            <p>This is an automated message. Please do not reply to this email.</p>
-            <p>© ${datetime.datetime.now().year} Sports Facility Booking System. All rights reserved.</p>
-        </div>
-    </div>
-</body>
-</html>
-]]></field>
-    </record>
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
 </odoo>
-
-

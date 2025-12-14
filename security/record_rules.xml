@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<<<<<<< HEAD
     <!-- Record Rule: Sports User - Own Bookings Only -->
-=======
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     <record id="booking_user_rule" model="ir.rule">
         <field name="name">Sports User: Own Bookings Only</field>
         <field name="model_id" ref="model_sports_booking"/>
@@ -14,12 +11,8 @@
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="False"/>
     </record>
-<<<<<<< HEAD
     
     <!-- Record Rule: Sports Manager - All Bookings -->
-=======
-
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     <record id="booking_manager_rule" model="ir.rule">
         <field name="name">Sports Manager: All Bookings</field>
         <field name="model_id" ref="model_sports_booking"/>

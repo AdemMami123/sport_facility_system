@@ -849,11 +849,7 @@ class SportsBooking(models.Model):
             self.write({'notes': (self.notes or '') + failure_summary})
         
         return created_bookings
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     def action_reset_to_draft(self):
         """Reset booking to draft status"""
         for record in self:

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<<<<<<< HEAD
     <!-- Waitlist List View -->
     <record id="view_sports_waitlist_list" model="ir.ui.view">
         <field name="name">sports.waitlist.list</field>
@@ -23,19 +22,15 @@
     </record>
 
     <!-- Waitlist Form View -->
-=======
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     <record id="view_sports_waitlist_form" model="ir.ui.view">
         <field name="name">sports.waitlist.form</field>
         <field name="model">sports.waitlist</field>
         <field name="arch" type="xml">
             <form string="Waitlist Entry">
                 <header>
-<<<<<<< HEAD
                     <button name="action_notify_customer" string="Notify Customer" 
                             type="object" invisible="status != 'waiting'" 
-                            class="oe_highlight"
-                            confirm="Send availability notification to this customer?"/>
+                            class="oe_highlight"/>
                     <button name="action_mark_booked" string="Mark as Booked" 
                             type="object" invisible="status not in ('waiting', 'notified')" 
                             class="oe_highlight"/>
@@ -43,12 +38,6 @@
                             type="object" invisible="status not in ('waiting', 'notified')"/>
                     <field name="status" widget="statusbar" 
                            statusbar_visible="waiting,notified,booked"/>
-=======
-                    <button name="action_notify_customer" string="Notify Customer" type="object" states="waiting" class="oe_highlight"/>
-                    <button name="action_mark_booked" string="Mark as Booked" type="object" states="waiting,notified" class="oe_highlight"/>
-                    <button name="action_mark_expired" string="Mark as Expired" type="object" states="waiting,notified"/>
-                    <field name="status" widget="statusbar"/>
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
                 </header>
                 <sheet>
                     <group>
@@ -78,22 +67,7 @@
         </field>
     </record>
 
-    <record id="view_sports_waitlist_tree" model="ir.ui.view">
-        <field name="name">sports.waitlist.tree</field>
-        <field name="model">sports.waitlist</field>
-        <field name="arch" type="xml">
-            <tree string="Waitlist">
-                <field name="customer_id"/>
-                <field name="facility_id"/>
-                <field name="preferred_date"/>
-                <field name="preferred_time_start" widget="float_time"/>
-                <field name="preferred_time_end" widget="float_time"/>
-                <field name="status"/>
-                <field name="notification_sent"/>
-            </tree>
-        </field>
-    </record>
-
+    <!-- Waitlist Search View -->
     <record id="view_sports_waitlist_search" model="ir.ui.view">
         <field name="name">sports.waitlist.search</field>
         <field name="model">sports.waitlist</field>
@@ -110,92 +84,5 @@
                 </group>
             </search>
         </field>
-    </record>
-
-<<<<<<< HEAD
-    <!-- Waitlist Calendar View -->
-    <record id="view_sports_waitlist_calendar" model="ir.ui.view">
-        <field name="name">sports.waitlist.calendar</field>
-        <field name="model">sports.waitlist</field>
-        <field name="arch" type="xml">
-            <calendar string="Waitlist Calendar" 
-                      date_start="preferred_date" 
-                      color="facility_id"
-                      mode="month"
-                      quick_create="false">
-                <field name="customer_id"/>
-                <field name="facility_id"/>
-                <field name="status"/>
-            </calendar>
-        </field>
-    </record>
-
-    <!-- Waitlist Kanban View -->
-    <record id="view_sports_waitlist_kanban" model="ir.ui.view">
-        <field name="name">sports.waitlist.kanban</field>
-        <field name="model">sports.waitlist</field>
-        <field name="arch" type="xml">
-            <kanban string="Waitlist" default_group_by="status">
-                <field name="customer_id"/>
-                <field name="facility_id"/>
-                <field name="preferred_date"/>
-                <field name="preferred_time_start"/>
-                <field name="preferred_time_end"/>
-                <field name="status"/>
-                <field name="notification_sent"/>
-                <field name="customer_email"/>
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
-                                <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title">
-                                        <field name="customer_id"/>
-                                    </strong>
-                                </div>
-                                <div class="o_kanban_record_top_right">
-                                    <span t-if="record.notification_sent.raw_value" 
-                                          class="badge badge-success">Notified</span>
-                                </div>
-                            </div>
-                            <div class="o_kanban_record_body">
-                                <field name="facility_id"/>
-                                <div t-if="record.preferred_date.raw_value">
-                                    <i class="fa fa-calendar"/> 
-                                    <field name="preferred_date"/>
-                                </div>
-                                <div t-if="record.preferred_time_start.raw_value">
-                                    <i class="fa fa-clock-o"/> 
-                                    <field name="preferred_time_start" widget="float_time"/> - 
-                                    <field name="preferred_time_end" widget="float_time"/>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- Waitlist Action -->
-    <record id="action_sports_waitlist" model="ir.actions.act_window">
-        <field name="name">Waitlist</field>
-        <field name="res_model">sports.waitlist</field>
-        <field name="view_mode">kanban,list,form,calendar</field>
-        <field name="context">{'search_default_filter_waiting': 1}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Add a customer to the waitlist
-            </p>
-            <p>
-                Track customers waiting for facility availability and notify them when slots open up.
-            </p>
-        </field>
-=======
-    <record id="action_sports_waitlist" model="ir.actions.act_window">
-        <field name="name">Waitlist</field>
-        <field name="res_model">sports.waitlist</field>
-        <field name="view_mode">tree,form</field>
->>>>>>> d7bb89cf473d811451b6873f27559ad320b84b73
     </record>
 </odoo>

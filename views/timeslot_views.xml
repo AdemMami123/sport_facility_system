@@ -24,11 +24,11 @@
         </field>
     </record>
 
-    <record id="view_sports_timeslot_tree" model="ir.ui.view">
-        <field name="name">sports.timeslot.tree</field>
+    <record id="view_sports_timeslot_list" model="ir.ui.view">
+        <field name="name">sports.timeslot.list</field>
         <field name="model">sports.timeslot</field>
         <field name="arch" type="xml">
-            <tree string="Time Slots">
+            <list string="Time Slots">
                 <field name="facility_id"/>
                 <field name="date"/>
                 <field name="start_time" widget="float_time"/>
@@ -36,13 +36,13 @@
                 <field name="duration"/>
                 <field name="is_available"/>
                 <field name="booking_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="action_sports_timeslot" model="ir.actions.act_window">
         <field name="name">Time Slots</field>
         <field name="res_model">sports.timeslot</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>

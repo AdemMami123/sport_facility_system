@@ -6,8 +6,10 @@
         <field name="arch" type="xml">
             <form string="Membership">
                 <header>
-                    <button name="action_activate" string="Activate" type="object" class="oe_highlight" states="draft"/>
-                    <button name="action_cancel" string="Cancel" type="object" states="active"/>
+                    <button name="action_activate" string="Activate" type="object" 
+                            class="oe_highlight" invisible="status != 'draft'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="status != 'active'"/>
                     <field name="status" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -36,7 +38,7 @@
         <field name="name">sports.membership.tree</field>
         <field name="model">sports.membership</field>
         <field name="arch" type="xml">
-            <tree string="Memberships">
+            <list string="Memberships">
                 <field name="member_id"/>
                 <field name="membership_type"/>
                 <field name="start_date"/>
@@ -44,13 +46,13 @@
                 <field name="discount_percentage"/>
                 <field name="status"/>
                 <field name="payment_status"/>
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="action_sports_membership" model="ir.actions.act_window">
         <field name="name">Memberships</field>
         <field name="res_model">sports.membership</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>
