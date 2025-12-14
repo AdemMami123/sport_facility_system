@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Sports Facility Booking System',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0.1',
     'category': 'Services',
     'summary': 'Manage sports facility bookings and reservations',
     'description': """
@@ -16,12 +16,14 @@
         * Calendar integration
         * Customer management
         * Payment processing
+        * Website integration
     """,
     'author': 'Mohamed Landolsi, Adem Mami, Ahmed Yasser Zrelli',
     'website': 'https://github.com/AdemMami123/sport_facility_system',
     'depends': [
         'base',
         'mail',
+        'website',
     ],
     'data': [
         # Security - MUST BE FIRST
@@ -46,10 +48,13 @@
         'views/timeslot_views.xml',
         'views/waitlist_views.xml',
         
-        # Templates
+        # Website Templates
         'views/templates/booking_templates.xml',
         
-        # Menus
+        # Website Menus
+        'views/website_menu.xml',
+        
+        # Backend Menus
         'views/menu.xml',
     ],
     'demo': [

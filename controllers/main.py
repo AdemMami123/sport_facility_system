@@ -16,6 +16,133 @@ class SportsBookingController(http.Controller):
     Handles public website routes for facility browsing and booking
     """
 
+    @http.route('/sports', type='http', auth='public', website=True)
+    def sports_homepage(self, **kwargs):
+        """
+        Sports Booking landing page
+        
+        :return: Rendered homepage template
+        """
+        try:
+            # Get featured facilities
+            facilities = request.env['sports.facility'].sudo().search([
+                ('active', '=', True)
+            ], limit=6, order='name')
+            
+            values = {
+                'facilities': facilities,
+                'page_name': 'Sports Booking',
+            }
+            
+            return request.render('sports_booking.sports_homepage_template', values)
+            
+        except Exception as e:
+            _logger.error('Error loading sports homepage: %s', str(e))
+            return request.redirect('/sports/facilities')
+
+    @http.route('/sports/waitlist/join', type='http', auth='public', website=True)
+    def waitlist_join_form(self, facility_id=None, **kwargs):
+        """
+        Display waitlist join form
+        
+        :param facility_id: Optional pre-selected facility ID
+        :return: Rendered waitlist form template
+        """
+        try:
+            # Get all active facilities
+            facilities = request.env['sports.facility'].sudo().search([
+                ('active', '=', True)
+            ], order='name')
+            
+            # Get pre-selected facility if ID provided
+            selected_facility = None
+            if facility_id:
+                selected_facility = request.env['sports.facility'].sudo().browse(int(facility_id))
+            
+            # Get current user's partner if logged in
+            partner = request.env.user.partner_id if not request.env.user._is_public() else False
+            
+            values = {
+                'facilities': facilities,
+                'selected_facility': selected_facility,
+                'partner': partner,
+                'page_name': 'Join Waitlist',
+            }
+            
+            return request.render('sports_booking.waitlist_join_template', values)
+            
+        except Exception as e:
+            _logger.error('Error loading waitlist form: %s', str(e))
+            return request.render('website.404')
+
+    @http.route('/sports/waitlist/submit', type='http', auth='public', methods=['POST'], website=True, csrf=True)
+    def waitlist_submit(self, **post):
+        """
+        Submit waitlist entry
+        
+        :param post: Form data
+        :return: Redirect to success page or error
+        """
+        try:
+            # Validate required fields
+            required_fields = ['facility_id', 'customer_name', 'customer_email', 'preferred_date']
+            missing_fields = [f for f in required_fields if not post.get(f)]
+            
+            if missing_fields:
+                return request.render('sports_booking.waitlist_error_template', {
+                    'error': f"Missing required fields: {', '.join(missing_fields)}"
+                })
+            
+            # Parse data
+            facility_id = int(post.get('facility_id'))
+            customer_name = post.get('customer_name')
+            customer_email = post.get('customer_email')
+            customer_phone = post.get('customer_phone', '')
+            preferred_date = post.get('preferred_date')
+            notes = post.get('notes', '')
+            
+            # Find or create customer partner
+            Partner = request.env['res.partner'].sudo()
+            customer = Partner.search([('email', '=', customer_email)], limit=1)
+            
+            if not customer:
+                customer = Partner.create({
+                    'name': customer_name,
+                    'email': customer_email,
+                    'phone': customer_phone,
+                })
+            
+            # Parse preferred date
+            try:
+                pref_date = datetime.strptime(preferred_date, '%Y-%m-%d').date()
+            except ValueError:
+                return request.render('sports_booking.waitlist_error_template', {
+                    'error': 'Invalid date format'
+                })
+            
+            # Create waitlist entry
+            waitlist_vals = {
+                'facility_id': facility_id,
+                'customer_id': customer.id,
+                'preferred_date': pref_date,
+                'notes': notes,
+                'status': 'waiting',
+            }
+            
+            waitlist = request.env['sports.waitlist'].sudo().create(waitlist_vals)
+            _logger.info('Waitlist entry created: %s', waitlist.id)
+            
+            return request.render('sports_booking.waitlist_success_template', {
+                'waitlist': waitlist,
+                'page_name': 'Waitlist Confirmed'
+            })
+            
+        except Exception as e:
+            _logger.error('Error submitting waitlist: %s', str(e))
+            return request.render('sports_booking.waitlist_error_template', {
+                'error': 'An unexpected error occurred. Please try again.'
+            })
+
     @http.route('/sports/facilities', type='http', auth='public', website=True)
     def list_facilities(self, facility_type=None, **kwargs):
         """

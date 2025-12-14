@@ -423,4 +423,255 @@
             </div>
         </t>
     </template>
+
+    <!-- Sports Homepage Template -->
+    <template id="sports_homepage_template" name="Sports Booking Homepage">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <!-- Hero Section -->
+                <section class="bg-primary text-white py-5">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <h1 class="display-4 font-weight-bold mb-4">Sports Facility Booking</h1>
+                                <p class="lead mb-4">Book your favorite sports facilities online. Easy, fast, and convenient.</p>
+                                <a href="/sports/facilities" class="btn btn-light btn-lg mr-2">
+                                    <i class="fa fa-building mr-2"/>Browse Facilities
+                                </a>
+                                <a href="/sports/my/bookings" class="btn btn-outline-light btn-lg">
+                                    <i class="fa fa-calendar mr-2"/>My Bookings
+                                </a>
+                            </div>
+                            <div class="col-lg-6 text-center">
+                                <i class="fa fa-futbol-o fa-10x opacity-50"/>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Features Section -->
+                <section class="py-5">
+                    <div class="container">
+                        <h2 class="text-center mb-5">What We Offer</h2>
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4">
+                                <div class="p-4">
+                                    <i class="fa fa-building fa-3x text-primary mb-3"/>
+                                    <h4>Multiple Facilities</h4>
+                                    <p class="text-muted">Courts, gyms, pools, and fields available for booking</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-4">
+                                <div class="p-4">
+                                    <i class="fa fa-calendar-check-o fa-3x text-success mb-3"/>
+                                    <h4>Easy Booking</h4>
+                                    <p class="text-muted">Book online in minutes with real-time availability</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-4">
+                                <div class="p-4">
+                                    <i class="fa fa-trophy fa-3x text-warning mb-3"/>
+                                    <h4>Quality Equipment</h4>
+                                    <p class="text-muted">Rent sports equipment with your facility booking</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Featured Facilities -->
+                <section class="py-5 bg-light" t-if="facilities">
+                    <div class="container">
+                        <h2 class="text-center mb-5">Featured Facilities</h2>
+                        <div class="row">
+                            <t t-foreach="facilities" t-as="facility">
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100 shadow-sm">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary">
+                                                <t t-esc="facility.name"/>
+                                            </h5>
+                                            <p class="mb-2">
+                                                <span class="badge badge-info"><t t-esc="facility.facility_type"/></span>
+                                            </p>
+                                            <p class="text-success font-weight-bold">
+                                                <t t-esc="facility.hourly_rate"/> <t t-esc="facility.currency_id.symbol or '$'"/>/hour
+                                            </p>
+                                        </div>
+                                        <div class="card-footer bg-white">
+                                            <a t-attf-href="/sports/booking/{{ facility.id }}" class="btn btn-primary btn-block">Book Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="/sports/facilities" class="btn btn-outline-primary btn-lg">View All Facilities</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CTA Section -->
+                <section class="py-5 bg-success text-white">
+                    <div class="container text-center">
+                        <h2 class="mb-4">Need to Wait for Availability?</h2>
+                        <p class="lead mb-4">Join our waitlist and we'll notify you when your preferred time slot opens up.</p>
+                        <a href="/sports/waitlist/join" class="btn btn-light btn-lg">
+                            <i class="fa fa-clock-o mr-2"/>Join Waitlist
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Waitlist Join Template -->
+    <template id="waitlist_join_template" name="Join Waitlist">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <div class="text-center mb-4">
+                                <h1>Join the Waitlist</h1>
+                                <p class="lead text-muted">Get notified when your preferred facility becomes available</p>
+                            </div>
+                            
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0"><i class="fa fa-clock-o mr-2"/>Waitlist Request</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form action="/sports/waitlist/submit" method="POST">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <div class="form-group">
+                                            <label for="facility_id">Facility <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="facility_id" name="facility_id" required="required">
+                                                <option value="">Select a facility...</option>
+                                                <t t-foreach="facilities" t-as="facility">
+                                                    <option t-att-value="facility.id" 
+                                                            t-att-selected="selected_facility and selected_facility.id == facility.id">
+                                                        <t t-esc="facility.name"/> (<t t-esc="facility.facility_type"/>)
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_name">Full Name <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="customer_name" name="customer_name" 
+                                                           t-att-value="partner.name if partner else ''" required="required"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_email">Email <span class="text-danger">*</span></label>
+                                                    <input type="email" class="form-control" id="customer_email" name="customer_email" 
+                                                           t-att-value="partner.email if partner else ''" required="required"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customer_phone">Phone</label>
+                                                    <input type="tel" class="form-control" id="customer_phone" name="customer_phone" 
+                                                           t-att-value="partner.phone if partner else ''"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="preferred_date">Preferred Date <span class="text-danger">*</span></label>
+                                                    <input type="date" class="form-control" id="preferred_date" name="preferred_date" required="required"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="notes">Additional Notes</label>
+                                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                                      placeholder="Preferred time, duration, or any other requirements..."></textarea>
+                                        </div>
+                                        
+                                        <div class="text-center mt-4">
+                                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                                <i class="fa fa-check mr-2"/>Join Waitlist
+                                            </button>
+                                            <a href="/sports/facilities" class="btn btn-outline-secondary btn-lg ml-2">
+                                                Cancel
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info mt-4">
+                                <i class="fa fa-info-circle mr-2"/>
+                                We'll send you an email notification when a slot opens up for your preferred date.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Waitlist Success Template -->
+    <template id="waitlist_success_template" name="Waitlist Success">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 text-center">
+                            <div class="alert alert-success shadow py-5">
+                                <i class="fa fa-check-circle fa-5x text-success mb-4"/>
+                                <h1 class="text-success">You're on the Waitlist!</h1>
+                                <p class="lead mt-3">We'll notify you when a slot becomes available.</p>
+                                <hr/>
+                                <p class="mb-2"><strong>Facility:</strong> <t t-esc="waitlist.facility_id.name"/></p>
+                                <p class="mb-2"><strong>Preferred Date:</strong> <t t-esc="waitlist.preferred_date"/></p>
+                                <p class="mb-0"><strong>Status:</strong> <span class="badge badge-warning">Waiting</span></p>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <a href="/sports/facilities" class="btn btn-primary btn-lg mr-2">
+                                    <i class="fa fa-building mr-2"/>Browse Facilities
+                                </a>
+                                <a href="/sports" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fa fa-home mr-2"/>Home
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Waitlist Error Template -->
+    <template id="waitlist_error_template" name="Waitlist Error">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-lg-6 offset-lg-3 text-center">
+                            <div class="alert alert-danger shadow py-4">
+                                <i class="fa fa-exclamation-triangle fa-4x mb-3"/>
+                                <h2>Waitlist Error</h2>
+                                <p class="lead"><t t-esc="error"/></p>
+                            </div>
+                            <a href="/sports/waitlist/join" class="btn btn-primary btn-lg mt-3">
+                                <i class="fa fa-arrow-left mr-2"/>Try Again
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
 </odoo>
+
