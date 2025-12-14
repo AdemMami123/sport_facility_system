@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Facilities List Template -->
-    <template id="facilities_list_template" name="Facilities List">
+    <template id="facilities_list_template" name="Facilities List" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
@@ -73,7 +73,7 @@
     </template>
 
     <!-- Booking Form Template -->
-    <template id="booking_form_template" name="Facility Booking Form">
+    <template id="booking_form_template" name="Facility Booking Form" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-4 mb-5">
@@ -209,7 +209,7 @@
     </template>
 
     <!-- Booking Confirmation Template -->
-    <template id="booking_confirmation_template" name="Booking Confirmation">
+    <template id="booking_confirmation_template" name="Booking Confirmation" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
@@ -277,7 +277,7 @@
     </template>
 
     <!-- My Bookings Template -->
-    <template id="my_bookings_template" name="My Bookings">
+    <template id="my_bookings_template" name="My Bookings" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
@@ -342,7 +342,7 @@
     </template>
 
     <!-- Booking Error Template -->
-    <template id="booking_error_template" name="Booking Error">
+    <template id="booking_error_template" name="Booking Error" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
@@ -364,7 +364,7 @@
     </template>
 
     <!-- Check-in Success Template -->
-    <template id="checkin_success_template" name="Check-in Success">
+    <template id="checkin_success_template" name="Check-in Success" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
@@ -392,7 +392,7 @@
     </template>
 
     <!-- Check-in Error Template -->
-    <template id="checkin_error_template" name="Check-in Error">
+    <template id="checkin_error_template" name="Check-in Error" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
@@ -425,7 +425,7 @@
     </template>
 
     <!-- Sports Homepage Template -->
-    <template id="sports_homepage_template" name="Sports Booking Homepage">
+    <template id="sports_homepage_template" name="Sports Booking Homepage" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <!-- Hero Section -->
@@ -526,7 +526,7 @@
     </template>
 
     <!-- Waitlist Join Template -->
-    <template id="waitlist_join_template" name="Join Waitlist">
+    <template id="waitlist_join_template" name="Join Waitlist" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
@@ -621,7 +621,7 @@
     </template>
 
     <!-- Waitlist Success Template -->
-    <template id="waitlist_success_template" name="Waitlist Success">
+    <template id="waitlist_success_template" name="Waitlist Success" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
@@ -653,7 +653,7 @@
     </template>
 
     <!-- Waitlist Error Template -->
-    <template id="waitlist_error_template" name="Waitlist Error">
+    <template id="waitlist_error_template" name="Waitlist Error" website="True">
         <t t-call="website.layout">
             <div id="wrap" class="oe_structure">
                 <div class="container mt-5 mb-5">
